@@ -53,10 +53,9 @@ python
 ### Phase 2: Text Extraction
 *GROBID* (GeneRation Of BIbliographic Data) - an open-source Java machine learning library for parsing, structuring, and extracting metadata, references, and full-text from academic PDFs into TEI-encoded XML
 
-bash
 Run GROBID as Docker container
 Process PDFs via Python
-Output: TEI XML with structured metadata and parsed references
+*Output*: TEI XML with structured metadata and parsed references
 
 ### Phase 3: Metadata Extraction
 From GROBID XML extract title, author, year, venue
@@ -74,78 +73,77 @@ Unmatched references: Create placeholder nodes with extracted metadata and flag 
 ```
 citation-graph-builder/
 │
-├── README.md
-├── requirements.txt
-├── config.yaml                 # Configuration (API keys, paths, thresholds)
-├── setup.py
+├── README.md                    # Project overview, setup instructions, and documentation
+├── requirements.txt             # Python dependencies (networkx, streamlit, PyPDF2, etc.)
+├── config.yaml                  # Configuration file for API keys, paths, matching thresholds
+├── setup.py                     # Package installation script
 │
-├── src/
-│   ├── __init__.py
+├── src/                         # Main source code directory
+│   ├── __init__.py              # Makes src a Python package
 │   │
-│   ├── acquisition/
-│   │   ├── __init__.py
-│   │   ├── downloader.py       # Base downloader class
-│   │   ├── pmc_downloader.py   # PubMed Central implementation
-│   │   ├── arxiv_downloader.py # arXiv implementation
-│   │   └── biorxiv_downloader.py
+│   ├── acquisition/             # Data collection modules
+│   │   ├── __init__.py          # Package initializer
+│   │   ├── downloader.py        # Base abstract class for all downloaders
+│   │   ├── pmc_downloader.py    # PubMed Central-specific download implementation
+│   │   ├── arxiv_downloader.py  # arXiv.org API wrapper for paper download
+│   │   └── biorxiv_downloader.py # BioRxiv preprint server downloader
 │   │
-│   ├── extraction/
-│   │   ├── __init__.py
-│   │   ├── grobid_client.py    # GROBID API wrapper
-│   │   ├── pdf_parser.py       # pdfplumber fallback
-│   │   ├── reference_parser.py # Parse reference strings
-│   │   └── metadata_extractor.py
+│   ├── extraction/              # PDF parsing and metadata extraction
+│   │   ├── __init__.py          # Package initializer
+│   │   ├── grobid_client.py     # Client for GROBID (ML-based PDF parser) API
+│   │   ├── pdf_parser.py        # Fallback parser using pdfplumber/PyPDF2
+│   │   ├── reference_parser.py  # Extracts and structures citation strings
+│   │   └── metadata_extractor.py # Pulls title, authors, year from parsed text
 │   │
-│   ├── resolution/
-│   │   ├── __init__.py
-│   │   ├── matcher.py          # Main matching logic
-│   │   ├── fuzzy_matcher.py    # Fuzzy string matching
-│   │   ├── doi_matcher.py      # DOI-based matching
-│   │   └── placeholder.py       # Handle unmatched references
+│   ├── resolution/              # Entity resolution and matching
+│   │   ├── __init__.py          # Package initializer
+│   │   ├── matcher.py           # Main orchestration logic for matching references
+│   │   ├── fuzzy_matcher.py     # Fuzzy string matching utilities (title/author similarity)
+│   │   ├── doi_matcher.py       # DOI-based exact matching
+│   │   └── placeholder.py       # Creates placeholder nodes for unmatched references
 │   │
-│   ├── graph/
-│   │   ├── __init__.py
-│   │   ├── builder.py          # Build graph from matches
-│   │   ├── storage.py          # Save/load graph
-│   │   ├── networkx_storage.py # In-memory storage
-│   │   ├── neo4j_storage.py    # Neo4j implementation
-│   │   └── sqlite_storage.py   # SQLite implementation
+│   ├── graph/                    # Graph construction and storage
+│   │   ├── __init__.py           # Package initializer
+│   │   ├── builder.py            # Builds NetworkX graph from matched papers
+│   │   ├── storage.py            # Abstract interface for graph storage
+│   │   ├── networkx_storage.py   # In-memory storage using NetworkX
+│   │   ├── neo4j_storage.py      # Neo4j graph database implementation
+│   │   └── sqlite_storage.py     # SQLite relational storage for graphs
 │   │
-│   ├── query/
-│   │   ├── __init__.py
-│   │   ├── cli.py              # Command-line interface
-│   │   ├── queries.py          # Query functions (in-degree, out-degree)
-│   │   └── visualization.py    # NetworkX + matplotlib visualization
+│   ├── query/                     # Query and visualization interface
+│   │   ├── __init__.py            # Package initializer
+│   │   ├── cli.py                 # Command-line interface for queries
+│   │   ├── queries.py             # Core query functions (in-degree, out-degree, neighbors)
+│   │   └── visualization.py       # Graph plotting with matplotlib/NetworkX
 │   │
-│   └── analysis/
-│       ├── __init__.py
-│       ├── statistics.py       # Degree distributions, components
-│       └── compare_storage.py  # Compare storage approaches
+│   └── analysis/                   # Graph analysis utilities
+│       ├── __init__.py             # Package initializer
+│       ├── statistics.py           # Computes degree distributions, connected components
+│       └── compare_storage.py      # Benchmarks different storage approaches
 │
-├── tests/
-│   ├── __init__.py
-│   ├── test_downloader.py
-│   ├── test_parser.py
-│   ├── test_matcher.py
-│   ├── test_graph.py
-│   └── fixtures/               # Sample PDFs for testing
-│       ├── sample_paper.pdf
-│       └── expected_output.json
+├── tests/                          # Testing directory
+│   ├── __init__.py                 # Makes tests a package
+│   ├── test_downloader.py          # Tests for downloader modules
+│   ├── test_parser.py              # Tests for PDF parsing functions
+│   ├── test_matcher.py             # Tests for entity resolution logic
+│   ├── test_graph.py               # Tests for graph construction
+│   └── fixtures/                    # Test data files
+│       ├── sample_paper.pdf        # Small PDF for testing extraction
+│       └── expected_output.json    # Expected metadata for validation
 │
-├── scripts/
-│   ├── run_pipeline.py         # End-to-end pipeline
-│   ├── download_corpus.py      # Step 1: Download PDFs
-│   ├── extract_all.py          # Step 2: Process PDFs
-│   ├── build_graph.py          # Step 3: Build graph
-│   ├── query_cli.py            # Interactive query tool
-│   └── benchmark_storage.py    # Compare storage approaches
+├── scripts/                         # Executable pipeline scripts
+│   ├── run_pipeline.py              # Master script to run entire pipeline end-to-end
+│   ├── download_corpus.py           # Step 1: Download PDFs from sources
+│   ├── extract_all.py               # Step 2: Process all PDFs and extract metadata
+│   ├── build_graph.py               # Step 3: Build citation graph from extracted data
+│   ├── query_cli.py                  # Interactive query tool for exploring the graph
+│   └── benchmark_storage.py          # Compares performance of storage backends
 │
-└── notebooks/
-    ├── 01_exploratory_analysis.ipynb
-    ├── 02_citation_network_viz.ipynb
-    └── 03_storage_comparison.ipynb
-```
-    
+└── notebooks/                        # Jupyter notebooks for exploration
+    ├── 01_exploratory_analysis.ipynb # Initial data exploration
+    ├── 02_citation_network_viz.ipynb # Network visualization experiments
+    └── 03_storage_comparison.ipynb   # Detailed storage performance analysis
+```    
 # 🧪 Testing and Debugging
 ## Unit Tests
 Matcher() for testing exact and fuzzy matches
@@ -184,7 +182,7 @@ pip install -r requirements.txt
 
 *2. Configure*
 cp config.yaml.example config.yaml
-# Edit config.yaml with your preferences
+### Edit config.yaml with your preferences
 
 *3. Run GROBID (if using)*
 docker run -d -p 8070:8070 grobid/grobid:0.8.0
@@ -265,7 +263,6 @@ Command-line tool for exploring the graph
 Sample visualizations in notebooks/
 
 # 🐛 Common Issues and Solutions
-## 🐛 Common Issues and Solutions
 
 | Issue | Symptom | Solution |
 |:------|:--------|:---------|
