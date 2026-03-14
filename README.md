@@ -1,6 +1,6 @@
 # 🔬 Team 10 - Citation Graph Builder
 
-A system that extracts citation information from scientific articles on human evolution and constructs a citation graph, enabling exploration of relationships, influence, and structure within this domain.
+To find relationship patterns between major scientific papers in Human Evolution to highlight how research within a domain builds on and influences subsequent works.
 
 ## 📋 Overview
 This project builds a directed citation graph from research papers in human evolution. Nodes represent academic papers, and directed edges represent citation relationships (Paper A → Paper B means A cites B). The system extracts metadata from PDFs, resolves ambiguous references, and provides querying and visualization capabilities.
