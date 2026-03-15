@@ -1,15 +1,12 @@
 """
 data_handler.py  –  DS3294 Citation Graph Builder
 ==================================================
-Key design decisions:
-  • _G() always fetches the live graph — never a stale module-level variable
-  • force_rewire() is the ONLY edge-drawing function — reads from articles[] always
-  • auto_resolve_refs_from_pdf() — 4-strategy pipeline to find cited papers automatically:
-      1. arXiv ID exact match  (most reliable — 0 false positives)
-      2. DOI exact match
-      3. Title-fragment fuzzy match  (extracted from the reference entry)
-      4. Raw-text fuzzy match against full reference entry  (fallback)
-  • PDF upload flow: extract → auto-resolve refs → add → draw edges. Zero human input needed.
+Bug fixes in this version:
+  1. _G() function — always fetches LIVE graph from session_state (never stale ref)
+  2. force_rewire() — reads refs from articles[] (single source of truth), not passed dict
+  3. Ref IDs normalised on store (strip whitespace)
+  4. PDF tab no longer auto-wires refs — suggests candidates, user confirms
+  5. suggest_refs_from_text() for UI-assisted ref picking
 """
 from __future__ import annotations
 import io, json, re
@@ -30,9 +27,6 @@ except ImportError:
 
 CORPUS_PATH = Path("data/corpus.json")
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  BASELINE CORPUS — 30 papers
-# ══════════════════════════════════════════════════════════════════════════════
 SAMPLE_PAPERS = [
     {"id":"vaswani2017","title":"Attention Is All You Need","authors":"Vaswani et al.","year":2017,"venue":"NeurIPS","category":"Core","url":"https://arxiv.org/abs/1706.03762","refs":[],"source":"baseline"},
     {"id":"devlin2018","title":"BERT: Pre-training of Deep Bidirectional Transformers","authors":"Devlin et al.","year":2018,"venue":"NAACL","category":"Core","url":"https://arxiv.org/abs/1810.04805","refs":["vaswani2017"],"source":"baseline"},
@@ -66,9 +60,6 @@ SAMPLE_PAPERS = [
     {"id":"wei2022","title":"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models","authors":"Wei et al.","year":2022,"venue":"NeurIPS","category":"LLM","url":"https://arxiv.org/abs/2201.11903","refs":["brown2020","chowdhery2022"],"source":"baseline"},
 ]
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  SESSION STATE
-# ══════════════════════════════════════════════════════════════════════════════
 def init_state() -> None:
     defaults = {"graph": nx.DiGraph(), "articles": {}, "uploaded_count": 0,
                 "log": [], "corpus_version": 0}
@@ -77,21 +68,16 @@ def init_state() -> None:
             st.session_state[k] = v
 
 def _G() -> nx.DiGraph:
-    """Always return the LIVE graph. Never cache at module level."""
+    """Always return the LIVE graph from session_state. Never cache this."""
     return st.session_state["graph"]
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  PERSISTENCE
-# ══════════════════════════════════════════════════════════════════════════════
 def save_corpus() -> None:
     CORPUS_PATH.parent.mkdir(parents=True, exist_ok=True)
     version = st.session_state.get("corpus_version", 0) + 1
-    payload = {
-        "version":  version,
-        "saved_at": datetime.now().isoformat(timespec="seconds"),
-        "papers":   [{k:v for k,v in p.items() if not k.startswith("_")}
-                     for p in st.session_state["articles"].values()],
-    }
+    payload = {"version": version,
+               "saved_at": datetime.now().isoformat(timespec="seconds"),
+               "papers": [{k:v for k,v in p.items() if k != "_raw_text"}
+                          for p in st.session_state["articles"].values()]}
     CORPUS_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     st.session_state["corpus_version"] = version
 
@@ -108,21 +94,18 @@ def load_corpus() -> int:
     for p in papers:
         _register_node(p)
     force_rewire()
+    v = payload.get("version", "?")
     st.session_state["log"].append(
-        f"📂 Restored {len(papers)} papers (v{payload.get('version','?')}, "
-        f"{payload.get('saved_at','?')})")
+        f"Restored {len(papers)} papers (v{v}, {payload.get('saved_at','?')})")
     return len(papers)
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  CORE GRAPH HELPERS
-# ══════════════════════════════════════════════════════════════════════════════
 def _register_node(paper: dict) -> None:
-    """Store in articles[] and upsert nx node. Normalises ref IDs."""
+    """Store paper in articles AND add nx node. Normalises ref IDs."""
     G   = _G()
     pid = paper["id"]
     paper["refs"] = [r.strip() for r in paper.get("refs", []) if r.strip()]
     st.session_state["articles"][pid] = paper
-    attrs = {k: v for k, v in paper.items() if not k.startswith("_") and k != "refs"}
+    attrs = {k: v for k, v in paper.items() if k not in ("refs", "_raw_text")}
     if G.has_node(pid):
         for k, v in attrs.items():
             G.nodes[pid][k] = v
@@ -131,9 +114,9 @@ def _register_node(paper: dict) -> None:
 
 def force_rewire() -> int:
     """
-    The single authoritative edge-drawing function.
-    Reads refs from articles[] (single source of truth).
-    Draws every possible edge. Called after every mutation.
+    THE single authoritative edge-drawing function.
+    Reads from articles[] (not from any passed dict).
+    Called after every mutation. Returns edges added this call.
     """
     G = _G()
     added = 0
@@ -145,9 +128,6 @@ def force_rewire() -> int:
                 added += 1
     return added
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  PUBLIC API
-# ══════════════════════════════════════════════════════════════════════════════
 def add_paper_to_graph(paper: dict, source_tag: str = "manual") -> bool:
     pid = paper.get("id", "").strip()
     if not pid:
@@ -163,11 +143,12 @@ def add_paper_to_graph(paper: dict, source_tag: str = "manual") -> bool:
     if is_new:
         save_corpus()
         st.session_state["log"].append(
-            f"➕ '{paper['title'][:50]}' ({pid}) — refs={paper['refs']} → {new_edges} edge(s).")
+            f"Added '{paper['title'][:50]}' ({pid}) — "
+            f"refs={paper['refs']} → {new_edges} edge(s).")
         return True
     if new_edges:
         save_corpus()
-        st.session_state["log"].append(f"🔄 Re-wired '{pid}' — {new_edges} new edges.")
+        st.session_state["log"].append(f"Re-wired '{pid}' — {new_edges} new edges.")
     return False
 
 def add_papers_bulk(papers: list[dict], source_tag: str = "json") -> dict:
@@ -189,13 +170,13 @@ def add_papers_bulk(papers: list[dict], source_tag: str = "json") -> dict:
     if added:
         save_corpus()
         st.session_state["log"].append(
-            f"📦 Bulk: +{added} papers, {skipped} skipped, {new_edges} edges.")
+            f"Bulk: +{added} papers, {skipped} skipped, {new_edges} edges.")
     return {"added": added, "skipped": skipped, "new_edges": new_edges}
 
 def load_sample() -> None:
     r = add_papers_bulk(SAMPLE_PAPERS, source_tag="baseline")
     st.session_state["log"].append(
-        f"✅ Baseline: {r['added']} new, {r['skipped']} present, {r['new_edges']} edges.")
+        f"Baseline: {r['added']} new, {r['skipped']} present, {r['new_edges']} edges.")
 
 def remove_paper(pid: str) -> bool:
     if pid not in st.session_state["articles"]:
@@ -204,25 +185,20 @@ def remove_paper(pid: str) -> bool:
     _G().remove_node(pid)
     del st.session_state["articles"][pid]
     save_corpus()
-    st.session_state["log"].append(f"🗑️ Removed '{title[:50]}' ({pid}).")
+    st.session_state["log"].append(f"Removed '{title[:50]}' ({pid}).")
     return True
 
 def resolve_all_edges() -> int:
     added = force_rewire()
     save_corpus()
     st.session_state["log"].append(
-        f"🔄 Re-resolve: +{added} new edges." if added else "🔄 Re-resolve: already fully wired.")
+        f"Re-resolve: +{added} new edges." if added else "Re-resolve: already fully wired.")
     return added
 
 def get_known_ids() -> list[str]:
     return sorted(st.session_state["articles"].keys())
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  AUTOMATIC REFERENCE EXTRACTION + MATCHING
-# ══════════════════════════════════════════════════════════════════════════════
-
 def _pdf_text(file_bytes: bytes) -> str:
-    """Extract all text from a PDF as a single string."""
     if not HAS_PYPDF:
         return ""
     try:
@@ -232,7 +208,6 @@ def _pdf_text(file_bytes: bytes) -> str:
         return ""
 
 def _pdf_embedded_meta(file_bytes: bytes) -> dict:
-    """Read /Title and /Author from embedded PDF metadata."""
     if not HAS_PYPDF:
         return {}
     try:
@@ -245,7 +220,6 @@ def _pdf_embedded_meta(file_bytes: bytes) -> dict:
         return {}
 
 def _parse_meta_from_text(text: str, filename: str) -> dict:
-    """Heuristic extraction of title / authors / year from raw text."""
     lines   = [l.strip() for l in text.split("\n") if l.strip()]
     title   = lines[0][:160] if lines else filename.replace(".pdf", "")
     year_m  = re.search(r"\b(19[9]\d|20[012]\d)\b", text)
@@ -260,212 +234,41 @@ def _parse_meta_from_text(text: str, filename: str) -> dict:
             "arxiv_id": arxiv_m.group(1) if arxiv_m else "",
             "doi":      doi_m.group().rstrip(".,)") if doi_m else ""}
 
-def _isolate_reference_section(full_text: str) -> str:
-    """
-    Find and return just the reference section of a paper.
-    Tries multiple common heading styles.
-    """
-    lower = full_text.lower()
-    for heading in ["references\n", "\nreferences\n", "bibliography\n",
-                    "\nbibliography\n", "works cited\n"]:
-        pos = lower.rfind(heading)
-        if pos != -1:
-            return full_text[pos:]
-    # Fallback: last 20% of document
-    return full_text[int(len(full_text) * 0.80):]
-
-def _split_into_entries(ref_section: str) -> list[str]:
-    """
-    Split reference section text into individual reference entries.
-    Handles numbered [1], 1., and blank-line separated styles.
-    """
-    # Style 1: [1] Author ...  (most common in NLP/CS papers)
-    numbered_bracket = re.split(r'\n(?=\s*\[\d{1,3}\])', ref_section)
-    if len(numbered_bracket) >= 3:
-        return [e.strip() for e in numbered_bracket if len(e.strip()) > 20]
-
-    # Style 2: 1. Author ...
-    numbered_dot = re.split(r'\n(?=\s*\d{1,3}\.\s+[A-Z])', ref_section)
-    if len(numbered_dot) >= 3:
-        return [e.strip() for e in numbered_dot if len(e.strip()) > 20]
-
-    # Style 3: Blank-line separated (author-year style like APA)
-    blank_sep = re.split(r'\n{2,}', ref_section)
-    if len(blank_sep) >= 3:
-        return [e.strip() for e in blank_sep if len(e.strip()) > 20]
-
-    # Fallback: split on lines that start with a capital letter + author pattern
-    author_start = re.split(r'\n(?=[A-Z][a-z]+,\s+[A-Z]\.)', ref_section)
-    return [e.strip() for e in author_start if len(e.strip()) > 20]
-
-def _extract_signals(entry: str) -> dict:
-    """
-    Extract matchable signals from a single raw reference entry string.
-    Returns a dict with arxiv, doi, year, title_fragment, raw.
-    """
-    # arXiv ID: appears as arXiv:1234.5678 or arXiv 1234.5678 or just 1234.56789
-    arxiv_m = re.search(r'arXiv[:\s]*(\d{4}\.\d{4,5})', entry, re.IGNORECASE)
-    if not arxiv_m:
-        # Sometimes just the bare ID appears at end of reference
-        arxiv_m = re.search(r'\b(\d{4}\.\d{5})\b', entry)
-
-    # DOI: 10.XXXX/...
-    doi_m = re.search(r'10\.\d{4,}/\S+', entry)
-
-    # Year
-    year_m = re.search(r'\b(19[9]\d|20[012]\d)\b', entry)
-    # Title fragment — first sentence after (year). which is the paper title
-    # Using [^.]+ stops at the first period, avoiding venue/page noise.
-    title_frag = ""
-    tf_m = re.search(r'\(\d{4}\)\.\s*([^.]+)\.', entry)
-    if tf_m:
-        title_frag = tf_m.group(1).strip()
-    # Fallback: bare title before venue keyword
-    if not title_frag or len(title_frag) < 8:
-        alt_m = re.search(r'\.\s+([A-Z][^.]{8,120}?)(?:\.\s+(?:In |arXiv|doi:|https?|Journal|Proceedings|Advances|Transactions))', entry, re.IGNORECASE)
-        if alt_m:
-            title_frag = alt_m.group(1).strip()
-
-
-    return {
-        "arxiv":          arxiv_m.group(1) if arxiv_m else "",
-        "doi":            doi_m.group().rstrip(".,)") if doi_m else "",
-        "year":           int(year_m.group()) if year_m else 0,
-        "title_fragment": title_frag[:120],
-        "raw":            entry,
-    }
-
 def _fuzzy_score(a: str, b: str) -> int:
-    """Score 0-100: how well two strings match."""
-    if not a or not b:
-        return 0
     if HAS_FUZZY:
         return fuzz.token_set_ratio(a.lower(), b.lower())
     wa, wb = set(a.lower().split()), set(b.lower().split())
     return int(100 * len(wa & wb) / max(len(wa | wb), 1))
 
-def _match_entry_to_corpus(entry: str, corpus: dict) -> tuple[str | None, str, int]:
-    """
-    Try to match one raw reference string to a paper in the corpus.
-    Returns (paper_id, method_used, confidence_score) or (None, 'no_match', 0).
+def suggest_refs_from_text(raw_text: str, top_n: int = 10) -> list[dict]:
+    """Suggest which corpus papers the PDF likely cites. User confirms in UI."""
+    known     = st.session_state["articles"]
+    lower     = raw_text.lower()
+    ref_start = lower.rfind("references\n")
+    ref_text  = raw_text[ref_start:] if ref_start != -1 else raw_text[-6000:]
+    results   = []
+    for pid, art in known.items():
+        score = _fuzzy_score(ref_text, art.get("title", ""))
+        if score >= 30:
+            results.append({"id": pid, "title": art.get("title","")[:70], "score": score})
+    results.sort(key=lambda x: -x["score"])
+    return results[:top_n]
 
-    Four strategies in order of reliability:
-      1. arXiv ID  — exact, zero false positives
-      2. DOI       — exact, zero false positives
-      3. Title fragment fuzzy  — matches clean extracted title against corpus titles
-      4. Full-entry fuzzy  — last resort, lower threshold
-    """
-    sig = _extract_signals(entry)
-
-    # ── Strategy 1: arXiv ID match ───────────────────────────────────────────
-    if sig["arxiv"]:
-        for pid, art in corpus.items():
-            if sig["arxiv"] in art.get("url", "") or sig["arxiv"] in art.get("arxiv_id", ""):
-                return pid, "arXiv ID", 100
-
-    # ── Strategy 2: DOI match ────────────────────────────────────────────────
-    if sig["doi"]:
-        for pid, art in corpus.items():
-            if sig["doi"] in art.get("url", "") or sig["doi"] in art.get("doi", ""):
-                return pid, "DOI", 100
-
-    # ── Strategy 3: Title fragment fuzzy ────────────────────────────────────
-    if sig["title_fragment"] and len(sig["title_fragment"]) >= 8:
-        best_pid, best_score = None, 0
-        for pid, art in corpus.items():
-            score = _fuzzy_score(sig["title_fragment"], art.get("title", ""))
-            # Year proximity bonus: ±1 year → +10 points
-            if sig["year"] and abs(sig["year"] - art.get("year", 0)) <= 1:
-                score = min(100, score + 10)
-            if score > best_score:
-                best_score, best_pid = score, pid
-        if best_score >= 55:   # tuned threshold for title fragments
-            return best_pid, "title match", best_score
-
-    # ── Strategy 4: Full-entry fuzzy ─────────────────────────────────────────
-    best_pid, best_score = None, 0
-    for pid, art in corpus.items():
-        score = _fuzzy_score(sig["raw"], art.get("title", ""))
-        if score > best_score:
-            best_score, best_pid = score, pid
-    if best_score >= 40:
-        return best_pid, "text match", best_score
-
-    return None, "no_match", 0
-
-def auto_resolve_refs_from_pdf(full_text: str) -> list[dict]:
-    """
-    Full automatic pipeline:
-      full PDF text → reference section → individual entries → match each
-      → return list of {id, title, method, score, raw_entry}
-
-    Only returns matches with corpus papers. External-only citations are dropped.
-    This is the MAIN function called by the PDF upload tab.
-    """
-    corpus  = st.session_state["articles"]
-    if not corpus or not full_text:
-        return []
-
-    ref_section = _isolate_reference_section(full_text)
-    entries     = _split_into_entries(ref_section)
-
-    results = []
-    seen_ids = set()
-    for entry in entries:
-        pid, method, score = _match_entry_to_corpus(entry, corpus)
-        if pid and pid not in seen_ids:
-            seen_ids.add(pid)
-            results.append({
-                "id":        pid,
-                "title":     corpus[pid].get("title", "")[:80],
-                "method":    method,
-                "score":     score,
-                "raw_entry": entry[:120],
-            })
-
-    # Sort: exact matches first, then by score
-    results.sort(key=lambda x: (0 if x["score"] == 100 else 1, -x["score"]))
-    return results
-
-def extract_paper_from_pdf(file_bytes: bytes, filename: str) -> tuple[dict, list[dict]]:
-    """
-    Full PDF processing pipeline.
-    Returns (paper_dict, matched_refs_list).
-    paper_dict["refs"] is already populated with auto-resolved IDs.
-    matched_refs_list contains detailed match info for display in the UI.
-    """
+def extract_paper_from_pdf(file_bytes: bytes, filename: str) -> dict:
     embedded = _pdf_embedded_meta(file_bytes)
     text     = _pdf_text(file_bytes)
     parsed   = _parse_meta_from_text(text, filename)
+    title    = embedded.get("title")   or parsed["title"]
+    authors  = embedded.get("authors") or parsed["authors"]
+    arxiv    = parsed.get("arxiv_id", "")
+    doi      = parsed.get("doi", "")
+    slug     = re.sub(r"[^\w]", "", title[:20].lower()) + str(parsed["year"])
+    return {"id": slug, "title": title, "authors": authors, "year": parsed["year"],
+            "venue": "Unknown", "category": "Incremental",
+            "url": f"https://arxiv.org/abs/{arxiv}" if arxiv else "",
+            "arxiv_id": arxiv, "doi": doi, "refs": [], "source": "pdf",
+            "_raw_text": text}
 
-    title   = embedded.get("title")   or parsed["title"]
-    authors = embedded.get("authors") or parsed["authors"]
-    arxiv   = parsed.get("arxiv_id", "")
-    doi     = parsed.get("doi", "")
-    slug    = re.sub(r"[^\w]", "", title[:20].lower()) + str(parsed["year"])
-
-    # Automatically resolve references
-    matched_refs = auto_resolve_refs_from_pdf(text)
-    ref_ids      = [m["id"] for m in matched_refs]
-
-    paper = {
-        "id":       slug,
-        "title":    title,
-        "authors":  authors,
-        "year":     parsed["year"],
-        "venue":    "Unknown",
-        "category": "Incremental",
-        "url":      f"https://arxiv.org/abs/{arxiv}" if arxiv else "",
-        "arxiv_id": arxiv,
-        "doi":      doi,
-        "refs":     ref_ids,   # ← automatically resolved
-        "source":   "pdf",
-    }
-    return paper, matched_refs
-
-# ══════════════════════════════════════════════════════════════════════════════
-#  STATS + EXPORTS
-# ══════════════════════════════════════════════════════════════════════════════
 def get_stats() -> dict:
     G     = _G()
     nodes = G.number_of_nodes()
@@ -473,7 +276,7 @@ def get_stats() -> dict:
     if nodes == 0:
         return {"nodes":0,"edges":0,"density":0,"components":0,
                 "avg_degree":0,"max_indegree":0,"baseline":0,"incremental":0}
-    baseline = sum(1 for p in st.session_state["articles"].values() if p.get("source")=="baseline")
+    baseline    = sum(1 for p in st.session_state["articles"].values() if p.get("source")=="baseline")
     return {"nodes": nodes, "edges": edges,
             "density":      round(nx.density(G), 5),
             "components":   nx.number_weakly_connected_components(G),
@@ -482,9 +285,9 @@ def get_stats() -> dict:
             "baseline":     baseline, "incremental": nodes - baseline}
 
 def export_papers_json() -> str:
-    return json.dumps([{k:v for k,v in p.items() if not k.startswith("_")}
-                       for p in st.session_state["articles"].values()],
-                      indent=2, ensure_ascii=False)
+    clean = [{k:v for k,v in p.items() if k != "_raw_text"}
+             for p in st.session_state["articles"].values()]
+    return json.dumps(clean, indent=2, ensure_ascii=False)
 
 def export_edges_json() -> str:
     return json.dumps([{"source":u,"target":v} for u,v in _G().edges()], indent=2)
