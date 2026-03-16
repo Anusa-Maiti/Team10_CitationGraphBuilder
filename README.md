@@ -81,10 +81,11 @@ citation-graph-builder/
 │   ├── __init__.py              # Makes src a Python package
 │   ├──data_collection.py        #Data extraction from web-sources
 │   ├── data                     # Input data storage modules
-    ├──raw
-    ├──metadata
-        ├──corpus.json
-        ├──           
+        ├──raw
+        ├──processed
+        ├──metadata
+            ├──corpus.json
+            ├──           
 │   │
 │   ├── resolution/              # Entity resolution and matching
 │   │   ├── __init__.py          # Package initializer
