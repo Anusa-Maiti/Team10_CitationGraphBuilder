@@ -11,6 +11,9 @@ This project builds a directed citation graph from research papers in human evol
 | Source | Access Method | Content Type | Rate Limits | Search Terms |
 |--------|---------------|--------------|-------------|--------------|
 | **PubMed Central (PMC)** | OAI-PMH API, FTP bulk download | Full-text PDFs, XML | 3 requests/second | "human evolution", "australopithecus", "neanderthal" |
+| **Europe PMC** | REST API | PDFs, metadata | None documented, be respectful | "hominin", "paleoanthropology" |
+| **arXiv (q-bio)** | API | Preprint PDFs | 1 request/3 seconds | "q-bio.PE", "population genetics" |
+| **BioRxiv** | API | Preprint PDFs | 2 requests/second | "paleontology", "evolutionary biology" |
 
 ### Secondary Collection: 
 All papers cited by these landmark papers, and all papers that cite them (forward/backward citation expansion)
