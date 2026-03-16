@@ -80,12 +80,8 @@ citation-graph-builder/
 ├── src/                         # Main source code directory
 │   ├── __init__.py              # Makes src a Python package
 │   │
-│   ├── acquisition/             # Data collection modules
-│   │   ├── __init__.py          # Package initializer
-│   │   ├── downloader.py        # Base abstract class for all downloaders
-│   │   ├── pmc_downloader.py    # PubMed Central-specific download implementation
-│   │   ├── arxiv_downloader.py  # arXiv.org API wrapper for paper download
-│   │   └── biorxiv_downloader.py # BioRxiv preprint server downloader
+│   ├── data_collection.py             # Data collection modules
+│   ├──data/corpus.json
 │   │
 │   ├── extraction/              # PDF parsing and metadata extraction
 │   │   ├── __init__.py          # Package initializer
