@@ -225,70 +225,8 @@ class HumanEvolutionCorpusBuilder:
             logger.error(f"❌ Error querying arXiv: {e}")
             return []
     
-    # ==================== STEP 3: QUERY OPENALEX API (FREE, NO KEY NEEDED) ====================
-    def query_openalex(self, query: str, max_results: int = 30) -> List[Dict]:
-        """
-        ACTUALLY QUERY the OpenAlex API (free, no key needed)
-        OpenAlex is a comprehensive catalog of scholarly papers
-        """
-        logger.info(f"🔍 Querying OpenAlex API for: '{query}'")
-        
-        base_url = "https://api.openalex.org/works"
-        params = {
-            'search': query,
-            'per-page': max_results,
-            'filter': 'open_access.is_oa:true',  # Only open access papers
-            'sort': 'publication_date:desc'
-        }
-        
-        self.rate_limit()
-        
-        try:
-            response = requests.get(base_url, params=params)
-            response.raise_for_status()
-            data = response.json()
-            
-            papers = []
-            for result in data.get('results', []):
-                # Extract authors
-                authors = []
-                for authorship in result.get('authorships', []):
-                    author = authorship.get('author', {}).get('display_name', '')
-                    if author:
-                        authors.append(author)
-                
-                # Get best available PDF URL
-                pdf_url = None
-                oa = result.get('open_access', {})
-                if oa.get('is_oa') and oa.get('oa_url'):
-                    pdf_url = oa['oa_url']
-                
-                paper = {
-                    'id': self.generate_paper_id(
-                        result.get('title', ''),
-                        ', '.join(authors),
-                        result.get('publication_year', '')
-                    ),
-                    'title': result.get('title', ''),
-                    'authors': authors,
-                    'year': str(result.get('publication_year', '')),
-                    'journal': result.get('host_venue', {}).get('display_name', ''),
-                    'doi': result.get('doi', '').replace('https://doi.org/', ''),
-                    'pdf_url': pdf_url,
-                    'source': 'OpenAlex',
-                    'abstract': result.get('abstract', ''),
-                    'date_added': datetime.now().isoformat()
-                }
-                papers.append(paper)
-            
-            logger.info(f"✅ Found {len(papers)} papers from OpenAlex")
-            return papers
-            
-        except Exception as e:
-            logger.error(f"❌ Error querying OpenAlex: {e}")
-            return []
-    
-    # ==================== STEP 4: DOWNLOAD PDF IF AVAILABLE ====================
+   
+    # ==================== STEP 3: DOWNLOAD PDF IF AVAILABLE ====================
     def download_pdf(self, metadata: Dict[str, Any]) -> bool:
         """Download PDF for a paper"""
         if not metadata.get('pdf_url'):
@@ -369,15 +307,6 @@ class HumanEvolutionCorpusBuilder:
                 if not self.is_duplicate(paper.get('doi'), paper.get('title')):
                     papers_found.append(paper)
             
-            # Try OpenAlex
-            openalex_papers = self.query_openalex(term, max_results=15)
-            for paper in openalex_papers:
-                if len(self.corpus) + len(papers_found) >= target_count:
-                    break
-                if not self.is_duplicate(paper.get('doi'), paper.get('title')):
-                    papers_found.append(paper)
-                    if paper.get('doi'):
-                        self.seen_dois.add(paper['doi'])
         
         # Add to corpus
         logger.info(f"\n{'='*60}")
