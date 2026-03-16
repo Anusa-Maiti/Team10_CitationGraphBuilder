@@ -179,11 +179,21 @@ pip install -r requirements.txt
 
 *2. Configure*
 cp config.yaml.example config.yaml
-### Edit config.yaml with your preferences
+### Edit config.yaml with our preferences
 
 *3. Run GROBID (if using)*
-docker run -d -p 8070:8070 grobid/grobid:0.8.0
-
+  ```
+    # Run CPU version (simplest)
+    docker run -d --name grobid -p 8070:8070 grobid/grobid:0.8.0
+    # Wait 30 seconds
+    echo "Waiting 30 seconds for GROBID to start..."
+    sleep 30
+    # Test it
+    curl http://localhost:8070/api/isalive
+    # Run script for metadata extraction
+    python data_collection.py --count 5
+    timeout: 30  # seconds
+```
 *4. Download papers*
 python scripts/download_corpus.py --domain "human_evolution" --max-papers 50
 
@@ -217,18 +227,6 @@ acquisition:
 extraction:
   method: "grobid"  # or "pdfplumber"
   grobid_url: "http://localhost:8070"
-  ```
-    # Run CPU version (simplest)
-    docker run -d --name grobid -p 8070:8070 grobid/grobid:0.8.0
-    # Wait 30 seconds
-    echo "Waiting 30 seconds for GROBID to start..."
-    sleep 30
-    # Test it
-    curl http://localhost:8070/api/isalive
-    # Run script for metadata extraction
-    python data_collection.py --count 5
-    timeout: 30  # seconds
-```
 
 matching:
   thresholds:
