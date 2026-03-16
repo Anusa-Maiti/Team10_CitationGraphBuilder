@@ -217,7 +217,18 @@ acquisition:
 extraction:
   method: "grobid"  # or "pdfplumber"
   grobid_url: "http://localhost:8070"
-  timeout: 30  # seconds
+  ```
+    # Run CPU version (simplest)
+    docker run -d --name grobid -p 8070:8070 grobid/grobid:0.8.0
+    # Wait 30 seconds
+    echo "Waiting 30 seconds for GROBID to start..."
+    sleep 30
+    # Test it
+    curl http://localhost:8070/api/isalive
+    # Run script for metadata extraction
+    python data_collection.py --count 5
+    timeout: 30  # seconds
+```
 
 matching:
   thresholds:
