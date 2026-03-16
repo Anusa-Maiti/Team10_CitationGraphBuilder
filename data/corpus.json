@@ -1,471 +1,555 @@
-{
-  "version": 3,
-  "saved_at": "2026-03-15T23:48:47",
-  "papers": [
-    {
-      "id": "vaswani2017",
-      "title": "Attention Is All You Need",
-      "authors": "Vaswani et al.",
-      "year": 2017,
-      "venue": "NeurIPS",
-      "category": "Core",
-      "url": "https://arxiv.org/abs/1706.03762",
-      "refs": [],
-      "source": "baseline",
-      "added_at": "2017-01-01"
-    },
-    {
-      "id": "devlin2018",
-      "title": "BERT: Pre-training of Deep Bidirectional Transformers",
-      "authors": "Devlin et al.",
-      "year": 2018,
-      "venue": "NAACL",
-      "category": "Core",
-      "url": "https://arxiv.org/abs/1810.04805",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2018-01-01"
-    },
-    {
-      "id": "radford2018",
-      "title": "Improving Language Understanding by Generative Pre-Training",
-      "authors": "Radford et al.",
-      "year": 2018,
-      "venue": "OpenAI",
-      "category": "Core",
-      "url": "https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2018-01-01"
-    },
-    {
-      "id": "radford2019",
-      "title": "Language Models are Unsupervised Multitask Learners",
-      "authors": "Radford et al.",
-      "year": 2019,
-      "venue": "OpenAI",
-      "category": "LLM",
-      "url": "https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf",
-      "refs": [
-        "radford2018",
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2019-01-01"
-    },
-    {
-      "id": "brown2020",
-      "title": "Language Models are Few-Shot Learners (GPT-3)",
-      "authors": "Brown et al.",
-      "year": 2020,
-      "venue": "NeurIPS",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2005.14165",
-      "refs": [
-        "radford2019",
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "liu2019",
-      "title": "RoBERTa: A Robustly Optimized BERT Pretraining Approach",
-      "authors": "Liu et al.",
-      "year": 2019,
-      "venue": "arXiv",
-      "category": "Core",
-      "url": "https://arxiv.org/abs/1907.11692",
-      "refs": [
-        "devlin2018"
-      ],
-      "source": "baseline",
-      "added_at": "2019-01-01"
-    },
-    {
-      "id": "raffel2019",
-      "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer (T5)",
-      "authors": "Raffel et al.",
-      "year": 2019,
-      "venue": "JMLR",
-      "category": "Core",
-      "url": "https://arxiv.org/abs/1910.10683",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2019-01-01"
-    },
-    {
-      "id": "lan2019",
-      "title": "ALBERT: A Lite BERT for Self-supervised Learning",
-      "authors": "Lan et al.",
-      "year": 2019,
-      "venue": "ICLR",
-      "category": "Efficient",
-      "url": "https://arxiv.org/abs/1909.11942",
-      "refs": [
-        "devlin2018"
-      ],
-      "source": "baseline",
-      "added_at": "2019-01-01"
-    },
-    {
-      "id": "sanh2019",
-      "title": "DistilBERT, a distilled version of BERT",
-      "authors": "Sanh et al.",
-      "year": 2019,
-      "venue": "arXiv",
-      "category": "Efficient",
-      "url": "https://arxiv.org/abs/1910.01108",
-      "refs": [
-        "devlin2018"
-      ],
-      "source": "baseline",
-      "added_at": "2019-01-01"
-    },
-    {
-      "id": "kitaev2020",
-      "title": "Reformer: The Efficient Transformer",
-      "authors": "Kitaev et al.",
-      "year": 2020,
-      "venue": "ICLR",
-      "category": "Efficient",
-      "url": "https://arxiv.org/abs/2001.04451",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "wang2020",
-      "title": "Linformer: Self-Attention with Linear Complexity",
-      "authors": "Wang et al.",
-      "year": 2020,
-      "venue": "arXiv",
-      "category": "Efficient",
-      "url": "https://arxiv.org/abs/2006.04768",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "beltagy2020",
-      "title": "Longformer: The Long-Document Transformer",
-      "authors": "Beltagy et al.",
-      "year": 2020,
-      "venue": "arXiv",
-      "category": "Efficient",
-      "url": "https://arxiv.org/abs/2004.05150",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "zaheer2020",
-      "title": "Big Bird: Transformers for Longer Sequences",
-      "authors": "Zaheer et al.",
-      "year": 2020,
-      "venue": "NeurIPS",
-      "category": "Efficient",
-      "url": "https://arxiv.org/abs/2007.14062",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "choromanski2020",
-      "title": "Rethinking Attention with Performers",
-      "authors": "Choromanski et al.",
-      "year": 2020,
-      "venue": "ICLR",
-      "category": "Efficient",
-      "url": "https://arxiv.org/abs/2009.14794",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "dosovitskiy2020",
-      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)",
-      "authors": "Dosovitskiy et al.",
-      "year": 2020,
-      "venue": "ICLR",
-      "category": "Vision",
-      "url": "https://arxiv.org/abs/2010.11929",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "touvron2020",
-      "title": "Training data-efficient image transformers & distillation through attention (DeiT)",
-      "authors": "Touvron et al.",
-      "year": 2020,
-      "venue": "ICML",
-      "category": "Vision",
-      "url": "https://arxiv.org/abs/2012.12877",
-      "refs": [
-        "dosovitskiy2020"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "liu2021",
-      "title": "Swin Transformer: Hierarchical Vision Transformer using Shifted Windows",
-      "authors": "Liu et al.",
-      "year": 2021,
-      "venue": "ICCV",
-      "category": "Vision",
-      "url": "https://arxiv.org/abs/2103.14030",
-      "refs": [
-        "dosovitskiy2020"
-      ],
-      "source": "baseline",
-      "added_at": "2021-01-01"
-    },
-    {
-      "id": "radford2021",
-      "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
-      "authors": "Radford et al.",
-      "year": 2021,
-      "venue": "ICML",
-      "category": "Vision",
-      "url": "https://arxiv.org/abs/2103.00020",
-      "refs": [
-        "dosovitskiy2020",
-        "radford2019"
-      ],
-      "source": "baseline",
-      "added_at": "2021-01-01"
-    },
-    {
-      "id": "carion2020",
-      "title": "End-to-End Object Detection with Transformers (DETR)",
-      "authors": "Carion et al.",
-      "year": 2020,
-      "venue": "ECCV",
-      "category": "Vision",
-      "url": "https://arxiv.org/abs/2005.12872",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2020-01-01"
-    },
-    {
-      "id": "ouyang2022",
-      "title": "Training language models to follow instructions with human feedback (InstructGPT)",
-      "authors": "Ouyang et al.",
-      "year": 2022,
-      "venue": "NeurIPS",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2203.02155",
-      "refs": [
-        "brown2020"
-      ],
-      "source": "baseline",
-      "added_at": "2022-01-01"
-    },
-    {
-      "id": "rae2021",
-      "title": "Scaling Language Models: Methods, Analysis & Insights from Training Gopher",
-      "authors": "Rae et al.",
-      "year": 2021,
-      "venue": "arXiv",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2112.11446",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2021-01-01"
-    },
-    {
-      "id": "hoffmann2022",
-      "title": "Training Compute-Optimal Large Language Models (Chinchilla)",
-      "authors": "Hoffmann et al.",
-      "year": 2022,
-      "venue": "NeurIPS",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2203.15556",
-      "refs": [
-        "rae2021"
-      ],
-      "source": "baseline",
-      "added_at": "2022-01-01"
-    },
-    {
-      "id": "chowdhery2022",
-      "title": "PaLM: Scaling Language Modeling with Pathways",
-      "authors": "Chowdhery et al.",
-      "year": 2022,
-      "venue": "arXiv",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2204.02311",
-      "refs": [
-        "vaswani2017"
-      ],
-      "source": "baseline",
-      "added_at": "2022-01-01"
-    },
-    {
-      "id": "touvron2023",
-      "title": "LLaMA: Open and Efficient Foundation Language Models",
-      "authors": "Touvron et al.",
-      "year": 2023,
-      "venue": "arXiv",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2302.13971",
-      "refs": [
-        "brown2020",
-        "hoffmann2022",
-        "chowdhery2022"
-      ],
-      "source": "baseline",
-      "added_at": "2023-01-01"
-    },
-    {
-      "id": "touvron2023b",
-      "title": "Llama 2: Open Foundation and Fine-Tuned Chat Models",
-      "authors": "Touvron et al.",
-      "year": 2023,
-      "venue": "arXiv",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2307.09288",
-      "refs": [
-        "touvron2023"
-      ],
-      "source": "baseline",
-      "added_at": "2023-01-01"
-    },
-    {
-      "id": "zhang2022",
-      "title": "OPT: Open Pre-trained Transformer Language Models",
-      "authors": "Zhang et al.",
-      "year": 2022,
-      "venue": "arXiv",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2205.01068",
-      "refs": [
-        "brown2020"
-      ],
-      "source": "baseline",
-      "added_at": "2022-01-01"
-    },
-    {
-      "id": "scao2022",
-      "title": "BLOOM: A 176B-Parameter Open-Access Multilingual Language Model",
-      "authors": "Scao et al.",
-      "year": 2022,
-      "venue": "arXiv",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2211.05100",
-      "refs": [
-        "brown2020"
-      ],
-      "source": "baseline",
-      "added_at": "2022-01-01"
-    },
-    {
-      "id": "jiang2023",
-      "title": "Mistral 7B",
-      "authors": "Jiang et al.",
-      "year": 2023,
-      "venue": "arXiv",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2310.06825",
-      "refs": [
-        "touvron2023"
-      ],
-      "source": "baseline",
-      "added_at": "2023-01-01"
-    },
-    {
-      "id": "bubeck2023",
-      "title": "Sparks of Artificial General Intelligence: Early experiments with GPT-4",
-      "authors": "Bubeck et al.",
-      "year": 2023,
-      "venue": "arXiv",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2303.12712",
-      "refs": [
-        "brown2020",
-        "ouyang2022"
-      ],
-      "source": "baseline",
-      "added_at": "2023-01-01"
-    },
-    {
-      "id": "wei2022",
-      "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
-      "authors": "Wei et al.",
-      "year": 2022,
-      "venue": "NeurIPS",
-      "category": "LLM",
-      "url": "https://arxiv.org/abs/2201.11903",
-      "refs": [
-        "brown2020",
-        "chowdhery2022"
-      ],
-      "source": "baseline",
-      "added_at": "2022-01-01"
-    },
-    {
-      "id": "earlyscienceaccele2025",
-      "title": "Early science acceleration experiments with GPT-5",
-      "authors": "Sébastien Bubeck; Christian Coester; Ronen Eldan; Timothy Gowers; Yin Tat Lee; Alexandru Lupsasca; Mehtaab Sawhney; Robert Scherrer; Mark Sellke; Brian K. Spears; Derya Unutmaz; Kevin Weil; Steven Yin; Nikita Zhivotovskiy",
-      "year": 2025,
-      "venue": "Unknown",
-      "category": "Incremental",
-      "url": "https://arxiv.org/abs/2510.19804",
-      "arxiv_id": "2510.19804",
-      "doi": "10.1103/PhysRevLett.132.065102",
-      "refs": [],
-      "source": "pdf",
-      "added_at": "2026-03-15T23:37:33"
-    },
-    {
-      "id": "12024",
-      "title": "1",
-      "authors": "Yihang Jiang, Xiaoyang Li, Guangxu Zhu, Hang Li, Jing Deng, Kaifeng Han, Chao Shen, Qingjiang Shi, and Rui",
-      "year": 2024,
-      "venue": "Unknown",
-      "category": "Incremental",
-      "url": "https://arxiv.org/abs/2306.02990",
-      "arxiv_id": "2306.02990",
-      "doi": "",
-      "refs": [],
-      "source": "pdf",
-      "added_at": "2026-03-15T23:43:22"
-    },
-    {
-      "id": "arXiv:2311.09047",
-      "title": "6G Non-Terrestrial Networks Enabled Low-Altitude Economy: Opportunities and Challenges",
-      "authors": "",
-      "year": 2023,
-      "venue": "",
-      "category": "Incremental",
-      "url": "https://doi.org/10.48550/arXiv.2311.09047",
-      "refs": [],
-      "source": "manual",
-      "added_at": "2026-03-15T23:48:47"
-    }
-  ]
-}
+[
+  {
+    "id": "75bb4bc1aa13",
+    "title": "Evolving a Field: Can Evolutionary Theory Provide What the Study of Human Evolution Requires?",
+    "authors": [
+      "Roseman CC",
+      "Auerbach BM."
+    ],
+    "year": "2025",
+    "journal": "",
+    "doi": "10.1002/ajpa.70127",
+    "pmcid": "PMC12842895",
+    "pmid": "41591900",
+    "source": "EuropePMC",
+    "abstract": "The extended evolutionary synthesis (EES) is a school of thought that maintains that genetic determination and natural selection are over-emphasized in the study of evolution at the expense of non-genetic inheritance and processes of evolution beyond selection. Its proponents call for the de-emphasis of genetics and the adoption of a broader model of inheritance that includes cultural and epigenetic transgenerational effects and strong adaptive phenotypic plasticity. Presenting itself as a radical alternative to what it claims is a rigid and ossified theoretical orthodoxy, the EES has lately gained considerable traction among scholars of human evolution, and a distinct sub-branch of the EES unique to the biological anthropological study of human evolution has emerged (the EES in human evolution). To date, however, no direct comparison between the EES in human evolution and other contemporary evolutionary approaches has been attempted to evaluate whether the EES in human evolution affords researchers an edge in articulating good questions and structuring research programs to answer them. After reviewing the landscape of evolutionary theory, we evaluate whether the EES in human evolution is capable of delivering the processually pluralistic vision of evolution it has long promised and whether it brings something that the decades-long ongoing synthesis (OS) of evolutionary theory since the modern synthesis does not. We then conduct a head-to-head comparison to evaluate the relative explanatory efficacy of the EES and our preferred OS theoretical framework on several issues of human morphological evolution. We demonstrate that evolutionary perspectives as drawn from the OS have a much more clarifying effect on the investigation of human evolution than their EES-based competitor. Far from being a radical extension of evolutionary thought, the EES in human evolution offers little more than another idiom in which to tell adaptationist stories and triumphalist narratives of the ascent of humanity. Theory from the OS opens up new horizons of possible investigation of human evolution in a uniquely processually pluralistic and rigorous framework.",
+    "date_added": "2026-03-16T12:37:20.822807",
+    "pdf_url": "https://europepmc.org/articles/PMC12842895/pdf"
+  },
+  {
+    "id": "baee49b49e56",
+    "title": "Dark skin and cancer suppression in humans—an evolutionary spandrel?",
+    "authors": [
+      ""
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "",
+    "pmcid": "PMC12849816",
+    "pmid": "",
+    "source": "EuropePMC",
+    "abstract": "",
+    "date_added": "2026-03-16T12:37:20.822860",
+    "pdf_url": "https://europepmc.org/articles/PMC12849816/pdf"
+  },
+  {
+    "id": "a5b4ee187ff0",
+    "title": "Publisher Correction: Palaeoanthropological evidence from China is changing the picture of hominin evolutionary history.",
+    "authors": [
+      "Yang SX",
+      "Martinón-Torres M",
+      "Petraglia M."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1038/s41559-026-03035-z",
+    "pmcid": "",
+    "pmid": "41781509",
+    "source": "EuropePMC",
+    "abstract": "",
+    "date_added": "2026-03-16T12:37:20.822882"
+  },
+  {
+    "id": "f651e66b21be",
+    "title": "Host-pathogen interactions shape human evolution and future pandemics.",
+    "authors": [
+      "Hagai T."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1038/s41576-025-00902-6",
+    "pmcid": "",
+    "pmid": "41057600",
+    "source": "EuropePMC",
+    "abstract": "",
+    "date_added": "2026-03-16T12:37:20.822893"
+  },
+  {
+    "id": "6b67f5641d8b",
+    "title": "Developmental roots of cortical bone distribution and mandibular robusticity in early hominins.",
+    "authors": [
+      "Gat A",
+      "Subsol G",
+      "Braga J."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1002/ar.70153",
+    "pmcid": "",
+    "pmid": "41649321",
+    "source": "EuropePMC",
+    "abstract": "Mandibular morphology in early hominins reflects both developmental processes and functional demands, yet the ontogenetic emergence of robust mandibular traits remains poorly understood. Here, we present cross-sectional analyses of cortical bone development during early mandibular ontogeny across Paranthropus robustus (N = 7), Paranthropus boisei (N = 1), Australopithecus africanus (N = 1), early Pleistocene Homo erectus (N = 1) and Homo habilis (N = 1), Pan troglodytes (N = 29), Pan paniscus (N = 34), and Homo sapiens (N = 24). We examined the cortical thickness and the structural properties at two key regions of the mandible-the symphysis and the corpus between the deciduous molars. We find that cortical bone thickness displays strong positive allometry with mandibular height across all taxa, with relative cortical thickness increasing significantly during early ontogeny. This pattern reflects normal ontogenetic bone growth, potentially reinforced by rising masticatory demands. In P. robustus, disproportionate cortical thickening and elevated resistance to bending-measured by the second moments of area-emerge early and become more pronounced throughout development. In contrast, the early Pleistocene Homo shows cortical thickening and second moments of area comparable to those of H. sapiens, even though H. habilis shares external morphological features with Paranthropus. Across all taxa, the mandibular robusticity index decreases during early ontogeny, reflecting proportionally greater increases in corpus height. However, this measure does not differentiate groups in infants and slightly older juveniles, whereas second moments of area reveal taxon-specific developmental patterns. These results highlight the value of second moments of area and, to a lesser extent, cortical thickening and robusticity index, for understanding ontogenetic and functional divergence among early hominins. They further suggest that robust morphology of Paranthropus stems from a distinct developmental trajectory established early in life.",
+    "date_added": "2026-03-16T12:37:20.822905"
+  },
+  {
+    "id": "1d8107eb034b",
+    "title": "Childhood First: Prolonged Development Before Big Brains in Human Evolution",
+    "authors": [
+      "Grossmann T."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.31234/osf.io/58v9b_v1",
+    "pmcid": "",
+    "pmid": "",
+    "source": "EuropePMC",
+    "abstract": "<p>The prevailing account of human life-history evolution holds that selection for larger brains drove the prolongation of childhood: because neural tissue is metabolically costly, encephalization necessarily slowed developmental pace. Recent fossil evidence calls this causal sequence into question. Across multiple hominin lineages spanning over three million years (including Australopithecus afarensis, early Homo at Dmanisi, and Homo naledi), prolonged developmental timing appears in species with chimpanzee-sized brains. Moreover, Neanderthals exhibited faster dental development than Homo sapiens despite comparable or larger brain volumes, and the prolongation of childhood in our lineage, including a distinctive phase of postnatal brain globularization, continued after maximum brain size had been attained. Together, these patterns indicate that brain size and developmental pace are decoupled and that the extension of human childhood was not a passive consequence of encephalization. I propose the Childhood-First Hypothesis, which reverses the conventional causal arrow: the emergence of a cooperative childcare niche, in which allomaternal provisioning and early weaning extended juvenile dependency, may have preceded and facilitated brain expansion rather than resulting from it. Drawing on fossil geochemistry, comparative primatology, computational modeling, and developmental neuroscience, I argue that the evolutionary foundations of human cognition were social before they were neural. If this cooperative childcare niche (a self-reinforcing caregiving ecology, continuously reconstructed across generations) created the conditions under which encephalization became viable, then current theoretical frameworks may overstate the causal primacy of brain size and understate the role of social organization in shaping human developmental trajectories.</p>",
+    "date_added": "2026-03-16T12:37:20.822913"
+  },
+  {
+    "id": "f401ac114561",
+    "title": "Biobanks reveal genetic complexity in human evolution.",
+    "authors": [
+      ""
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1038/d41586-025-04079-0",
+    "pmcid": "",
+    "pmid": "41407960",
+    "source": "EuropePMC",
+    "abstract": "",
+    "date_added": "2026-03-16T12:37:20.822922"
+  },
+  {
+    "id": "f2b09d56db02",
+    "title": "The evolution of sex differences in competitive and social dream content.",
+    "authors": [
+      "Grant Z",
+      "Mir A",
+      "Perogamvros L",
+      "Sterpenich V",
+      "Abbas N",
+      "Samson DR."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1016/j.yhbeh.2026.105916",
+    "pmcid": "",
+    "pmid": "41807893",
+    "source": "EuropePMC",
+    "abstract": "Why do we dream? Evolutionary theories suggest that dreams may confer a fitness advantage by simulating real-world challenges. Simulation-based models suggest that dreams serve adaptive functions, including resolving emotional stress and enhancing readiness for waking encounters. From this perspective, evidence of evolutionary pressures reflected in dream content would support the view that dreaming could serve an evolutionary purpose. We explore whether sex differences in evolved behavioral and cognitive strategies shaped by distinct evolutionary pressures are expressed in dream content. We hypothesized that biological sex influences dream content; specifically, that females would report more dreams featuring social and emotional themes, while males would more frequently report dreams involving competition-related content (e.g., risk, reward, and threat), reflecting sex-differentiated ancestral challenges. With a sample of 298 participants logging 4641 dreams, we evaluated dream content across six thematic domains: Emotional Valence, Positive Emotional Content, Negative Emotional Content, Social Content, Competition-based Content, and Resource Acquisition-based Content. Using a mixed-effects model, we discovered that males were significantly more likely to report dreams involving competitive content, while females showed a higher propensity for social dream content. No other themes, including the domains of emotional content, yielded significant results. While these patterns are consistent with possible adaptive functions of dreaming, they may also reflect hormonal influences, socio-cultural factors, personality differences, or other non-evolutionary contributors. Our results extend existing literature on sex differences in dream content using text-based scoring methods, offering a nuanced perspective on how dreams may relate to both biological and social influences.",
+    "date_added": "2026-03-16T12:37:20.822931"
+  },
+  {
+    "id": "c942b50ac38b",
+    "title": "Palaeoanthropological evidence from China is changing the picture of hominin evolutionary history.",
+    "authors": [
+      "Yang SX",
+      "Martinón-Torres M",
+      "Petraglia M."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1038/s41559-026-02983-w",
+    "pmcid": "",
+    "pmid": "41735528",
+    "source": "EuropePMC",
+    "abstract": "Recent palaeoanthropological discoveries in China indicate that eastern Asia had an important role in the evolutionary history of the genus Homo over the past 2 million years. New taxonomic proposals have been made to re-group archaic human fossils, including those considered to be Denisovans, as Homo juluensis and Homo longi. The hypothesis that the affinities of Yunxian 2, dated to about 1 million years ago, also infer an early divergence of the Homo sapiens lineage further underscores China's pivotal role in global evolutionary narratives. Here we explore key biological and cultural evidence emerging from the Chinese record and its evolutionary implications, raising questions about the relationships between 'transitional' clades and their differing adaptive capabilities. Rather than an evolutionary cul-de-sac, China now appears as a dynamic evolutionary crossroad where multiple Homo lineages may have arisen, interacted and adapted to shifting environments. The growing fossil and genetic evidence point to a diversity of populations whose demographic history and gene flow exchange helped to shape the broader mosaic of our species.",
+    "date_added": "2026-03-16T12:37:20.822942"
+  },
+  {
+    "id": "3b2a02e93b1d",
+    "title": "Thematic Analysis of Informal Case Management Skill Building Necessary to Navigate the Homeless Services System.",
+    "authors": [
+      "Southee R",
+      "Jorgenson J",
+      "SturtzSreetharan C."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1097/ncm.0000000000000853",
+    "pmcid": "",
+    "pmid": "41564260",
+    "source": "EuropePMC",
+    "abstract": "",
+    "date_added": "2026-03-16T12:37:20.822953"
+  },
+  {
+    "id": "fb7183c9dfb2",
+    "title": "Human Evolution in Backwaters, Satellites, and Republics: How Political Change Impacts Paleoanthropology in a Shifting Landscape of Winners and Losers.",
+    "authors": [
+      "Glantz M",
+      "Radovčić D."
+    ],
+    "year": "2025",
+    "journal": "",
+    "doi": "10.1002/ajpa.70181",
+    "pmcid": "PMC12745055",
+    "pmid": "41456935",
+    "source": "EuropePMC",
+    "abstract": "<h4>Objectives</h4>Paleoanthropology has been slow to adopt postcolonial frameworks to assess the validity of interpretations of human origins. This blind spot is made worse when we consider that postcolonial critique is often inappropriate for post-communist spaces. Here we explore the impact of post-communism and the dominant perspectives of Euro-American anthropology on human evolution studies in two places, Croatia and Central Asia.<h4>Materials and methods</h4>We present a few fine-grained examples from our own areas of study to examine how the colonial mission and emerging neocolonial relationships have privileged datasets and theoretical perspectives emanating from scholars who study specific places, like Africa, Western Europe, and the Levant, while marginalizing those interested in other geographies.<h4>Results</h4>Imperial Russia, the rise of the Soviet Union, and its fall affected the academy in the former Soviet republics of Central Asia differently than that of the Habsburg Monarchy, Yugoslavia, and the Republic of Croatia. Eurocentrism remains the primary lens through which paleoanthropology is refracted. The dominance of this perspective dictates which regional records are deemed marginal by characterizing them first as discontinuous and then as backwaters, edges, or outposts.<h4>Discussion</h4>We argue that geopolitical hegemonies support certain topical and methodological foci in science and, in this regard, genetics is ascendant. How do scientists from Croatia and Central Asia (or those who study these regions) negotiate relationships with the new superpower and still maintain their independence and the particular characteristics of their paleoanthropological records? Whose evolution are we attempting to explain?",
+    "date_added": "2026-03-16T12:37:20.822969",
+    "pdf_url": "https://europepmc.org/articles/PMC12745055/pdf"
+  },
+  {
+    "id": "8160c2a1677a",
+    "title": "Papuan admixture predated the settlement of Palau.",
+    "authors": [
+      "Liu YC",
+      "Eakin J",
+      "Liston J",
+      "Hunter-Anderson R",
+      "Emesiochel C",
+      "Soaladaob K",
+      "Ngirmang SO",
+      "Cheronet O",
+      "Hadden CS",
+      "Cherkinsky A",
+      "Spriggs M",
+      "Prufer KM",
+      "Mallick S",
+      "Rohland N",
+      "Pinhasi R",
+      "Reich D."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1016/j.cell.2026.02.011",
+    "pmcid": "",
+    "pmid": "41812661",
+    "source": "EuropePMC",
+    "abstract": "The first people reached Remote Oceania 3,000 years before present (BP), arriving roughly simultaneously in the southwest Pacific, the Marianas Archipelago, and Palau. However, no genome-wide ancient DNA data have been available from Palau, a gap we address by reporting 21 individuals from four archaeological sites dating between 2,900 and 500 BP. All had approximately 60% ancestry related to East Asians and 40% to Papuans, similar to present-day Palauans, the longest stretch of population continuity anywhere in Remote Oceania. The lengths of contiguous Papuan ancestry segments in the oldest individuals show that major admixture between Papuans and East Asians in the ancestors of all sampled Palauans began prior to first settlement. This differs from the pattern in the southwest Pacific, where sampled individuals of the Lapita archaeological culture from three different islands had almost entirely East Asian ancestry, with large amounts of Papuan admixture observed only hundreds of years later.",
+    "date_added": "2026-03-16T12:37:20.822981"
+  },
+  {
+    "id": "0e685440f60d",
+    "title": "Social dimensions of Managed Aquifer Recharge: A scoping review.",
+    "authors": [
+      "Castro-Diaz L",
+      "du Bray MV",
+      "Beresford M",
+      "Jacob C",
+      "Jankovic-Rankovic J",
+      "Hallemeier J",
+      "Harris A",
+      "Low G",
+      "Siegel D",
+      "Sabo J",
+      "Wutich A."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1016/j.jenvman.2026.129129",
+    "pmcid": "",
+    "pmid": "41762504",
+    "source": "EuropePMC",
+    "abstract": "Climate change is intensifying hydrologic extremes, prompting interest in nature-based solutions. Managed Aquifer Recharge (MAR) can reduce flood risk, bolster water security, and restore groundwater-dependent ecosystems. Yet MAR outcomes hinge not only on hydrogeology and engineering, but also on the social dimensions of MAR projects: policies, institutions, and community practices. Most of the existing academic literature on MAR has prioritized physical, economic, and design sciences, often overshadowing the importance of social sciences. To clarify what is known (and what remains overlooked) about these social dimensions, we conduct a scoping review of 83 publications. We identify five cross-cutting themes in social research on MAR: (1) social acceptability and public perceptions; (2) ecosystem services and environmental aspects as socially valued benefits and trade-offs; (3) human health considerations, including risk communication; (4) policy, legal, and governance frameworks; and (5) participation and co-management processes. By evaluating existing literature, we provide a consolidated conceptual landscape of social dimensions in MAR and a research agenda highlighting critical gaps, especially on equity and justice, livelihoods, and participatory approaches. Taken together, this scoping review provides an evidentiary map to guide more systematic, comparative, and context-sensitive research on MAR's role in climate resilience.",
+    "date_added": "2026-03-16T12:37:20.822990"
+  },
+  {
+    "id": "54f437662252",
+    "title": "How economic exchange can favour human genetic diversity.",
+    "authors": [
+      "Perret C",
+      "Santos Pinto L",
+      "Lehmann L."
+    ],
+    "year": "2025",
+    "journal": "",
+    "doi": "10.1098/rspb.2025.1711",
+    "pmcid": "",
+    "pmid": "41290168",
+    "source": "EuropePMC",
+    "abstract": "By allowing individuals to use goods they do not produce, economic exchange is recognized as driving the wide diversity of economic activities seen in human societies. Since productivity also depends on innate abilities, we ask whether economic exchange could have influenced human evolution and promoted adaptive genetic diversity. We model a system where individuals produce and exchange goods under a Walrasian equilibrium, with abilities determined by an evolving quantitative genetic trait. We then analyse how exchange shapes the evolutionary pressures on this trait. Our analysis demonstrates that exchange consistently promotes negative frequency-dependent selection, which favours the maintenance of genetic diversity. Exchange also generates stable long-term adaptive polymorphism when the production of goods requires different abilities. Importantly, we establish that the mode of exchange matters: markets, where individuals can switch trading partners, promote genetic diversity under broader conditions than when exchange occurs in isolated pairs. Finally, we show that genetic diversity and economic specialization can facilitate the emergence of the other under a wider range of conditions. Our findings suggest that economic exchanges play a crucial role in fostering biological diversity and offer insights into how a culturally determined mode of organization may have shaped human evolution.",
+    "date_added": "2026-03-16T12:37:20.822998"
+  },
+  {
+    "id": "d40f8ef46360",
+    "title": "Evidence for the earliest hominin use of wooden handheld tools found at Marathousa 1 (Greece).",
+    "authors": [
+      "Milks A",
+      "Ntinou M",
+      "Koutalis S",
+      "Michailidis D",
+      "Konidaris GE",
+      "Giusti D",
+      "Thompson N",
+      "Tsartsidou G",
+      "Panagopoulou E",
+      "Tourloukis V",
+      "Karkanas P",
+      "Harvati K."
+    ],
+    "year": "2026",
+    "journal": "",
+    "doi": "10.1073/pnas.2515479123",
+    "pmcid": "",
+    "pmid": "41587331",
+    "source": "EuropePMC",
+    "abstract": "The Middle Pleistocene (MP; ca. 774 to 129 ka) marks a critical period of human evolution, characterized by increasing behavioral complexity and the first unambiguous evidence of plant-based technologies. Despite this, direct evidence for early wooden tool use remains exceptionally rare. Here, we present the earliest handheld wooden tools, identified from secure contexts at the site of Marathousa 1, Greece, dated to ca. 430 ka (MIS12). Through a systematic morphological, microscopic, taphonomic, and taxonomic analysis of the sampled wood macroremains, two specimens were securely identified as modified by hominins: one small alder (<i>Alnus</i> sp.) trunk fragment bears clear working and use-wear traces consistent with a multifunctional stick likely used in digging at the paleolakeshore; and one very small willow/poplar (<i>Salix</i> sp./<i>Populus</i> sp.) artifact exhibits signs of shaping and potential use-wear. A third specimen, a large alder trunk segment, shows deep, nonanthropogenic striations interpreted here as claw marks from a large carnivoran. The wooden tools were excavated together with butchered elephant remains, small lithic artifacts and debitage, and worked bone, underscoring the diversity of engagement with a variety of different raw materials for technological purposes at Marathousa 1. These finds extend the temporal range of early wooden tools. They represent both the use of expedient larger handheld tools as well as a much smaller, likely finger-held wooden tool, which is uniquely small for the Pleistocene, expanding known functional purposes of early wood technologies. Moreover, they highlight the Megalopolis Basin's exceptional preservation conditions and its role in understanding the evolution of hominin behavior.",
+    "date_added": "2026-03-16T12:37:20.823017"
+  },
+  {
+    "id": "0821ca5c7693",
+    "title": "Genome wide signals of pervasive positive selection in human evolution",
+    "authors": [
+      "David Enard",
+      "Philipp W. Messer",
+      "Dmitri Petrov"
+    ],
+    "year": "2013",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "1308.4951v1",
+    "pdf_url": "https://arxiv.org/pdf/1308.4951v1",
+    "source": "arXiv",
+    "abstract": "The role of positive selection in human evolution remains controversial. On the one hand, scans for positive selection have identified hundreds of candidate loci and the genome-wide patterns of polymorphism show signatures consistent with frequent positive selection. On the other hand, recent studies have argued that many of the candidate loci are false positives and that most apparent genome-wide signatures of adaptation are in fact due to reduction of neutral diversity by linked recurrent deleterious mutations, known as background selection. Here we analyze human polymorphism data from the 1,000 Genomes project (Abecasis et al. 2012) and detect signatures of pervasive positive selection once we correct for the effects of background selection. We show that levels of neutral polymorphism are lower near amino acid substitutions, with the strongest reduction observed specifically near functionally consequential amino acid substitutions. Furthermore, amino acid substitutions are associated with signatures of recent adaptation that should not be generated by background selection, such as the presence of unusually long and frequent haplotypes and specific distortions in the site frequency spectrum. We use forward simulations to show that the observed signatures require a high rate of strongly adaptive substitutions in the vicinity of the amino acid changes. We further demonstrate that the observed signatures of positive selection correlate more strongly with the presence of regulatory sequences, as predicted by ENCODE (Gerstein et al. 2012), than the positions of amino acid substitutions. Our results establish that adaptation was frequent in human evolution and provide support for the hypothesis of King and Wilson (King and Wilson 1975) that adaptive divergence is primarily driven by regulatory changes.",
+    "date_added": "2026-03-16T12:37:21.922877",
+    "local_pdf": "data/raw/0821ca5c7693.pdf"
+  },
+  {
+    "id": "68e0256aed64",
+    "title": "On the Possibility of an Astronomical Perspective in the Study of Human Evolution",
+    "authors": [
+      "E. Antonello"
+    ],
+    "year": "2013",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "1312.1561v1",
+    "pdf_url": "https://arxiv.org/pdf/1312.1561v1",
+    "source": "arXiv",
+    "abstract": "The Sapient Paradox is the apparently unexplainable time delay of several ten thousand years following the arrival of Homo sapiens in Asia and Europe and before the introduction of impressive innovations with the agricultural revolution. Renfrew (2007) has suggested that the solution of the paradox has to do with changes in modes of thought that occurred with sedentism. According to Renfrew, this is a subject of study for cognitive archaeology where the final goal would be to understand the formation of the human mind. Several scholars, however, affirm that climatic change was crucial to such a revolution as it would have been very difficult to develop agriculture during the Palaeolithic. In other words, sedentism was not justified during the ice age, and that may be the solution to the paradox. It is widely accepted that climate variations were due to so-called orbital forcing, the slow periodic changes of orbital parameters of the Earth (known also as the Milankovitch theory). These and other astronomical effects on the climate are discussed along with the consequent impact on human evolution. The question then rises as to whether or not it is possible to adopt an astronomical perspective instead of (or complementary to) the cognitive archaeological one. Such would be possible by adopting a different point of reference (that is, from outside), and a non-anthropocentric approach.",
+    "date_added": "2026-03-16T12:37:21.923196",
+    "local_pdf": "data/raw/68e0256aed64.pdf"
+  },
+  {
+    "id": "da6c8155c2c6",
+    "title": "Selection for smaller brains in Holocene human evolution",
+    "authors": [
+      "John Hawks"
+    ],
+    "year": "2011",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "1102.5604v1",
+    "pdf_url": "https://arxiv.org/pdf/1102.5604v1",
+    "source": "arXiv",
+    "abstract": "Background: Human populations during the last 10,000 years have undergone rapid decreases in average brain size as measured by endocranial volume or as estimated from linear measurements of the cranium. A null hypothesis to explain the evolution of brain size is that reductions result from genetic correlation of brain size with body mass or stature.   Results: The absolute change of endocranial volume in the study samples was significantly greater than would be predicted from observed changes in body mass or stature.   Conclusions: The evolution of smaller brains in many recent human populations must have resulted from selection upon brain size itself or on other features more highly correlated with brain size than are gross body dimensions. This selection may have resulted from energetic or nutritional demands in Holocene populations, or to life history constraints on brain development.",
+    "date_added": "2026-03-16T12:37:21.923388",
+    "local_pdf": "data/raw/da6c8155c2c6.pdf"
+  },
+  {
+    "id": "6b54b28f0dd6",
+    "title": "On the importance of being structured: instantaneous coalescence rates and a re-evaluation of human evolution",
+    "authors": [
+      "Olivier Mazet",
+      "Willy Rodríguez",
+      "Simona Grusea",
+      "Simon Boitard",
+      "Lounès Chikhi"
+    ],
+    "year": "2015",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "1511.02778v1",
+    "pdf_url": "https://arxiv.org/pdf/1511.02778v1",
+    "source": "arXiv",
+    "abstract": "Most species are structured and influenced by processes that either increased or reduced gene flow between populations. However, most population genetic inference methods ignore population structure and reconstruct a history characterized by population size changes under the assumption that species behave as panmictic units. This is potentially problematic since population structure can generate spurious signals of population size change. Moreover, when the model assumed for demographic inference is misspecified, genomic data will likely increase the precision of misleading if not meaningless parameters. In a context of model uncertainty (panmixia \\textit{versus} structure) genomic data may thus not necessarily lead to improved statistical inference.   We consider two haploid genomes and develop a theory which explains why any demographic model (with or without population size changes) will necessarily be interpreted as a series of changes in population size by inference methods ignoring structure. We introduce a new parameter, the IICR (inverse instantaneous coalescence rate), and show that it is equivalent to a population size only in panmictic models, and mostly misleading for structured models. We argue that this general issue affects all population genetics methods ignoring population structure. We take the PSMC method as an example and show that it infers population size changes that never took place. We apply our approach to human genomic data and find a reduction in gene flow at the start of the Pleistocene, a major increase throughout the Middle-Pleistocene, and an abrupt disconnection preceding the emergence of modern humans.",
+    "date_added": "2026-03-16T12:37:21.923519",
+    "local_pdf": "data/raw/6b54b28f0dd6.pdf"
+  },
+  {
+    "id": "cc050e5d17f4",
+    "title": "Environmental Disorder Regulation of Invasion and Genetic Loss",
+    "authors": [
+      "Youness Azimzade",
+      "Mahdi Sasar",
+      "Víctor M. Pérez García"
+    ],
+    "year": "2019",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "1908.02532v1",
+    "pdf_url": "https://arxiv.org/pdf/1908.02532v1",
+    "source": "arXiv",
+    "abstract": "Many physical and natural systems, including the population of species, evolve in habitats with spatial stochastic variations of the individuals' motility. We study here the effect of those fluctuations on invasion and genetic loss. A Langevin equation for the \\textit{position} and \\textit{border} of the invasion front is obtained. A striking result is that small/large fluctuations of diffusivity suppress/intensify genetic loss. Our findings reveal the potential role of environmental fluctuations as a regulating factor for genetic loss and provide a simple explanation for the regional differences in the intensity of genetic drift observed during the final stages of human evolution and in tumor mutational landscapes.",
+    "date_added": "2026-03-16T12:37:21.923637",
+    "local_pdf": "data/raw/cc050e5d17f4.pdf"
+  },
+  {
+    "id": "0e0bd620256e",
+    "title": "Functional morphology, stable isotopes, and human evolution: a model of consilience",
+    "authors": [
+      "Justin D. Yeakel",
+      "Nathaniel J. Dominy",
+      "Paul L. Koch",
+      "Marc Mangel"
+    ],
+    "year": "2012",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "1211.4933v3",
+    "pdf_url": "https://arxiv.org/pdf/1211.4933v3",
+    "source": "arXiv",
+    "abstract": "Foraging is constrained by the energy within resources and the mechanics of acquisition and assimilation. Thick molar enamel, a character trait differentiating hominins from African apes, is predicted to mitigate the mechanical costs of chewing obdurate foods. The classic expression of hyperthick enamel together with relatively massive molars, termed megadontia, is most evident in {\\it Paranthropus}, a lineage of hominins that lived ca. 2.7 to 1.2 million years ago. Among contemporary primates, thicker molar enamel corresponds with the consumption of stiffer, deformation-resistant foods, possibly because thicker enamel can better resist cracking under high compressive loads. Accordingly, plant underground storage organs (USOs) are thought to be a central food resource for hominins such as {\\it Paranthropus} due to their abundance, isotopic composition, and mechanical properties. Here, we present a process-based model to investigate foraging constraints as a function of energetic demands and enamel wear among human ancestors. Our framework allows us to determine the fitness benefits of megadontia, and to explore under what conditions stiff foods such as USOs are predicted to be chosen as fallback, rather than preferred, resources. Our model predictions bring consilience to the noted disparity between functional interpretations of megadontia and microwear evidence, particularly with respect to {\\it Paranthropus boisei}.",
+    "date_added": "2026-03-16T12:37:21.923737",
+    "local_pdf": "data/raw/0e0bd620256e.pdf"
+  },
+  {
+    "id": "796ff66b66ed",
+    "title": "The Neolithic Transition in Europe at 50 Years",
+    "authors": [
+      "Albert Ammerman"
+    ],
+    "year": "2020",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "2012.11713v2",
+    "pdf_url": "https://arxiv.org/pdf/2012.11713v2",
+    "source": "arXiv",
+    "abstract": "One of the last chapters in the long course of human evolution was the shift from hunting and gathering to the production of food or strategies of subsistence based on farming and the herding of animals. In Southwest Asia, the first steps towards the origins of agriculture began some 12,000 years ago and then spread over most regions of Europe during the span of time from about 10,400 years ago (the start of the so-called PPNB on the island of Cyprus) through around 6,000 years ago. The aim of this chapter is to provide an overview on the research that we have done on the question of the Neolithic transition in Europe, which began when Luca CavalliSforza, a leading figure in the field of human population genetics, and I began to work in collaboration at the University of Pavia in November of 1970. This draft forms the basis of my paper as part of the Festschrift prepared for the 45th anniversary of Ryszard Grygiel and Peter Bogucki's scientific cooperation.",
+    "date_added": "2026-03-16T12:37:21.923826",
+    "local_pdf": "data/raw/796ff66b66ed.pdf"
+  },
+  {
+    "id": "325816875cd9",
+    "title": "Sustainability, behavior patterns and crises",
+    "authors": [
+      "R. Vilela Mendes"
+    ],
+    "year": "2025",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "2507.00892v1",
+    "pdf_url": "https://arxiv.org/pdf/2507.00892v1",
+    "source": "arXiv",
+    "abstract": "Sustainability has been defined as meeting the needs of the present without compromising the ability of future generations to meet their own needs. But what are the needs of the present? And are they met? From the poor performance of the 2030 Sustainable Development Goals (SDG), defined by the UN in 2015, not even the collective needs of the present seem to be met. How to expect not to compromise the needs of the future? Is the achievement of global world goals incompatible with the characteristic processes of human evolution, as some authors have recently suggested? Simple mathematical models cannot capture the whole breadth of human experience and destiny. But, on the other hand, one should not neglect whatever insights they may provide. And what these models teach us is how the behavior pattern \"Parochial cooperation - Conflict - Growth\" was reached and how this pattern, in addition to leading to several types of crises, is also on the way of the global governance needed to achieve the SDG's",
+    "date_added": "2026-03-16T12:37:21.923906",
+    "local_pdf": "data/raw/325816875cd9.pdf"
+  },
+  {
+    "id": "f7346fa4d526",
+    "title": "Paul Alsberg (1883-1965) et le transfert adaptatif du biologique au technique : un précurseur de la \"cultural niche construction\" ?",
+    "authors": [
+      "Gérald Fournier"
+    ],
+    "year": "2008",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "0812.1864v1",
+    "pdf_url": "https://arxiv.org/pdf/0812.1864v1",
+    "source": "arXiv",
+    "abstract": "We propose, in this paper, both a presentation and a discussion of Paul Alsberg's thesis on the supposed specificity principle of human evolution. The author maintains a difference of nature between Man and Animal relying on an opposition between \"body-adaptation\" - that of the Animal - and \"extrabodily-adaptation\" - that of Man in which the means of adaptation are switched outside of the organisms by tool-using. This difference is not a mere difference of state, but of evolutionary dynamics. Here, Man is not simply \"Homo faber\", as in Bergson's view, but produced and made possible by technique; a technique which then appears as an hominisation factor. Thus, his \"principle of body-liberation\" by tool-using is to be retrospectively understood as a part of the logics of the modification of selection pressure logics, which reminds us the seminal contemporary niche construction theory (F. John Odling-Smee). It seems therefore possible to make Paul Alsberg, from his 1922 work, one of the most important precursors of the cultural niche construction theory.",
+    "date_added": "2026-03-16T12:37:21.923986",
+    "local_pdf": "data/raw/f7346fa4d526.pdf"
+  },
+  {
+    "id": "aca432c72dd7",
+    "title": "Distilling the Essence of an Evolutionary Process and Implications for a Formal Description of Culture",
+    "authors": [
+      "Liane Gabora",
+      "Diederik Aerts"
+    ],
+    "year": "2013",
+    "journal": "arXiv",
+    "doi": "",
+    "arxiv_id": "1309.4712v3",
+    "pdf_url": "https://arxiv.org/pdf/1309.4712v3",
+    "source": "arXiv",
+    "abstract": "It has been proposed that, since the origin of life and the ensuing evolution of biological species, a second evolutionary process has appeared on our planet. It is the evolution of culture-e.g., ideas, beliefs, and artifacts. Does culture evolve in the same genuine sense as biological life? And if so, does it evolve through natural selection, or by some other means? Why does no other species remotely approach the degree of cultural complexity of humans? These questions lie at the foundation of who we are and what makes our lives meaningful. Although much research has been done on how selective pressures operating at the biological level affect cognition and culture, little research has focused on culture as an evolutionary process in its own right. Like biological forms, cultural forms-ideas, attitudes, artifacts, mannerisms, etc.-incrementally adapt to the constraints and affordances of their environment through descent with modification. In some respects culture appears to be Darwinian, i.e., a process of differential replication and selection amongst randomly generated variants. This suggests that knowledge of biological evolution can be put to use to gain insight into culture. However, attempts to apply Darwinian theory to culture have not yielded the kind of unifying framework for the social sciences that it provided for the biological sciences, largely because of the nonrandom manner in which the mind-the hub of cultural change-generates and assimilates novelty. This paper investigates how and when humans became capable of supporting culture, and what previously held it back, focusing on how we attained the creative powers we now possess. To invent in the strategic, intuitive manner characteristic of humans requires a cognitive architecture that supports the capacity to spontaneously adapt concepts to new circumstances and merge them together to conceptualize new situations.",
+    "date_added": "2026-03-16T12:37:21.924087",
+    "local_pdf": "data/raw/aca432c72dd7.pdf"
+  },
+  {
+    "id": "479ea021017d",
+    "title": "Meaning-making behavior in a small-brained hominin, &lt;i&gt;Homo naledi&lt;/i&gt;, from the late Pleistocene: contexts and evolutionary implications.",
+    "authors": [
+      "Fuentes A",
+      "Kissel M",
+      "Spikins P",
+      "Molopyane K",
+      "Hawks J",
+      "Berger LR."
+    ],
+    "year": "2025",
+    "journal": "",
+    "doi": "10.7554/elife.89125",
+    "pmcid": "PMC12410969",
+    "pmid": "40905960",
+    "source": "EuropePMC",
+    "abstract": "Explorations in the Dinaledi Subsystem of the Rising Star cave system have yielded some of the earliest evidence of a mortuary practice in hominins. Because the evidence is attributable to the small-brained <i>Homo naledi</i>, these analyses call into question several assumptions about behavioral and cognitive evolution in Pleistocene hominins. The evidence from the Dinaledi Subsystem, and at other locations across the Rising Star cave system may widen the phylogenetic breadth of mortuary, and possibly funerary, behaviors. These discoveries may also associate the creation of meaning-making and increased behavioral complexity with a small-brained hominin species, challenging certain assertions about the role of encephalization and cognition in hominin and human evolution. We suggest that the hominin socio-cognitive niche is more diverse than previously thought. If true, technological, meaning-making activities, and cognitive advances in human evolution are not associated solely with the evolution of larger-brained members of the genus <i>Homo</i>.Evidence for complex behaviors associated with a small-brained hominin suggests that large brains are not solely responsible for the manifestation of human-like behavioral complexity.",
+    "date_added": "2026-03-16T12:37:29.391491",
+    "pdf_url": "https://europepmc.org/articles/PMC12410969/pdf"
+  },
+  {
+    "id": "03f66866152e",
+    "title": "Correction to \"Human-Like Enamel Growth in Homo naledi\".",
+    "authors": [
+      ""
+    ],
+    "year": "2025",
+    "journal": "",
+    "doi": "10.1002/ajpa.25066",
+    "pmcid": "",
+    "pmid": "40341902",
+    "source": "EuropePMC",
+    "abstract": "",
+    "date_added": "2026-03-16T12:37:29.391514"
+  },
+  {
+    "id": "1f0998efc97e",
+    "title": "An initial report of circa 241,000- to 335,000-year-old rock engravings and their relation to &lt;i&gt;Homo naledi&lt;/i&gt; in the Rising Star cave system, South Africa.",
+    "authors": [
+      "Berger LR",
+      "Hawks J",
+      "Fuentes A",
+      "Van Rooyen D",
+      "Tsikoane M",
+      "Mpete M",
+      "Nkwe S",
+      "Molopyane K."
+    ],
+    "year": "2025",
+    "journal": "",
+    "doi": "10.7554/elife.89102",
+    "pmcid": "PMC12283075",
+    "pmid": "40694408",
+    "source": "EuropePMC",
+    "abstract": "The production of painted, etched, or engraved designs on cave walls or other surfaces is recognized as a major cognitive step in human evolution. Such intentional designs, which are widely interpreted as signifying, recording, and transmitting information in a durable manner, were once considered exclusive to Late Pleistocene <i>Homo sapiens</i>. Here we present observations of what appear to be engraved abstract patterns and shapes within the Dinaledi Subsystem of the Rising Star cave system in South Africa, incised into the dolomitic limestone walls of the cave. The markings described here are found on a pillar in the Hill Antechamber that extends into the natural fissure corridor that links the two chambers, and we associate them with <i>Homo naledi</i>. They include deeply impressed lines, cross-hatchings, percussion marks, and other geometric shapes on flat wall surfaces and in and around existing cracks and grooves in the dolomitic limestone walls, found in one specific location of the Dinaledi Subsystem. Remains of multiple <i>H. naledi</i> are found in this part of the cave system, and evidence of mortuary behavior appears in both the Dinaledi Chamber and adjacent Hill Antechamber dated to between 241 and 335 ka (Dirks et al., 2017; Robbins et al., 2021; Berger et al., 2025).",
+    "date_added": "2026-03-16T12:37:29.391538",
+    "pdf_url": "https://europepmc.org/articles/PMC12283075/pdf"
+  },
+  {
+    "id": "4742b676c36e",
+    "title": "Long legs and small joints: The locomotor capabilities of Homo naledi.",
+    "authors": [
+      "Chapman TJ",
+      "Walker C",
+      "Churchill SE",
+      "Marchi D",
+      "Vereecke EE",
+      "DeSilva JM",
+      "Zipfel B",
+      "Hawks J",
+      "Jan SVS",
+      "Berger LR",
+      "Throckmorton Z."
+    ],
+    "year": "2025",
+    "journal": "",
+    "doi": "10.1111/joa.14208",
+    "pmcid": "",
+    "pmid": "39835662",
+    "source": "EuropePMC",
+    "abstract": "The lower limb of Homo naledi presents a suite of primitive, derived and unique morphological features that pose interesting questions about the nature of bipedal movement in this species. The exceptional representation of all skeletal elements in H. naledi makes it an excellent candidate for biomechanical analysis of gait dynamics using modern kinematic software. However, virtual gait analysis software requires 3D models of the entire lower limb kinematic chain. No single H. naledi individual preserves all lower limb elements, and what material is preserved is fragmentary. As an antecedent to future kinematic analysis, a 3D lower limb skeleton was reconstructed from the most complete fossil bones of different H. naledi individuals. As both juvenile and adult H. naledi were used, we tested if the knee joint remained congruent throughout ontogeny in a sample of great apes (N = 143) and modern humans (N = 70). The reconstruction and subsequent comparative analysis reveal that H. naledi had remarkably small joint sizes for their body size, a hyper-elongated tibia, and a high crural index (90.2). We consider that the lower limb morphology of H. naledi could have improved locomotor economy, but the exceptionally small joints cast doubt on its capabilities for long distance travel, including endurance running. The unusual mixture of primitive and derived traits in H. naledi remains intriguing and might indicate that this hominin engaged both in bipedal walking and climbing, demonstrating that kinematic diversity in hominins persisted well into the Middle Pleistocene.",
+    "date_added": "2026-03-16T12:37:29.391559"
+  },
+  {
+    "id": "4e11ad4a42c2",
+    "title": "The Multivariate Basis of Human Brain Evolution: The Prerequisites of Fire Control and Cooking.",
+    "authors": [
+      "Ortells MO",
+      "Stewart S."
+    ],
+    "year": "2025",
+    "journal": "",
+    "doi": "10.1002/evan.70008",
+    "pmcid": "",
+    "pmid": "40791024",
+    "source": "EuropePMC",
+    "abstract": "This study investigates the evolutionary origins of the human brain, focusing on the trend of increasing size in hominins, while also addressing exceptions such as Homo naledi, Homo floresiensis, and the recent reduction observed in Homo sapiens. It examines hypotheses related to brain enlargement, challenging the Social Brain and Ecological Hypotheses by suggesting that the increase in brain size was not an inevitable response to social complexity or ecological pressures. While the Cooking Hypothesis is considered, it is not identified as the primary driver of brain expansion. Instead, fire control and cooking are proposed as prerequisites for sustaining brain size increases by meeting the energetic demands of larger brains. Additionally, we examine mutations that influenced brain size and complexity and contributed to the genetic variability that was pivotal to brain evolution, particularly in Africa during its final phase.",
+    "date_added": "2026-03-16T12:37:29.391578"
+  }
+]
