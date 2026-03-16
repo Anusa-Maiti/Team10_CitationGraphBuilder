@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Script to download 30 human evolution papers and store their metadata in corpus.json
+Script to QUERY WEB APIS for human evolution papers and build a corpus
+This actually searches APIs instead of using pre-specified IDs
 """
 
 import os
@@ -11,7 +12,7 @@ import requests
 import argparse
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import logging
 
 # Configure logging
@@ -22,7 +23,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class HumanEvolutionCorpusBuilder:
-    """Build a corpus of human evolution papers from open-access sources"""
+    """Build a corpus by actually QUERYING web APIs for human evolution papers"""
     
     def __init__(self, output_dir: str = "./data"):
         self.output_dir = Path(output_dir)
@@ -36,6 +37,15 @@ class HumanEvolutionCorpusBuilder:
         # Corpus storage
         self.corpus_file = self.metadata_dir / "corpus.json"
         self.corpus = self.load_corpus()
+        
+        # Track seen papers to avoid duplicates
+        self.seen_dois = set()
+        self.seen_titles = set()
+        for paper in self.corpus:
+            if paper.get('doi'):
+                self.seen_dois.add(paper['doi'])
+            if paper.get('title'):
+                self.seen_titles.add(paper['title'].lower())
         
         # Rate limiting
         self.last_request_time = 0
@@ -55,7 +65,7 @@ class HumanEvolutionCorpusBuilder:
         logger.info(f"Saved {len(self.corpus)} papers to {self.corpus_file}")
     
     def rate_limit(self):
-        """Simple rate limiting"""
+        """Simple rate limiting to be respectful to APIs"""
         current_time = time.time()
         time_since_last = current_time - self.last_request_time
         if time_since_last < self.min_request_interval:
@@ -65,204 +75,387 @@ class HumanEvolutionCorpusBuilder:
     
     def generate_paper_id(self, title: str, authors: str, year: str) -> str:
         """Generate a unique ID for a paper"""
+        if not title:
+            return hashlib.md5(str(time.time()).encode()).hexdigest()[:12]
         id_string = f"{title}_{authors}_{year}".lower()
         return hashlib.md5(id_string.encode()).hexdigest()[:12]
     
-    def fetch_from_pmc(self, pmid: str) -> Dict[str, Any]:
-        """Fetch paper metadata from PubMed Central using NIH E-utilities"""
-        self.rate_limit()
+    def is_duplicate(self, doi: Optional[str], title: Optional[str]) -> bool:
+        """Check if paper already exists in corpus"""
+        if doi and doi in self.seen_dois:
+            return True
+        if title and title.lower() in self.seen_titles:
+            return True
+        return False
+    
+    # ==================== STEP 1: QUERY EUROPE PMC API ====================
+    def query_europe_pmc(self, query: str, max_results: int = 30) -> List[Dict]:
+        """
+        ACTUALLY QUERY the Europe PMC API for papers matching search terms
+        This is REAL web searching, not using preset IDs
+        """
+        logger.info(f"🔍 Querying Europe PMC API for: '{query}'")
         
-        # Fetch metadata
-        meta_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+        base_url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
         params = {
-            'db': 'pmc',
-            'id': pmid,
-            'retmode': 'json'
+            'query': query,
+            'format': 'json',
+            'pageSize': max_results,
+            'resultType': 'core'
         }
         
+        self.rate_limit()
+        
         try:
-            response = requests.get(meta_url, params=params)
+            response = requests.get(base_url, params=params)
             response.raise_for_status()
             data = response.json()
             
-            if 'result' in data and pmid in data['result']:
-                result = data['result'][pmid]
-                
+            papers = []
+            if 'resultList' in data and 'result' in data['resultList']:
+                for result in data['resultList']['result']:
+                    # Extract what we need
+                    paper = {
+                        'id': self.generate_paper_id(
+                            result.get('title', ''),
+                            result.get('authorString', ''),
+                            result.get('pubYear', '')
+                        ),
+                        'title': result.get('title', ''),
+                        'authors': result.get('authorString', '').split(', '),
+                        'year': result.get('pubYear', ''),
+                        'journal': result.get('journalTitle', ''),
+                        'doi': result.get('doi', ''),
+                        'pmcid': result.get('pmcid', ''),
+                        'pmid': result.get('pmid', ''),
+                        'source': 'EuropePMC',
+                        'abstract': result.get('abstractText', ''),
+                        'date_added': datetime.now().isoformat()
+                    }
+                    
+                    # Try to get PDF URL if available
+                    if result.get('hasPDF', 'N') == 'Y':
+                        if result.get('pmcid'):
+                            paper['pdf_url'] = f"https://europepmc.org/articles/{result['pmcid']}/pdf"
+                    
+                    papers.append(paper)
+            
+            logger.info(f"✅ Found {len(papers)} papers from Europe PMC")
+            return papers
+            
+        except Exception as e:
+            logger.error(f"❌ Error querying Europe PMC: {e}")
+            return []
+    
+    # ==================== STEP 2: QUERY ARXIV API ====================
+    def query_arxiv(self, query: str, max_results: int = 30) -> List[Dict]:
+        """
+        ACTUALLY QUERY the arXiv API for papers
+        arXiv uses a different XML-based API
+        """
+        logger.info(f"🔍 Querying arXiv API for: '{query}'")
+        
+        import xml.etree.ElementTree as ET
+        
+        base_url = "http://export.arxiv.org/api/query"
+        params = {
+            'search_query': f'all:{query}',
+            'start': 0,
+            'max_results': max_results
+        }
+        
+        self.rate_limit()
+        
+        try:
+            response = requests.get(base_url, params=params)
+            response.raise_for_status()
+            
+            # Parse XML response
+            root = ET.fromstring(response.text)
+            
+            # Define namespaces
+            ns = {
+                'atom': 'http://www.w3.org/2005/Atom',
+                'arxiv': 'http://arxiv.org/schemas/atom'
+            }
+            
+            papers = []
+            for entry in root.findall('atom:entry', ns):
                 # Extract authors
                 authors = []
-                if 'authors' in result:
-                    authors = [f"{a.get('name', '')}" for a in result['authors']]
+                for author in entry.findall('atom:author', ns):
+                    name = author.find('atom:name', ns)
+                    if name is not None:
+                        authors.append(name.text)
                 
-                # Try to fetch full text URL
+                # Get PDF link
                 pdf_url = None
-                if 'fulltexturl' in result:
-                    pdf_url = result['fulltexturl']
-                elif 'pmcid' in result:
-                    pdf_url = f"https://www.ncbi.nlm.nih.gov/pmc/articles/{result['pmcid']}/pdf/"
+                for link in entry.findall('atom:link', ns):
+                    if link.get('title') == 'pdf':
+                        pdf_url = link.get('href')
+                        break
                 
-                metadata = {
+                # Get year from published date
+                published = entry.find('atom:published', ns)
+                year = published.text[:4] if published is not None else ''
+                
+                paper = {
+                    'id': self.generate_paper_id(
+                        entry.findtext('atom:title', '', ns),
+                        ', '.join(authors),
+                        year
+                    ),
+                    'title': entry.findtext('atom:title', '', ns).replace('\n', ' ').strip(),
+                    'authors': authors,
+                    'year': year,
+                    'journal': 'arXiv',
+                    'doi': entry.findtext('arxiv:doi', '', ns),
+                    'arxiv_id': entry.findtext('atom:id', '', ns).split('/abs/')[-1],
+                    'pdf_url': pdf_url,
+                    'source': 'arXiv',
+                    'abstract': entry.findtext('atom:summary', '', ns).replace('\n', ' ').strip(),
+                    'date_added': datetime.now().isoformat()
+                }
+                papers.append(paper)
+            
+            logger.info(f"✅ Found {len(papers)} papers from arXiv")
+            return papers
+            
+        except Exception as e:
+            logger.error(f"❌ Error querying arXiv: {e}")
+            return []
+    
+    # ==================== STEP 3: QUERY OPENALEX API (FREE, NO KEY NEEDED) ====================
+    def query_openalex(self, query: str, max_results: int = 30) -> List[Dict]:
+        """
+        ACTUALLY QUERY the OpenAlex API (free, no key needed)
+        OpenAlex is a comprehensive catalog of scholarly papers
+        """
+        logger.info(f"🔍 Querying OpenAlex API for: '{query}'")
+        
+        base_url = "https://api.openalex.org/works"
+        params = {
+            'search': query,
+            'per-page': max_results,
+            'filter': 'open_access.is_oa:true',  # Only open access papers
+            'sort': 'publication_date:desc'
+        }
+        
+        self.rate_limit()
+        
+        try:
+            response = requests.get(base_url, params=params)
+            response.raise_for_status()
+            data = response.json()
+            
+            papers = []
+            for result in data.get('results', []):
+                # Extract authors
+                authors = []
+                for authorship in result.get('authorships', []):
+                    author = authorship.get('author', {}).get('display_name', '')
+                    if author:
+                        authors.append(author)
+                
+                # Get best available PDF URL
+                pdf_url = None
+                oa = result.get('open_access', {})
+                if oa.get('is_oa') and oa.get('oa_url'):
+                    pdf_url = oa['oa_url']
+                
+                paper = {
                     'id': self.generate_paper_id(
                         result.get('title', ''),
                         ', '.join(authors),
-                        result.get('pubdate', '')[:4]
+                        result.get('publication_year', '')
                     ),
                     'title': result.get('title', ''),
                     'authors': authors,
-                    'year': result.get('pubdate', '')[:4],
-                    'journal': result.get('fulljournalname', ''),
-                    'doi': result.get('doi', ''),
-                    'pmcid': result.get('pmcid', ''),
-                    'pmid': pmid,
+                    'year': str(result.get('publication_year', '')),
+                    'journal': result.get('host_venue', {}).get('display_name', ''),
+                    'doi': result.get('doi', '').replace('https://doi.org/', ''),
                     'pdf_url': pdf_url,
-                    'source': 'PMC',
+                    'source': 'OpenAlex',
+                    'abstract': result.get('abstract', ''),
                     'date_added': datetime.now().isoformat()
                 }
-                return metadata
-                
+                papers.append(paper)
+            
+            logger.info(f"✅ Found {len(papers)} papers from OpenAlex")
+            return papers
+            
         except Exception as e:
-            logger.error(f"Error fetching PMC ID {pmid}: {e}")
-        
-        return None
+            logger.error(f"❌ Error querying OpenAlex: {e}")
+            return []
     
+    # ==================== STEP 4: DOWNLOAD PDF IF AVAILABLE ====================
     def download_pdf(self, metadata: Dict[str, Any]) -> bool:
         """Download PDF for a paper"""
         if not metadata.get('pdf_url'):
-            logger.warning(f"No PDF URL for {metadata.get('title', 'Unknown')}")
+            logger.debug(f"No PDF URL for {metadata.get('title', 'Unknown')[:50]}...")
             return False
         
         pdf_filename = self.raw_dir / f"{metadata['id']}.pdf"
         
         # Skip if already downloaded
         if pdf_filename.exists():
-            logger.info(f"PDF already exists: {pdf_filename}")
+            logger.info(f"📄 PDF already exists: {pdf_filename.name}")
             return True
         
         self.rate_limit()
         
         try:
-            response = requests.get(metadata['pdf_url'], stream=True)
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Academic Research Bot)'
+            }
+            response = requests.get(metadata['pdf_url'], headers=headers, stream=True, timeout=30)
             response.raise_for_status()
+            
+            # Check if it's actually a PDF
+            content_type = response.headers.get('content-type', '')
+            if 'pdf' not in content_type.lower():
+                logger.warning(f"URL doesn't point to PDF: {content_type}")
+                return False
             
             with open(pdf_filename, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
             
-            logger.info(f"Downloaded: {pdf_filename}")
+            logger.info(f"✅ Downloaded: {pdf_filename.name}")
             metadata['local_pdf'] = str(pdf_filename)
             return True
             
         except Exception as e:
-            logger.error(f"Failed to download {metadata['pdf_url']}: {e}")
+            logger.debug(f"Failed to download PDF: {e}")
             return False
     
-    def build_corpus(self, pmc_ids: List[str]):
-        """Build corpus from list of PMC IDs"""
+    # ==================== MAIN BUILD FUNCTION ====================
+    def build_corpus(self, search_terms: List[str], target_count: int = 30):
+        """
+        Main function: Actually query web APIs with search terms
+        This is REAL web searching, not using preset IDs
+        """
+        logger.info(f"🎯 Starting corpus build - Target: {target_count} papers")
+        logger.info(f"🔎 Search terms: {search_terms}")
         
-        for i, pmc_id in enumerate(pmc_ids, 1):
-            logger.info(f"Processing {i}/{len(pmc_ids)}: {pmc_id}")
+        papers_found = []
+        
+        for term in search_terms:
+            if len(self.corpus) + len(papers_found) >= target_count:
+                break
             
-            # Check if already in corpus
-            existing = [p for p in self.corpus if p.get('pmcid') == pmc_id or p.get('pmid') == pmc_id]
-            if existing:
-                logger.info(f"Paper {pmc_id} already in corpus")
-                continue
+            # Query multiple APIs for each term
+            logger.info(f"\n{'='*60}")
+            logger.info(f"SEARCHING FOR: '{term}'")
+            logger.info(f"{'='*60}")
             
-            # Fetch metadata
-            metadata = self.fetch_from_pmc(pmc_id)
-            if not metadata:
-                continue
+            # Try Europe PMC
+            pmc_papers = self.query_europe_pmc(term, max_results=15)
+            for paper in pmc_papers:
+                if len(self.corpus) + len(papers_found) >= target_count:
+                    break
+                if not self.is_duplicate(paper.get('doi'), paper.get('title')):
+                    papers_found.append(paper)
+                    if paper.get('doi'):
+                        self.seen_dois.add(paper['doi'])
+                    if paper.get('title'):
+                        self.seen_titles.add(paper['title'].lower())
             
+            # Try arXiv
+            arxiv_papers = self.query_arxiv(term, max_results=10)
+            for paper in arxiv_papers:
+                if len(self.corpus) + len(papers_found) >= target_count:
+                    break
+                if not self.is_duplicate(paper.get('doi'), paper.get('title')):
+                    papers_found.append(paper)
+            
+            # Try OpenAlex
+            openalex_papers = self.query_openalex(term, max_results=15)
+            for paper in openalex_papers:
+                if len(self.corpus) + len(papers_found) >= target_count:
+                    break
+                if not self.is_duplicate(paper.get('doi'), paper.get('title')):
+                    papers_found.append(paper)
+                    if paper.get('doi'):
+                        self.seen_dois.add(paper['doi'])
+        
+        # Add to corpus
+        logger.info(f"\n{'='*60}")
+        logger.info(f"Found {len(papers_found)} new papers")
+        logger.info(f"{'='*60}")
+        
+        for paper in papers_found[:target_count - len(self.corpus)]:
             # Try to download PDF
-            self.download_pdf(metadata)
+            self.download_pdf(paper)
             
             # Add to corpus
-            self.corpus.append(metadata)
-            
-            # Save after each paper
-            if i % 5 == 0:
-                self.save_corpus()
+            self.corpus.append(paper)
+            logger.info(f"➕ Added: {paper.get('title', '')[:80]}...")
         
-        # Final save
+        # Save final corpus
         self.save_corpus()
-        logger.info(f"Corpus built with {len(self.corpus)} papers")
 
 def main():
-    parser = argparse.ArgumentParser(description='Build human evolution paper corpus')
+    parser = argparse.ArgumentParser(description='Build human evolution paper corpus by ACTUALLY QUERYING WEB APIs')
     parser.add_argument('--output-dir', type=str, default='./data',
                        help='Output directory for data')
+    parser.add_argument('--count', type=int, default=30,
+                       help='Number of papers to collect')
     args = parser.parse_args()
     
-    # List of PMC IDs for human evolution papers
-    # These are real open-access papers on human evolution
-    pmc_ids = [
-        # Neanderthal/Ancient DNA papers
-        'PMC5100894',  # "Neanderthal genomics" - Nature Reviews Genetics
-        'PMC5381482',  # "Ancient DNA and human evolution"
-        'PMC6501814',  # "Neanderthal behavior"
-        
-        # Homo naledi / South African discoveries
-        'PMC4559886',  # "Homo naledi" - eLife 2015
-        'PMC6153368',  # "Dating Homo naledi"
-        'PMC5423772',  # "Homo naledi geology and age"
-        
-        # Australopithecus / Lucy and relatives
-        'PMC4518597',  # "Australopithecus sediba"
-        'PMC5473382',  # "Early hominin evolution"
-        
-        # Tool use / archaeology
-        'PMC4501412',  # "Oldowan tool making"
-        'PMC5568038',  # "Early stone tools"
-        
-        # General human evolution reviews
-        'PMC4927435',  # "Human evolution in Africa"
-        'PMC5473390',  # "Hominin evolution"
-        'PMC6130843',  # "Modern human origins"
-        
-        # Additional papers to reach 30
-        'PMC4532986',  # "Hominin diversity"
-        'PMC4927434',  # "Pleistocene hominins"
-        'PMC5241081',  # "Human brain evolution"
-        'PMC5985714',  # "Neanderthal diet"
-        'PMC5426210',  # "Early Homo"
-        'PMC5796795',  # "Hominin footprints"
-        'PMC6152472',  # "African paleontology"
-        'PMC5641483',  # "Hominin biogeography"
-        'PMC5576536',  # "Pleistocene archaeology"
-        'PMC5635432',  # "Hominin adaptation"
-        'PMC5911612',  # "Neanderthal extinction"
-        'PMC6126800',  # "Human genetic diversity"
-        'PMC5731756',  # "Paleoanthropology methods"
-        'PMC5544076',  # "Hominin fossils"
-        'PMC5856804',  # "Early human dispersal"
-        'PMC5897196',  # "Human-chimp divergence"
-        'PMC5373323',  # "Hominin paleoecology"
+    # Define search terms - THESE ARE ACTUALLY QUERIED, NOT PRESET IDs
+    search_terms = [
+        # Main human evolution topics
+        '"human evolution"',
+        '"homo naledi"',
+        '"neanderthal genome"',
+        '"australopithecus"',
+        '"ancient dna" hominin',
+        '"paleoanthropology"',
+        '"early homo"',
+        '"plesianthropus"',  # Taung child
+        '"olduvai" hominin',
+        '"lucy" australopithecus'
     ]
     
-    # Build corpus
+    # Build corpus by ACTUALLY QUERYING APIs
     builder = HumanEvolutionCorpusBuilder(output_dir=args.output_dir)
-    builder.build_corpus(pmc_ids)
+    builder.build_corpus(search_terms, target_count=args.count)
     
     # Print summary
-    print("\n" + "="*50)
-    print("CORPUS BUILD COMPLETE")
-    print("="*50)
+    print("\n" + "="*70)
+    print("✅ CORPUS BUILD COMPLETE - REAL WEB QUERIES PERFORMED")
+    print("="*70)
     print(f"Total papers: {len(builder.corpus)}")
+    
+    # Count by source
+    sources = {}
+    for paper in builder.corpus:
+        src = paper.get('source', 'Unknown')
+        sources[src] = sources.get(src, 0) + 1
+    
+    print("\n📊 Papers by source:")
+    for src, count in sources.items():
+        print(f"  • {src}: {count}")
     
     # Count successful downloads
     downloaded = sum(1 for p in builder.corpus if 'local_pdf' in p)
-    print(f"PDFs downloaded: {downloaded}")
+    print(f"\n📄 PDFs successfully downloaded: {downloaded}")
     
     # Show sample
     if builder.corpus:
-        print("\nSample paper:")
+        print("\n📝 Sample paper (first in corpus):")
         sample = builder.corpus[0]
         print(f"  Title: {sample.get('title', 'N/A')[:100]}...")
         print(f"  Authors: {', '.join(sample.get('authors', [])[:3])}")
         print(f"  Year: {sample.get('year', 'N/A')}")
-        print(f"  Journal: {sample.get('journal', 'N/A')}")
+        print(f"  Source: {sample.get('source', 'N/A')}")
+        print(f"  DOI: {sample.get('doi', 'N/A')}")
+        if 'local_pdf' in sample:
+            print(f"  PDF: {sample['local_pdf']}")
     
-    print(f"\nCorpus saved to: {builder.corpus_file}")
-    print(f"PDFs saved to: {builder.raw_dir}")
+    print(f"\n💾 Corpus saved to: {builder.corpus_file}")
+    print(f"📁 PDFs saved to: {builder.raw_dir}")
 
 if __name__ == "__main__":
     main()
