@@ -27,8 +27,10 @@ data/
 ├── processed/              # Extracted text/XML
 │   ├── dart_1925_tei.xml   # GROBID output
 │   └── ...
+├──storedata.py             #generate csv file from metadata in corpus
 ├── metadata/               # Paper information
 │   ├── corpus.json
+    ├──paperdata.csv
 └── graph/                  # Final graph data
     ├── nodes.csv
     ├── edges.csv
