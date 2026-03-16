@@ -29,7 +29,6 @@ data/
 │   └── ...
 ├── metadata/               # Paper information
 │   ├── corpus.json
-│   └── papers.json
 └── graph/                  # Final graph data
     ├── nodes.csv
     ├── edges.csv
