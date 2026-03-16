@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-Script to create a CSV file with metadata from corpus.json
+Script to create CSV files from corpus.json metadata
+Stores files as:
+- data/metadata/papers_metadata.csv
+- data/metadata/all_references.csv
 """
 
 import json
@@ -11,20 +14,19 @@ from datetime import datetime
 from typing import List, Dict, Any
 
 
-def create_papers_csv(corpus_path: str, output_path: str = None):
+def create_papers_csv(corpus_path: str):
     """
-    Create a CSV file with paper metadata from corpus.json
+    Create papers_metadata.csv with paper metadata from corpus.json
     
     Args:
         corpus_path: Path to corpus.json file
-        output_path: Path for output CSV (optional)
     """
     corpus_path = Path(corpus_path)
     
     # Check if file exists
     if not corpus_path.exists():
         print(f"❌ Error: {corpus_path} not found!")
-        return
+        return None
     
     # Load corpus
     with open(corpus_path, 'r', encoding='utf-8') as f:
@@ -32,12 +34,8 @@ def create_papers_csv(corpus_path: str, output_path: str = None):
     
     print(f"✅ Loaded {len(corpus)} papers from {corpus_path}")
     
-    # Generate output filename if not provided
-    if not output_path:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = corpus_path.parent / f"papers_metadata_{timestamp}.csv"
-    else:
-        output_path = Path(output_path)
+    # Set output path to same directory as corpus.json
+    output_path = corpus_path.parent / "papers_metadata.csv"
     
     # Define CSV columns (based on metadata in corpus.json)
     columns = [
@@ -111,57 +109,28 @@ def create_papers_csv(corpus_path: str, output_path: str = None):
         writer.writeheader()
         writer.writerows(rows)
     
-    print(f"✅ Created CSV file: {output_path}")
+    print(f"✅ Created papers CSV: {output_path}")
     print(f"   Columns: {', '.join(columns)}")
     print(f"   Total papers: {len(rows)}")
-    
-    # Print summary statistics
-    print("\n📊 Summary Statistics:")
-    
-    # Count by source
-    sources = {}
-    for paper in corpus:
-        src = paper.get('source', 'Unknown')
-        sources[src] = sources.get(src, 0) + 1
-    
-    print("  Papers by source:")
-    for src, count in sources.items():
-        print(f"    • {src}: {count}")
-    
-    # Count GROBID processed
-    grobid_count = sum(1 for p in corpus if p.get('grobid_processed'))
-    print(f"  Papers with GROBID processing: {grobid_count}")
-    
-    # Total references
-    total_refs = sum(p.get('reference_count', 0) for p in corpus)
-    print(f"  Total references extracted: {total_refs}")
-    
-    # PDF download stats
-    pdf_count = sum(1 for p in corpus if p.get('local_pdf') and Path(p.get('local_pdf', '')).exists())
-    print(f"  PDFs downloaded: {pdf_count}")
     
     return output_path
 
 
-def create_references_csv(corpus_path: str, output_path: str = None):
+def create_references_csv(corpus_path: str):
     """
-    Create a separate CSV file with all references from all papers
+    Create all_references.csv with all references from all papers
     """
     corpus_path = Path(corpus_path)
     
     if not corpus_path.exists():
         print(f"❌ Error: {corpus_path} not found!")
-        return
+        return None
     
     with open(corpus_path, 'r', encoding='utf-8') as f:
         corpus = json.load(f)
     
-    # Generate output filename
-    if not output_path:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = corpus_path.parent / f"all_references_{timestamp}.csv"
-    else:
-        output_path = Path(output_path)
+    # Set output path to same directory as corpus.json
+    output_path = corpus_path.parent / "all_references.csv"
     
     # Define columns for references CSV
     ref_columns = [
@@ -178,6 +147,7 @@ def create_references_csv(corpus_path: str, output_path: str = None):
     ]
     
     ref_rows = []
+    total_refs = 0
     
     for paper in corpus:
         citing_id = paper.get('id', '')
@@ -186,6 +156,8 @@ def create_references_csv(corpus_path: str, output_path: str = None):
         citing_source = paper.get('source', '')
         
         references = paper.get('references', [])
+        total_refs += len(references)
+        
         for ref in references:
             # Format reference authors
             ref_authors = ref.get('authors', [])
@@ -214,19 +186,63 @@ def create_references_csv(corpus_path: str, output_path: str = None):
         writer.writeheader()
         writer.writerows(ref_rows)
     
-    print(f"\n✅ Created references CSV: {output_path}")
+    print(f"✅ Created references CSV: {output_path}")
     print(f"   Total reference entries: {len(ref_rows)}")
+    print(f"   Average references per paper: {total_refs/len(corpus):.1f}" if corpus else "   No papers")
     
     return output_path
+
+
+def print_summary(corpus_path: Path, papers_csv: Path, refs_csv: Path = None):
+    """Print summary of all files"""
+    print("\n" + "="*60)
+    print("📊 SUMMARY")
+    print("="*60)
+    
+    # Load corpus for stats
+    with open(corpus_path, 'r', encoding='utf-8') as f:
+        corpus = json.load(f)
+    
+    print(f"\n📁 Input file: {corpus_path}")
+    print(f"   Total papers: {len(corpus)}")
+    
+    print(f"\n📁 Output files:")
+    print(f"   • {papers_csv.name} - Paper metadata")
+    print(f"   • {refs_csv.name} - All references") if refs_csv else None
+    
+    print(f"\n📊 Statistics:")
+    
+    # Count by source
+    sources = {}
+    for paper in corpus:
+        src = paper.get('source', 'Unknown')
+        sources[src] = sources.get(src, 0) + 1
+    
+    print("   Papers by source:")
+    for src, count in sources.items():
+        print(f"     • {src}: {count}")
+    
+    # GROBID stats
+    grobid_count = sum(1 for p in corpus if p.get('grobid_processed'))
+    print(f"   Papers with GROBID: {grobid_count} ({grobid_count/len(corpus)*100:.1f}%)")
+    
+    # References
+    total_refs = sum(p.get('reference_count', 0) for p in corpus)
+    print(f"   Total references: {total_refs}")
+    
+    # PDFs
+    pdf_count = sum(1 for p in corpus if p.get('local_pdf') and Path(p.get('local_pdf', '')).exists())
+    print(f"   PDFs downloaded: {pdf_count}")
+    
+    print(f"\n✅ All files saved in: {corpus_path.parent}")
 
 
 def main():
     parser = argparse.ArgumentParser(description='Create CSV files from corpus.json metadata')
     parser.add_argument('--corpus', type=str, default='data/metadata/corpus.json',
                        help='Path to corpus.json file (default: data/metadata/corpus.json)')
-    parser.add_argument('--output', type=str, help='Output CSV file path (optional)')
-    parser.add_argument('--references', action='store_true', 
-                       help='Also create a separate CSV with all references')
+    parser.add_argument('--no-references', action='store_true',
+                       help='Skip creating references CSV')
     
     args = parser.parse_args()
     
@@ -234,12 +250,29 @@ def main():
     print("📊 CORPUS TO CSV CONVERTER")
     print("="*60)
     
-    # Create main papers CSV
-    papers_csv = create_papers_csv(args.corpus, args.output)
+    corpus_path = Path(args.corpus)
     
-    # Create references CSV if requested
-    if args.references:
-        create_references_csv(args.corpus)
+    # Check if corpus exists
+    if not corpus_path.exists():
+        print(f"\n❌ Error: {corpus_path} not found!")
+        print("\nLooking in current directory:")
+        print(f"   Current directory: {Path.cwd()}")
+        print(f"   Files in current directory:")
+        for f in Path.cwd().glob("*"):
+            print(f"     {f}")
+        return
+    
+    # Create papers CSV (always)
+    papers_csv = create_papers_csv(args.corpus)
+    
+    # Create references CSV unless skipped
+    refs_csv = None
+    if not args.no_references:
+        refs_csv = create_references_csv(args.corpus)
+    
+    # Print summary
+    if papers_csv:
+        print_summary(corpus_path, papers_csv, refs_csv)
     
     print("\n" + "="*60)
     print("✅ Done!")
