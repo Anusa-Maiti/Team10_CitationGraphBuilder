@@ -79,16 +79,12 @@ citation-graph-builder/
 │
 ├── src/                         # Main source code directory
 │   ├── __init__.py              # Makes src a Python package
-│   │
-│   ├── data_collection.py             # Data collection modules
-│   ├──data/corpus.json
-│   │
-│   ├── extraction/              # PDF parsing and metadata extraction
-│   │   ├── __init__.py          # Package initializer
-│   │   ├── grobid_client.py     # Client for GROBID (ML-based PDF parser) API
-│   │   ├── pdf_parser.py        # Fallback parser using pdfplumber/PyPDF2
-│   │   ├── reference_parser.py  # Extracts and structures citation strings
-│   │   └── metadata_extractor.py # Pulls title, authors, year from parsed text
+│   ├──data_collection.py        #Data extraction from web-sources
+│   ├── data                     # Input data storage modules
+    ├──raw
+    ├──metadata
+        ├──corpus.json
+        ├──           
 │   │
 │   ├── resolution/              # Entity resolution and matching
 │   │   ├── __init__.py          # Package initializer
