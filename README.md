@@ -30,7 +30,9 @@ data/
 ├──storedata.py             #generate csv file from metadata in corpus
 ├── metadata/               # Paper information
 │   ├── corpus.json
-    ├──paperdata.csv
+    ├──papers_metadata.csv
+    └── all_references.csv
+    
 └── graph/                  # Final graph data
     ├── nodes.csv
     ├── edges.csv
@@ -86,8 +88,9 @@ citation-graph-builder/
         ├──raw
         ├──processed
         ├──metadata
-            ├──corpus.json
-            ├──           
+            ├── corpus.json
+            ├── papers_metadata.csv     # Main papers CSV
+            └── all_references.csv      # References CSV 
 │   │
 │   ├── resolution/              # Entity resolution and matching
 │   │   ├── __init__.py          # Package initializer
