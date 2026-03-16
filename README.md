@@ -28,8 +28,8 @@ data/
 │   ├── dart_1925_tei.xml   # GROBID output
 │   └── ...
 ├── metadata/               # Paper information
-│   ├── corpus_manifest.csv
-│   └── download_log.json
+│   ├── corpus.json
+│   └── papers.json
 └── graph/                  # Final graph data
     ├── nodes.csv
     ├── edges.csv
