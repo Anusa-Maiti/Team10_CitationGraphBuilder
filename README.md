@@ -78,7 +78,6 @@ citation-graph-builder/
 │
 ├── README.md                    # Project overview, setup instructions, and documentation
 ├── requirements.txt             # Python dependencies (networkx, streamlit, PyPDF2, etc.)
-├── config.yaml                  # Configuration file for API keys, paths, matching thresholds
 ├── setup.py                     # Package installation script
 │
 ├── src/                         # Main source code directory
