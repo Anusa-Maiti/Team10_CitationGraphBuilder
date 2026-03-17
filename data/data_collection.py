@@ -91,16 +91,16 @@ class EnhancedCorpusBuilder:
             'User-Agent': 'Mozilla/5.0 (Academic Research Bot; mailto:your-email@example.com)'
         }
         
-        logger.info(f"📁 Output directory: {self.output_dir}")
-        logger.info(f"📁 PDFs will be stored in: {self.raw_dir}")
-        logger.info(f"📁 GROBID XML will be stored in: {self.processed_dir}")
-        logger.info(f"📁 Metadata will be stored in: {self.metadata_dir}")
-        logger.info(f"📄 Corpus file: {self.corpus_file}")
+        logger.info(f" Output directory: {self.output_dir}")
+        logger.info(f"PDFs will be stored in: {self.raw_dir}")
+        logger.info(f"GROBID XML will be stored in: {self.processed_dir}")
+        logger.info(f" Metadata will be stored in: {self.metadata_dir}")
+        logger.info(f" Corpus file: {self.corpus_file}")
         
         if self.grobid_available:
-            logger.info("✅ GROBID is available - will extract references")
+            logger.info(" GROBID is available - will extract references")
         else:
-            logger.warning("⚠️ GROBID not detected - run: docker run -t --rm -p 8070:8070 grobid/grobid:0.8.0")
+            logger.warning(" GROBID not detected - run: docker run -t --rm -p 8070:8070 grobid/grobid:0.8.0")
     
     def check_grobid(self) -> bool:
         """Check if GROBID is running"""
@@ -121,7 +121,7 @@ class EnhancedCorpusBuilder:
         """Save corpus to JSON file"""
         with open(self.corpus_file, 'w', encoding='utf-8') as f:
             json.dump(self.corpus, f, indent=2, ensure_ascii=False)
-        logger.info(f"✅ Saved {len(self.corpus)} papers to {self.corpus_file}")
+        logger.info(f"saved {len(self.corpus)} papers to {self.corpus_file}")
     
     def rate_limit(self, source: str):
         """Apply rate limiting for specific source"""
@@ -345,11 +345,11 @@ class EnhancedCorpusBuilder:
                 }
                 papers.append(paper)
             
-            logger.info(f"✅ Found {len(papers)} papers from arXiv q-bio")
+            logger.info(f" Found {len(papers)} papers from arXiv q-bio")
             return papers
             
         except Exception as e:
-            logger.error(f"❌ Error querying arXiv: {e}")
+            logger.error(f" Error querying arXiv: {e}")
             return []
     
     # ==================== BIORXIV API ====================
@@ -402,11 +402,11 @@ class EnhancedCorpusBuilder:
                         }
                         papers.append(paper)
             
-            logger.info(f"✅ Found {len(papers)} papers from bioRxiv")
+            logger.info(f" Found {len(papers)} papers from bioRxiv")
             return papers
             
         except Exception as e:
-            logger.error(f"❌ Error querying bioRxiv: {e}")
+            logger.error(f" Error querying bioRxiv: {e}")
             return []
     
     # ==================== GROBID PROCESSING ====================
@@ -444,17 +444,17 @@ class EnhancedCorpusBuilder:
                     paper_data = self.parse_grobid_xml(grobid_xml)
                     paper_data['grobid_xml'] = str(xml_path)
                     
-                    logger.info(f"   ✅ Extracted {paper_data.get('reference_count', 0)} references")
+                    logger.info(f" Extracted {paper_data.get('reference_count', 0)} references")
                     return paper_data
                 else:
                     logger.warning(f"   GROBID returned status {response.status_code}")
                     return None
                     
         except requests.exceptions.ConnectionError:
-            logger.error("   ❌ Cannot connect to GROBID")
+            logger.error("    Cannot connect to GROBID")
             return None
         except Exception as e:
-            logger.error(f"   ❌ GROBID processing failed: {e}")
+            logger.error(f"    GROBID processing failed: {e}")
             return None
     
     def parse_grobid_xml(self, xml_string: str) -> Dict:
@@ -618,7 +618,7 @@ class EnhancedCorpusBuilder:
                     if chunk:
                         f.write(chunk)
             
-            logger.info(f"✅ Downloaded: {filename}")
+            logger.info(f"downloaded: {filename}")
             metadata['local_pdf'] = str(pdf_path)
             metadata['file_size'] = pdf_path.stat().st_size
             
@@ -637,7 +637,7 @@ class EnhancedCorpusBuilder:
             return True
             
         except Exception as e:
-            logger.error(f"❌ Failed to download PDF: {e}")
+            logger.error(f" Failed to download PDF: {e}")
             # Remove partial download if it exists
             if pdf_path.exists():
                 pdf_path.unlink()
@@ -654,8 +654,8 @@ class EnhancedCorpusBuilder:
             target_count: Target number of papers to collect
         """
         logger.info("="*70)
-        logger.info(f"🎯 Starting corpus build - Target: {target_count} papers")
-        logger.info(f"🔎 Search terms: {search_terms}")
+        logger.info(f" Starting corpus build - Target: {target_count} papers")
+        logger.info(f"Search terms: {search_terms}")
         logger.info("="*70)
         
         papers_found = []
@@ -669,7 +669,7 @@ class EnhancedCorpusBuilder:
             logger.info(f"{'='*60}")
             
             # Try Europe PMC
-            logger.info("\n📡 Source: Europe PMC")
+            logger.info("\n Source: Europe PMC")
             pmc_papers = self.query_europe_pmc(term, max_results=10)
             for paper in pmc_papers:
                 if len(self.corpus) + len(papers_found) >= target_count:
@@ -682,7 +682,7 @@ class EnhancedCorpusBuilder:
                         self.seen_titles.add(paper['title'].lower())
             
             # Try arXiv
-            logger.info("\n📡 Source: arXiv (q-bio)")
+            logger.info("\n Source: arXiv (q-bio)")
             arxiv_papers = self.query_arxiv(term, max_results=10)
             for paper in arxiv_papers:
                 if len(self.corpus) + len(papers_found) >= target_count:
@@ -693,7 +693,7 @@ class EnhancedCorpusBuilder:
                         self.seen_titles.add(paper['title'].lower())
             
             # Try bioRxiv
-            logger.info("\n📡 Source: bioRxiv")
+            logger.info("\n Source: bioRxiv")
             biorxiv_papers = self.query_biorxiv(term, max_results=10)
             for paper in biorxiv_papers:
                 if len(self.corpus) + len(papers_found) >= target_count:
@@ -713,7 +713,7 @@ class EnhancedCorpusBuilder:
         added_count = 0
         for paper in papers_found[:target_count - len(self.corpus)]:
             added_count += 1
-            logger.info(f"\n📄 Processing paper {added_count}/{len(papers_found[:target_count - len(self.corpus)])}")
+            logger.info(f"\n Processing paper {added_count}/{len(papers_found[:target_count - len(self.corpus)])}")
             
             # Try to download PDF and process with GROBID
             self.download_pdf(paper)
@@ -731,7 +731,7 @@ class EnhancedCorpusBuilder:
     def print_summary(self):
         """Print summary of downloaded papers"""
         print("\n" + "="*70)
-        print("✅ CORPUS BUILD COMPLETE")
+        print(" CORPUS BUILD COMPLETE")
         print("="*70)
         print(f"Total papers in corpus: {len(self.corpus)}")
         
@@ -741,13 +741,13 @@ class EnhancedCorpusBuilder:
             src = paper.get('source', 'Unknown')
             sources[src] = sources.get(src, 0) + 1
         
-        print("\n📊 Papers by source:")
+        print("\n Papers by source:")
         for src, count in sources.items():
             print(f"  • {src}: {count}")
         
         # Count successful downloads
         downloaded = sum(1 for p in self.corpus if 'local_pdf' in p)
-        print(f"\n📄 PDFs successfully downloaded: {downloaded}")
+        print(f"\n PDFs successfully downloaded: {downloaded}")
         print(f"   Location: {self.raw_dir}")
         
         # Count GROBID processed
@@ -765,7 +765,7 @@ class EnhancedCorpusBuilder:
         
         # Show sample
         if self.corpus:
-            print("\n📝 Sample paper (first in corpus):")
+            print("\n Sample paper (first in corpus):")
             sample = self.corpus[0]
             print(f"  Title: {sample.get('title', 'N/A')[:100]}...")
             print(f"  Authors: {', '.join(sample.get('authors', [])[:3])}")
@@ -819,7 +819,7 @@ def main():
     # Override GROBID availability if --no-grobid flag is set
     if args.no_grobid:
         builder.grobid_available = False
-        logger.info("🚫 GROBID processing disabled by --no-grobid flag")
+        logger.info(" GROBID processing disabled by --no-grobid flag")
     
     builder.build_corpus(search_terms, target_count=args.count)
 
