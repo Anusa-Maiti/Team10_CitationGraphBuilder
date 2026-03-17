@@ -1,11 +1,11 @@
-# 🔬 Team 10 - Citation Graph Builder
+#  Team 10 - Citation Graph Builder
 
 To find relationship patterns between major scientific papers in Human Evolution to highlight how research within a domain builds on and influences subsequent works.
 
-## 📋 Overview
+##  Overview
 This project builds a directed citation graph from research papers in human evolution. Nodes represent academic papers, and directed edges represent citation relationships (Paper A → Paper B means A cites B). The system extracts metadata from PDFs, resolves ambiguous references, and provides querying and visualization capabilities.
 
-## 📚 Data Sources
+##  Data Sources
 ### Primary Repositories
 
 | Source | Access Method | Content Type | Rate Limits | Search Terms |
@@ -39,7 +39,7 @@ data/
     └── graph.gexf          # For visualization
 ```
     
-## 🔧 Preprocessing Plans
+##  Preprocessing Plans
 ### Phase 1: PDF Acquisition
 python
 *Pseudocode for downloader*
@@ -72,7 +72,7 @@ Match a parsed reference to a paper in our corpus :
 2. Fuzzy match on title + first author + year
 Unmatched references: Create placeholder nodes with extracted metadata and flag is_placeholder = True
 
-# 📁 Code Structure
+#  Code Structure
 ```
 citation-graph-builder/
 │
@@ -141,7 +141,7 @@ citation-graph-builder/
     ├── 02_citation_network_viz.ipynb # Network visualization experiments
     └── 03_storage_comparison.ipynb   # Detailed storage performance analysis
 ```    
-# 🧪 Testing and Debugging
+#  Testing and Debugging
 ## Unit Tests
 Matcher() for testing exact and fuzzy matches
 Test pipeline on 3 known papers"""
@@ -169,7 +169,7 @@ Validation Checks:
 2. All cited papers exist as nodes
 3. Reasonable statistics
    
-# 🚀 Running the Pipeline
+#  Running the Pipeline
 ## Quick Start
 bash
 *1. Clone and install*
@@ -245,7 +245,7 @@ query:
     layout: "spring_layout"
 
     
-# 📊 Expected Outputs
+# Expected Outputs
 After running the pipeline, you should have:
 
 Citation Graph Data
@@ -268,7 +268,7 @@ Command-line tool for exploring the graph
 
 Sample visualizations in notebooks/
 
-# 🐛 Common Issues and Solutions
+#  Common Issues and Solutions
 
 | Issue | Symptom | Solution |
 |:------|:--------|:---------|
