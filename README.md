@@ -142,7 +142,7 @@ citation-graph-builder/
 ```    
 #  Testing and Debugging
 ## Unit Tests
-Matcher() for testing exact and fuzzy matches
+## Matcher() for testing exact and fuzzy matches
 Test pipeline on 3 known papers
 ### Download 3 test PDFs (if not exists)
 ### Extract metadata
