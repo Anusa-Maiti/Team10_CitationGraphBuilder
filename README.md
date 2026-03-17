@@ -142,14 +142,14 @@ citation-graph-builder/
 ```    
 #  Testing and Debugging
 ## Unit Tests
-## Matcher() for testing exact and fuzzy matches
+### Matcher() for testing exact and fuzzy matches
 Test pipeline on 3 known papers
-### Download 3 test PDFs (if not exists)
-### Extract metadata
-### Build graph
-### Verify known citation relationships
-### Example: Green 2010 should cite Green 2006
-### Assert graph.has_edge('green_2010', 'green_2006')
+ Download 3 test PDFs (if not exists)
+Extract metadata
+Build graph
+Verify known citation relationships
+Example: Green 2010 should cite Green 2006
+Assert graph.has_edge('green_2010', 'green_2006')
 
 
 ## Debugging Strategy
