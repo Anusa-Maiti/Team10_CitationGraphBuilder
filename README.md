@@ -11,7 +11,7 @@ This project builds a directed citation graph from research papers in human evol
 | Source | Access Method | Content Type | Rate Limits |
 |--------|---------------|--------------|-------------|
 | **PubMed Central (PMC)** | OAI-PMH API, FTP bulk download | Full-text PDFs, XML | 3 requests/second |
-| **Europe PMC** | REST API | PDFs, metadata | None documented, be respectful | 
+| **Europe PMC** | REST API | PDFs, metadata | None documented| 
 | **arXiv (q-bio)** | API | Preprint PDFs | 1 request/3 seconds | 
 | **BioRxiv** | API | Preprint PDFs | 2 requests/second |
 
