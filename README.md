@@ -10,276 +10,315 @@ This project builds a directed citation graph from research papers in human evol
 
 | Source | Access Method | Content Type | Rate Limits |
 |--------|---------------|--------------|-------------|
-| **PubMed Central (PMC)** | OAI-PMH API, FTP bulk download | Full-text PDFs, XML | 3 requests/second |
-| **Europe PMC** | REST API | PDFs, metadata | None documented| 
-| **arXiv (q-bio)** | API | Preprint PDFs | 1 request/3 seconds | 
+| **PubMed Central (PMC)** | OAI-PMH API, OA service for real PDF URLs | Full-text PDFs, XML | 3 req/s (10/s with NCBI_API_KEY) |
+| **Europe PMC** | REST API | PDFs, metadata, reference lists | None documented |
+| **arXiv (q-bio)** | API | Preprint PDFs | 1 request/3 seconds |
 | **BioRxiv** | API | Preprint PDFs | 2 requests/second |
+| **Semantic Scholar** | Graph API | Reference lists, metadata | ~1 request/second |
 
-### Secondary Collection: 
-All papers cited by these landmark papers, and all papers that cite them (forward/backward citation expansion)
+### Seed Papers
+The pipeline starts from these 7 landmark human evolution papers. Only papers published **1990 or later** with at least one structured identifier (DOI / PMID / PMCID) are eligible — pre-1990 papers (e.g. Dart 1925, Darwin 1871) are excluded because EPMC and Semantic Scholar do not carry structured reference lists for them and cannot contribute edges to the citation graph.
+
+| Paper | Year | DOI |
+|-------|------|-----|
+| Morphological affinities of the earliest modern humans | 2010 | 10.1126/science.1193975 |
+| The complete genome sequence of a Neanderthal from the Altai Mountains | 2014 | 10.1038/nature12886 |
+| Genomic history of the Acheulean stone tool-making Homo erectus | 2018 | 10.1126/science.aao6266 |
+| Homo naledi, a new species of the genus Homo from the Dinaledi Chamber | 2015 | 10.7554/eLife.09560 |
+| Fossil hominin shoulders support an African ape-like last common ancestor | 2015 | 10.1073/pnas.1511220112 |
+| The genomic landscape of Neanderthal ancestry in present-day humans | 2014 | 10.1038/nature12961 |
+| A Draft Sequence of the Neandertal Genome | 2010 | 10.1126/science.1188021 |
+
+### Secondary Collection
+All papers cited by these landmark papers, and all papers that cite them (forward/backward citation expansion via Europe PMC and Semantic Scholar APIs).
+
+### Relevance Filtering
+During citation expansion every candidate paper's title + venue + abstract is checked against two keyword sets before entering the corpus. This prevents off-topic papers (immunology, oncology, plant biology, etc.) from being pulled in via citation chains.
+
+- **Must match at least one include term:** homo, hominin, neanderthal, denisovan, australopithecus, fossil, ancient dna, admixture, human evolution, paleoanthropology, phylogenetic, stone tool, and more.
+- **Must match zero exclude terms:** cancer, vaccine, bacteria, covid, diabetes, mouse model, plant, drosophila, and more.
+
+Both lists are editable at the top of `citation_expander.py`.
 
 ### Data Storage Plan
 ```
 data/
 ├── raw/                    # Original PDFs
-│   ├── dart_1925.pdf
+│   ├── homo_naledi_...pdf
 │   └── ...
 ├── processed/              # Extracted text/XML
 │   ├── dart_1925_tei.xml   # GROBID output
 │   └── ...
-├──storedata.py             #generate csv file from metadata in corpus
 ├── metadata/               # Paper information
 │   ├── corpus.json
-    ├──papers_metadata.csv
-    └── all_references.csv
-    
+│   ├── papers_metadata.csv
+│   └── all_references.csv
 └── graph/                  # Final graph data
     ├── nodes.csv
     ├── edges.csv
     └── graph.gexf          # For visualization
 ```
-    
+
 ##  Preprocessing Plans
-### Phase 1: PDF Acquisition
-python
-*Pseudocode for downloader*
-1. Query source APIs with search terms:
-   - "human evolution" + "australopithecus"
-   - "Neanderthal" + "genome"
-   - Author names: "Author eg.1", "Author eg.2"
-   
-2. Filter for open-access PDFs only
-3. Download to /data/raw/ with consistent naming
-4. Log all downloads with source URL, DOI, timestamp
-5. Implement exponential backoff for rate limits
-   
-### Phase 2: Text Extraction
-*GROBID* (GeneRation Of BIbliographic Data) - an open-source Java machine learning library for parsing, structuring, and extracting metadata, references, and full-text from academic PDFs into TEI-encoded XML
+### Phase 1: Data Collection
+```
+1. Query source APIs starting from seed papers:
+   - "human evolution" + "homo" + "neanderthal"
+   - Author names from landmark papers
 
-Run GROBID as Docker container
-Process PDFs via Python
-*Output*: TEI XML with structured metadata and parsed references
+2. Filter: open-access only, published 1990+, must have DOI/PMID/PMCID
+3. Expand citations: fetch papers that cite seeds (forward) and papers seeds cite (backward)
+4. Apply relevance filter on every candidate before adding to corpus
+5. Download PDFs to data/raw/ via PMC OA service (not the redirect /pdf/ URL)
+6. Log all downloads with source, DOI, timestamp in data/collection.log
+7. Implement rate limiting per source (see table above)
+```
 
-### Phase 3: Metadata Extraction
-From GROBID XML extract title, author, year, venue
+### Phase 2: Reference Extraction
+Reference lists are fetched directly from APIs — no PDF parsing required for this step.
 
-### Phase 4: Reference Parsing 
-AnyStyle (free, machine learning-powered web application that parses unstructured bibliographic references into formats like BibTeX or CSL/CiteProc JSON
+- **Primary:** Europe PMC `/references` endpoint (uses PMID or PMCID; resolves DOI via search first)
+- **Fallback:** Semantic Scholar `/references` endpoint (uses DOI, PMID, or title search)
+
+```bash
+python extract_references.py
+```
+
+### Phase 3: Text Extraction (for full-text analysis)
+*GROBID* (GeneRation Of BIbliographic Data) — open-source Java ML library for parsing PDFs into TEI-encoded XML. Used when full-text or higher-quality reference extraction is needed beyond what the APIs provide.
+
+```bash
+# Run GROBID as Docker container
+docker run -d --name grobid -p 8070:8070 grobid/grobid:0.8.0
+sleep 30
+curl http://localhost:8070/api/isalive
+```
+
+*Output*: TEI XML with structured metadata and parsed references in `data/processed/`
+
+### Phase 4: Metadata Extraction
+From GROBID XML extract title, author, year, venue. From API responses these fields are already structured in `corpus.json`.
 
 ### Phase 5: Entity Resolution
-Match a parsed reference to a paper in our corpus :
+Match a parsed reference to a paper in the corpus using a cascade:
 1. Exact DOI match
-2. Fuzzy match on title + first author + year
-Unmatched references: Create placeholder nodes with extracted metadata and flag is_placeholder = True
+2. Exact PMID / PMCID match
+3. Exact title match
+4. Fuzzy match on title + first author + year (Jaccard similarity ≥ 0.55)
+
+Unmatched references: create placeholder nodes with extracted metadata and flag `is_placeholder = True`
+
+The `resolution_method` column in `all_references.csv` records how each edge was resolved.
 
 #  Code Structure
 ```
 citation-graph-builder/
 │
-├── README.md                    # Project overview, setup instructions, and documentation
-├── requirements.txt             # Python dependencies (networkx, streamlit, PyPDF2, etc.)
-├── setup.py                     # Package installation script
+├── README.md
+├── requirements.txt
 │
-├── src/                         # Main source code directory
-│   ├── __init__.py              # Makes src a Python package
-│   ├──data_collection.py        #Data extraction from web-sources
-│   ├── data                     # Input data storage modules
-        ├──raw
-        ├──processed
-        ├──metadata
-            ├── corpus.json
-            ├── papers_metadata.csv     # Main papers CSV
-            └── all_references.csv      # References CSV 
-│   │
-│   ├── resolution/              # Entity resolution and matching
-│   │   ├── __init__.py          # Package initializer
-│   │   ├── matcher.py           # Main orchestration logic for matching references
-│   │   ├── fuzzy_matcher.py     # Fuzzy string matching utilities (title/author similarity)
-│   │   ├── doi_matcher.py       # DOI-based exact matching
-│   │   └── placeholder.py       # Creates placeholder nodes for unmatched references
-│   │
-│   ├── graph/                    # Graph construction and storage
-│   │   ├── __init__.py           # Package initializer
-│   │   ├── builder.py            # Builds NetworkX graph from matched papers
-│   │   ├── storage.py            # Abstract interface for graph storage
-│   │   ├── networkx_storage.py   # In-memory storage using NetworkX
-│   │   ├── neo4j_storage.py      # Neo4j graph database implementation
-│   │   └── sqlite_storage.py     # SQLite relational storage for graphs
-│   │
-│   ├── query/                     # Query and visualization interface
-│   │   ├── __init__.py            # Package initializer
-│   │   ├── cli.py                 # Command-line interface for queries
-│   │   ├── queries.py             # Core query functions (in-degree, out-degree, neighbors)
-│   │   └── visualization.py       # Graph plotting with matplotlib/NetworkX
-│   │
-│   └── analysis/                   # Graph analysis utilities
-│       ├── __init__.py             # Package initializer
-│       ├── statistics.py           # Computes degree distributions, connected components
-│       └── compare_storage.py      # Benchmarks different storage approaches
+├── collect_data.py          # Phase 1: seed collection + citation expansion
+├── extract_references.py    # Phase 2: reference list extraction via EPMC / S2
+├── storedata.py             # Generates papers_metadata.csv + all_references.csv
+├── citation_expander.py     # BFS expansion with relevance + eligibility filters
+├── redownload_pdfs.py       # Detects and repairs broken PDF downloads
+├── debug_pdf.py             # Inspects PDF text content for diagnostics
 │
-├── tests/                          # Testing directory
-│   ├── __init__.py                 # Makes tests a package
-│   ├── test_downloader.py          # Tests for downloader modules
-│   ├── test_parser.py              # Tests for PDF parsing functions
-│   ├── test_matcher.py             # Tests for entity resolution logic
-│   ├── test_graph.py               # Tests for graph construction
-│   └── fixtures/                    # Test data files
-│       ├── sample_paper.pdf        # Small PDF for testing extraction
-│       └── expected_output.json    # Expected metadata for validation
+├── fetchers/                # Source-specific API clients
+│   ├── __init__.py
+│   ├── base_fetcher.py      # Shared rate limiting, HTTP helpers, PDF download
+│   ├── pmc_fetcher.py       # PubMed Central (uses OA service for real PDF URLs)
+│   ├── europepmc_fetcher.py # Europe PMC REST API
+│   ├── arxiv_fetcher.py     # arXiv q-bio categories
+│   └── biorxiv_fetcher.py   # bioRxiv evolutionary biology category
 │
-├── scripts/                         # Executable pipeline scripts
-│   ├── run_pipeline.py              # Master script to run entire pipeline end-to-end
-│   ├── download_corpus.py           # Step 1: Download PDFs from sources
-│   ├── extract_all.py               # Step 2: Process all PDFs and extract metadata
-│   ├── build_graph.py               # Step 3: Build citation graph from extracted data
-│   ├── query_cli.py                  # Interactive query tool for exploring the graph
-│   └── benchmark_storage.py          # Compares performance of storage backends
+├── resolution/              # Entity resolution and matching         [planned]
+│   ├── __init__.py
+│   ├── matcher.py
+│   ├── fuzzy_matcher.py
+│   ├── doi_matcher.py
+│   └── placeholder.py
 │
-└── notebooks/                        # Jupyter notebooks for exploration
-    ├── 01_exploratory_analysis.ipynb # Initial data exploration
-    ├── 02_citation_network_viz.ipynb # Network visualization experiments
-    └── 03_storage_comparison.ipynb   # Detailed storage performance analysis
-```    
+├── graph/                   # Graph construction and storage         [planned]
+│   ├── __init__.py
+│   ├── builder.py
+│   ├── networkx_storage.py
+│   ├── neo4j_storage.py
+│   └── sqlite_storage.py
+│
+├── query/                   # Query and visualization interface      [planned]
+│   ├── __init__.py
+│   ├── cli.py
+│   ├── queries.py
+│   └── visualization.py
+│
+└── analysis/                # Graph analysis utilities               [planned]
+    ├── __init__.py
+    ├── statistics.py
+    └── compare_storage.py
+```
+
 #  Testing and Debugging
 ## Unit Tests
 ### Matcher() for testing exact and fuzzy matches
-Test pipeline on 3 known papers
- Download 3 test PDFs (if not exists)
-Extract metadata
-Build graph
-Verify known citation relationships
-Example: Green 2010 should cite Green 2006
-Assert graph.has_edge('green_2010', 'green_2006')
+Test pipeline on 3 known papers:
+1. Download 3 test PDFs (if not exists)
+2. Extract metadata
+3. Build graph
+4. Verify known citation relationships
 
+Example: Green 2010 should cite Green 2006
+```python
+assert graph.has_edge('green_2010', 'green_2006')
+```
 
 ## Debugging Strategy
 ```
 debug/
 ├── unmatched_references.csv    # References that failed matching
+│                               # (rows in all_references.csv where cited_paper_id is blank)
 ├── parsing_errors.csv          # PDFs that failed extraction
-├── sample_references/           # Random sample for manual inspection
+├── sample_references/          # Random sample for manual inspection
 │   ├── paper_123_refs.txt
 │   └── ...
-└── matching_decisions.log      # Why each match was made/rejected
+└── matching_decisions.log      # resolution_method column in all_references.csv
+                                # records why each match was made/rejected
 ```
 
-Validation Checks:
+### PDF Diagnostics
+```bash
+# Check which PDFs downloaded correctly (broken ones contain "Preparing to download")
+python redownload_pdfs.py --check
+
+# Re-download broken PDFs via PMC OA service + Europe PMC + Unpaywall fallback
+python redownload_pdfs.py
+
+# Inspect raw text content and find reference section headers
+python debug_pdf.py --search "References"
+python debug_pdf.py --pdf data/raw/specific_paper.pdf
+```
+
+### Validation Checks:
 1. No self-citations
-2. All cited papers exist as nodes
-3. Reasonable statistics
-   
+2. All cited papers exist as nodes (or are flagged as placeholders)
+3. Reasonable statistics — check `resolution_method` distribution in `all_references.csv`
+4. All papers in corpus are post-1990 with at least one identifier
+
 #  Running the Pipeline
 ## Quick Start
-bash
-*1. Clone and install*
-git clone https://github.com/yourname/citation-graph-builder
-cd citation-graph-builder
+```bash
+# 1. Install
 pip install -r requirements.txt
+export NCBI_API_KEY=your_key_here   # optional — raises PMC rate limit to 10 req/s
 
-*2. Configure*
-cp config.yaml.example config.yaml
-### Edit config.yaml with our preferences
+# 2. Collect papers (metadata only, no PDFs)
+python collect_data.py --max-papers 200 --skip-pdf --expand-depth 1
 
-*3. Run GROBID (if using)*
-  ```
-    # Run CPU version (simplest)
-    docker run -d --name grobid -p 8070:8070 grobid/grobid:0.8.0
-    # Wait 30 seconds
-    echo "Waiting 30 seconds for GROBID to start..."
-    sleep 30
-    # Test it
-    curl http://localhost:8070/api/isalive
-    # Run script for metadata extraction
-    python data_collection.py --count 5
-    timeout: 30  # seconds
-```
-*4. Download papers*
-python scripts/download_corpus.py --domain "human_evolution" --max-papers 50
+# 3. Extract reference lists via EPMC + Semantic Scholar APIs
+python extract_references.py
 
-*5. Extract metadata*
-python scripts/extract_all.py --method grobid
+# 4. Generate CSVs
+python storedata.py --validate
 
-*6. Build graph*
+# 5. Build graph  [planned]
 python scripts/build_graph.py --storage sqlite
 
-*7. Explore*
+# 6. Explore  [planned]
 python scripts/query_cli.py --interactive
-Configuration Example (config.yaml)
-yaml
+```
+
+### With PDFs (for GROBID / full-text work)
+```bash
+python collect_data.py --max-papers 200 --expand-depth 1
+python redownload_pdfs.py    # fix any broken downloads
+python extract_references.py
+python storedata.py --validate
+```
+
+### Full reset
+```bash
+rm -rf data/
+python collect_data.py --max-papers 200 --skip-pdf --expand-depth 1
+python extract_references.py
+python storedata.py --validate
+```
+
+### expand-depth guide
+| Value | Scope | Recommended |
+|-------|-------|-------------|
+| `0` | Seed papers only (7 papers) | Testing |
+| `1` | Seeds + direct citation neighbours | ✅ Normal use |
+| `2` | Two hops out — grows very fast | Use with low --max-papers |
+
+### Configuration (config.yaml) [planned]
+```yaml
 project:
   name: "human_evolution_citation_graph"
   data_dir: "./data"
 
 acquisition:
+  min_year: 1990
+  require_identifier: true   # must have DOI, PMID, or PMCID
   sources:
     pmc:
       enabled: true
-      rate_limit: 3  # requests/second
-      search_terms:
-        - "human evolution"
-        - "australopithecus"
-        - "neanderthal genome"
+      rate_limit: 3
     arxiv:
       enabled: true
-      categories: ["q-bio.PE"]  # Population Biology
-      
+      categories: ["q-bio.PE"]
+
 extraction:
-  method: "grobid"  # or "pdfplumber"
+  method: "api"          # "api" (default) or "grobid" for PDF parsing
   grobid_url: "http://localhost:8070"
 
 matching:
   thresholds:
     doi: 1.0
-    fuzzy_title: 0.85
+    fuzzy_title: 0.55
   create_placeholders: true
-  
+
 graph:
   storage:
-    primary: "sqlite"  # Options: networkx, sqlite, neo4j
-    compare_with: ["networkx", "neo4j"]  # For benchmark
-  
+    primary: "sqlite"
+    compare_with: ["networkx", "neo4j"]
+
 query:
   visualization:
     max_neighbors: 50
     layout: "spring_layout"
+```
 
-    
 # Expected Outputs
 After running the pipeline, you should have:
 
-Citation Graph Data
+**Citation Graph Data**
+- `data/metadata/papers_metadata.csv` — all papers with 16 metadata columns
+- `data/metadata/all_references.csv` — all citation edges with resolution method
+- `data/graph/nodes.csv` — graph nodes
+- `data/graph/edges.csv` — graph edges
+- `data/graph/graph.gexf` — for Gephi visualization
 
-data/graph/nodes.csv - All papers with metadata
+**Statistics**
+- `reports/statistics.json` — degree distributions, components
+- `reports/storage_comparison.json` — performance benchmarks
 
-data/graph/edges.csv - All citation relationships
-
-data/graph/graph.gexf - For Gephi visualization
-
-Statistics
-
-reports/statistics.json - Degree distributions, components
-
-reports/storage_comparison.json - Performance benchmarks
-
-Query Interface
-
-Command-line tool for exploring the graph
-
-Sample visualizations in notebooks/
+**Query Interface**
+- Command-line tool for exploring the graph
+- Sample visualizations in notebooks/
 
 #  Common Issues and Solutions
 
 | Issue | Symptom | Solution |
 |:------|:--------|:---------|
-| **Rate limiting** | Downloads fail with 429 error | Increase delay between requests in `config.yaml` (e.g., from 1s to 3s) |
-| **GROBID timeout** | Extraction hangs or fails | Reduce PDF size (split large documents), increase timeout in config |
-| **Poor matching** | Many unmatched references | Lower similarity threshold (0.85 → 0.75), check reference parsing quality |
-| **Memory error** | Graph building crashes with MemoryError | Switch from in-memory (NetworkX) to database storage (SQLite/Neo4j) |
-| **Missing PDFs** | Paper not found in repository | Try alternative source (arXiv if PMC fails, or vice versa) |
-| **PDF parsing errors** | Garbled or missing text | Use `pdfplumber` instead of `PyPDF2`, check for scanned images |
-| **Duplicate nodes** | Same paper appears multiple times | Improve deduplication logic, add DOI matching as primary key |
-| **Wrong year extracted** | Paper shows incorrect year | Refine regex patterns, check for multiple dates (submitted vs published) |
-| **Encoding issues** | Special characters (Pääbo) show as garbage | Set UTF-8 encoding, use Unicode normalization |
-| **API quota exceeded** | API returns 403/429 | Add API keys if available, implement exponential backoff |
-
-
+| **Broken PDFs** | File contains "Preparing to download" | Run `python redownload_pdfs.py` — uses PMC OA service for real URLs |
+| **0 rows in all_references.csv** | CSV written before extraction | Run `extract_references.py` before `storedata.py` |
+| **No references found** | Pre-1990 or unindexed paper | Expected — pre-1990 papers are skipped; check `data/collection.log` |
+| **Off-topic papers** | Immunology/oncology in corpus | Edit `INCLUDE_TERMS`/`EXCLUDE_TERMS` in `citation_expander.py` |
+| **No module named fetchers** | Wrong working directory | Run all scripts from the project root |
+| **Rate limiting** | Downloads fail with 429 | Set `NCBI_API_KEY`; fetchers enforce limits automatically |
+| **GROBID timeout** | Extraction hangs | Reduce PDF size, increase timeout in config |
+| **Poor matching** | Many unresolved references | Lower fuzzy threshold (0.55 → 0.45) in `extract_references.py` |
+| **Memory error** | Graph building crashes | Switch from NetworkX to SQLite or Neo4j storage |
+| **Duplicate nodes** | Same paper appears twice | Primary dedup key is DOI; check `make_paper_id()` in `storedata.py` |
+| **Encoding issues** | Special chars (Pääbo) garbled | UTF-8 encoding enforced in all CSV writers |
+| **API quota exceeded** | 403/429 from Semantic Scholar | Add delay; S2 enforces 1 req/s — reduce `--max-papers` |
