@@ -231,14 +231,6 @@ python scripts/build_graph.py --storage sqlite
 python scripts/query_cli.py --interactive
 ```
 
-### With PDFs (for GROBID / full-text work)
-```bash
-python collect_data.py --max-papers 200 --expand-depth 1
-python redownload_pdfs.py    # fix any broken downloads
-python extract_references.py
-python storedata.py --validate
-```
-
 ### Full reset
 ```bash
 rm -rf data/
@@ -251,7 +243,7 @@ python storedata.py --validate
 | Value | Scope | Recommended |
 |-------|-------|-------------|
 | `0` | Seed papers only (7 papers) | Testing |
-| `1` | Seeds + direct citation neighbours | ✅ Normal use |
+| `1` | Seeds + direct citation neighbours | Normal use |
 | `2` | Two hops out — grows very fast | Use with low --max-papers |
 
 ### Configuration (config.yaml) [planned]
