@@ -75,31 +75,25 @@ data/
 ```
 
 ### Phase 2: Reference Extraction
-Reference lists are fetched directly from APIs — no PDF parsing required for this step.
+Reference lists are fetched directly from APIs — no PDF parsing required.
 
-- **Primary:** Europe PMC `/references` endpoint (uses PMID or PMCID; resolves DOI via search first)
-- **Fallback:** Semantic Scholar `/references` endpoint (uses DOI, PMID, or title search)
+- **Primary:** Europe PMC `/references` endpoint. Uses PMID or PMCID directly; if only a DOI is available it resolves it to a PMID via EPMC search first.
+- **Fallback:** Semantic Scholar `/references` endpoint. Uses DOI or PMID if available; if neither exists, performs a title search to get a Semantic Scholar paper ID first.
 
-```bash
-python extract_references.py
-```
-
-### Phase 3: Text Extraction (for full-text analysis)
-*GROBID* (GeneRation Of BIbliographic Data) — open-source Java ML library for parsing PDFs into TEI-encoded XML. Used when full-text or higher-quality reference extraction is needed beyond what the APIs provide.
+Each reference is then resolved to a corpus paper via the cascade in Phase 3. Papers with no structured identifier or published before 1990 are skipped — these are not indexed in either API.
 
 ```bash
-# Run GROBID as Docker container
-docker run -d --name grobid -p 8070:8070 grobid/grobid:0.8.0
-sleep 30
-curl http://localhost:8070/api/isalive
+python extract_references.py           # all papers
+python extract_references.py --limit 10   # test on first 10
+python extract_references.py --force      # re-fetch already-extracted papers
 ```
 
-*Output*: TEI XML with structured metadata and parsed references in `data/processed/`
+*Output*: `all_references.csv` with one row per citation edge, `corpus.json` updated with `references` field on each paper.
 
-### Phase 4: Metadata Extraction
-From GROBID XML extract title, author, year, venue. From API responses these fields are already structured in `corpus.json`.
+### Phase 3: Metadata Extraction
+All metadata (title, authors, year, venue, DOI, PMID, PMCID, abstract, citation count, open-access status) is extracted directly from API responses during collection and stored in `corpus.json`. Running `storedata.py` flattens this into `papers_metadata.csv`.
 
-### Phase 5: Entity Resolution
+### Phase 4: Entity Resolution
 Match a parsed reference to a paper in the corpus using a cascade:
 1. Exact DOI match
 2. Exact PMID / PMCID match
@@ -268,8 +262,7 @@ acquisition:
       categories: ["q-bio.PE"]
 
 extraction:
-  method: "api"          # "api" (default) or "grobid" for PDF parsing
-  grobid_url: "http://localhost:8070"
+  method: "api"          # Europe PMC + Semantic Scholar (no PDF parsing required)
 
 matching:
   thresholds:
@@ -316,7 +309,6 @@ After running the pipeline, you should have:
 | **Off-topic papers** | Immunology/oncology in corpus | Edit `INCLUDE_TERMS`/`EXCLUDE_TERMS` in `citation_expander.py` |
 | **No module named fetchers** | Wrong working directory | Run all scripts from the project root |
 | **Rate limiting** | Downloads fail with 429 | Set `NCBI_API_KEY`; fetchers enforce limits automatically |
-| **GROBID timeout** | Extraction hangs | Reduce PDF size, increase timeout in config |
 | **Poor matching** | Many unresolved references | Lower fuzzy threshold (0.55 → 0.45) in `extract_references.py` |
 | **Memory error** | Graph building crashes | Switch from NetworkX to SQLite or Neo4j storage |
 | **Duplicate nodes** | Same paper appears twice | Primary dedup key is DOI; check `make_paper_id()` in `storedata.py` |
