@@ -16,21 +16,36 @@ This project builds a directed citation graph from research papers in human evol
 | **BioRxiv** | API | Preprint PDFs | 2 requests/second |
 | **Semantic Scholar** | Graph API | Reference lists, metadata | ~1 request/second |
 
-### Seed Papers
-The pipeline starts from these 7 landmark human evolution papers. Only papers published **1990 or later** with at least one structured identifier (DOI / PMID / PMCID) are eligible — pre-1990 papers (e.g. Dart 1925, Darwin 1871) are excluded because EPMC and Semantic Scholar do not carry structured reference lists for them and cannot contribute edges to the citation graph.
+### Query Terms
+Papers are collected by running search queries against the APIs. Default queries are defined in `collect_data.py` and cover the main subfields of human evolution:
 
-| Paper | Year | DOI |
-|-------|------|-----|
-| Morphological affinities of the earliest modern humans | 2010 | 10.1126/science.1193975 |
-| The complete genome sequence of a Neanderthal from the Altai Mountains | 2014 | 10.1038/nature12886 |
-| Genomic history of the Acheulean stone tool-making Homo erectus | 2018 | 10.1126/science.aao6266 |
-| Homo naledi, a new species of the genus Homo from the Dinaledi Chamber | 2015 | 10.7554/eLife.09560 |
-| Fossil hominin shoulders support an African ape-like last common ancestor | 2015 | 10.1073/pnas.1511220112 |
-| The genomic landscape of Neanderthal ancestry in present-day humans | 2014 | 10.1038/nature12961 |
-| A Draft Sequence of the Neandertal Genome | 2010 | 10.1126/science.1188021 |
+```
+"human evolution fossil hominin"         "neanderthal genome ancient dna"
+"homo naledi new species"                "australopithecus paleoanthropology"
+"archaic human introgression admixture"  "modern human origins out of africa"
+"denisovan hominin phylogeny"            "stone tool acheulean oldowan"
+"homo erectus migration dispersal"       "early homo sapiens morphology"
+```
+
+Custom queries can be passed at runtime:
+```bash
+python collect_data.py --queries "your query" "another query"
+```
+
+Only papers published **1990 or later** with at least one structured identifier (DOI / PMID / PMCID) are collected — pre-1990 papers are excluded because EPMC and Semantic Scholar do not carry structured reference lists for them and cannot contribute edges to the citation graph.
+
+### Adding Papers Manually (Dashboard Workflow)
+A specific paper can be added to the corpus at any time by DOI or PMID, without re-running the full collection. This powers the dashboard's "add paper" feature:
+
+```bash
+python collect_data.py --add-doi 10.1038/nature12886
+python collect_data.py --add-pmid 24352235
+```
+
+After adding, re-run `extract_references.py` to fetch its reference list and update the graph edges.
 
 ### Secondary Collection
-All papers cited by these landmark papers, and all papers that cite them (forward/backward citation expansion via Europe PMC and Semantic Scholar APIs).
+All papers cited by the collected papers, and all papers that cite them (forward/backward citation expansion via Europe PMC and Semantic Scholar APIs). Disabled by default; enable with `--expand-depth 1`.
 
 ### Relevance Filtering
 During citation expansion every candidate paper's title + venue + abstract is checked against two keyword sets before entering the corpus. This prevents off-topic papers (immunology, oncology, plant biology, etc.) from being pulled in via citation chains.
@@ -46,9 +61,7 @@ data/
 ├── raw/                    # Original PDFs
 │   ├── homo_naledi_...pdf
 │   └── ...
-├── processed/              # Extracted text/XML
-│   ├── dart_1925_tei.xml   # GROBID output
-│   └── ...
+├── processed/              # Extracted text/XML (reserved for future full-text work)
 ├── metadata/               # Paper information
 │   ├── corpus.json
 │   ├── papers_metadata.csv
@@ -62,16 +75,13 @@ data/
 ##  Preprocessing Plans
 ### Phase 1: Data Collection
 ```
-1. Query source APIs starting from seed papers:
-   - "human evolution" + "homo" + "neanderthal"
-   - Author names from landmark papers
-
-2. Filter: open-access only, published 1990+, must have DOI/PMID/PMCID
-3. Expand citations: fetch papers that cite seeds (forward) and papers seeds cite (backward)
-4. Apply relevance filter on every candidate before adding to corpus
-5. Download PDFs to data/raw/ via PMC OA service (not the redirect /pdf/ URL)
-6. Log all downloads with source, DOI, timestamp in data/collection.log
-7. Implement rate limiting per source (see table above)
+1. Run each query string against all four source APIs (EPMC, PMC, arXiv, bioRxiv)
+2. Filter results: published 1990+, must have DOI/PMID/PMCID
+3. Apply relevance filter (INCLUDE_TERMS / EXCLUDE_TERMS in citation_expander.py)
+4. Deduplicate across queries by DOI/PMID
+5. Optionally download PDFs via PMC OA service (--skip-pdf to collect metadata only)
+6. Log all results with source, DOI, timestamp in data/collection.log
+7. Optionally expand citations (--expand-depth 1) to pull in related papers
 ```
 
 ### Phase 2: Reference Extraction
