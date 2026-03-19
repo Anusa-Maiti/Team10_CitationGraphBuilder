@@ -1,0 +1,56 @@
+#  Citation Graph Builder — Project Report
+
+## 1. Project Objectives
+The project aims to construct and analyze a **citation graph** from academic papers by representing papers as nodes and citations as directed edges. It converts unstructured bibliographic data into a structured network to study influence, citation patterns, and research connectivity.
+
+---
+
+## 2. Steps Taken
+1. **Data Collection** – Gather paper metadata (PDFs/datasets/APIs)  
+2. **Text Parsing** – Extract titles, authors, and references  
+3. **Reference Matching** – Use DOI matching and string similarity  
+4. **Graph Construction** – Create directed graph (nodes = papers, edges = citations)  
+5. **Storage** – Save as adjacency structures or graph files  
+6. **Analysis & Visualization** – Compute metrics and visualize network  
+
+---
+
+## 3. Algorithms / Methods
+- **Graph Model:** G = (V, E), where V = papers, E = citations  
+- **Matching Techniques:** DOI matching, fuzzy/string matching  
+- **Metrics:**  
+  - In-degree (citations received)  
+  - Out-degree (references made)  
+  - Centrality (degree, betweenness)  
+
+**Pipeline:**  
+`Raw Data → Parsing → Cleaning → Matching → Graph → Analysis`
+
+---
+
+## 4. Current Status
+- ✔ Parsing and preprocessing implemented  
+- ✔ Basic graph constructed  
+- ⏳ Improving matching accuracy  
+- ⏳ Visualization and scaling in progress  
+
+---
+
+## 5. Team Work Distribution
+- Anusa    :
+- Aritra   :
+- Aditi    :
+- Harshidh :
+---
+
+## 6. Expected Output
+- Complete citation graph  
+- Node-edge dataset  
+- Key metrics (influential papers)  
+- Graph visualizations  
+- Insights into research trends  
+
+---
+
+## 7. Conclusion
+The project applies **graph theory and data processing** to model citation networks, enabling analysis of knowledge flow and identification of influential research.
