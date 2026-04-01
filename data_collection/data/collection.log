@@ -1,0 +1,345 @@
+2026-03-18 20:48:02,366  INFO      Directory structure ready.
+2026-03-18 20:48:02,366  INFO      === Phase 1: Collecting seed papers ===
+2026-03-18 20:48:02,367  INFO      Fetching seed: Morphological affinities of the earliest modern humans (2010)
+2026-03-18 20:48:05,808  WARNING     ✗ No fetcher succeeded for: Morphological affinities of the earliest modern humans
+2026-03-18 20:48:05,808  INFO      Fetching seed: The complete genome sequence of a Neanderthal from the Altai (2014)
+2026-03-18 20:48:25,025  WARNING     ✗ No fetcher succeeded for: The complete genome sequence of a Neanderthal from the Altai
+2026-03-18 20:48:25,026  INFO      Fetching seed: Genomic history of the Acheulean stone tool-making Homo erec (2018)
+2026-03-18 20:48:28,470  INFO        Downloading PDF: https://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_pdf/4b/f2/nihpp-2025.06.24.660721v2.PMC12262289.pdf
+2026-03-18 20:48:31,830  INFO        Saved PDF: data/raw/metaglimpse_meta_imputation_of_low_coverage_sequencing_data_.pdf (968.1 KB)
+2026-03-18 20:48:31,832  INFO        ✓ PMCFetcher: data/raw/metaglimpse_meta_imputation_of_low_coverage_sequencing_data_.pdf
+2026-03-18 20:48:31,833  INFO      Fetching seed: Homo naledi, a new species of the genus Homo from the Dinale (2015)
+2026-03-18 20:48:34,105  INFO        Downloading PDF: https://europepmc.org/articles/pmc4559886/pdf/pmc4559886.pdf
+2026-03-18 20:48:38,389  INFO        Downloading PDF: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4559886/pdf/
+2026-03-18 20:48:40,060  INFO        Saved PDF: data/raw/homo_naledi_a_new_species_of_the_genus_homo_from_the_dinaled_pmc.pdf (1.8 KB)
+2026-03-18 20:48:40,062  INFO        ✓ EuropePMCFetcher: data/raw/homo_naledi_a_new_species_of_the_genus_homo_from_the_dinaled_pmc.pdf
+2026-03-18 20:48:40,062  INFO      Fetching seed: Fossil hominin shoulders support an African ape-like last co (2015)
+2026-03-18 20:48:42,054  INFO        Downloading PDF: https://europepmc.org/articles/pmc4586873/pdf/pmc4586873.pdf
+2026-03-18 20:48:43,297  INFO        Downloading PDF: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4586873/pdf/
+2026-03-18 20:48:45,074  INFO        Saved PDF: data/raw/fossil_hominin_shoulders_support_an_african_ape_like_last_co_pmc.pdf (1.8 KB)
+2026-03-18 20:48:45,076  INFO        ✓ EuropePMCFetcher: data/raw/fossil_hominin_shoulders_support_an_african_ape_like_last_co_pmc.pdf
+2026-03-18 20:48:45,076  INFO      Fetching seed: The genomic landscape of Neanderthal ancestry in present-day (2014)
+2026-03-18 20:48:46,956  INFO        Downloading PDF: https://europepmc.org/articles/pmc4072735/pdf/pmc4072735.pdf
+2026-03-18 20:48:48,315  INFO        Downloading PDF: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4072735/pdf/
+2026-03-18 20:48:49,982  INFO        Saved PDF: data/raw/the_genomic_landscape_of_neanderthal_ancestry_in_present_day_pmc.pdf (1.8 KB)
+2026-03-18 20:48:49,984  INFO        ✓ EuropePMCFetcher: data/raw/the_genomic_landscape_of_neanderthal_ancestry_in_present_day_pmc.pdf
+2026-03-18 20:48:49,985  INFO      Fetching seed: A Draft Sequence of the Neandertal Genome (2010)
+2026-03-18 20:48:54,993  INFO        Downloading PDF: https://europepmc.org/articles/pmc5100745/pdf/pmc5100745.pdf
+2026-03-18 20:48:56,248  INFO        Downloading PDF: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5100745/pdf/
+2026-03-18 20:48:58,237  INFO        Saved PDF: data/raw/a_draft_sequence_of_the_neandertal_genome_pmc.pdf (1.8 KB)
+2026-03-18 20:48:58,239  INFO        ✓ EuropePMCFetcher: data/raw/a_draft_sequence_of_the_neandertal_genome_pmc.pdf
+2026-03-18 20:48:58,241  INFO      Corpus saved: 7 papers → data/metadata/corpus.json
+2026-03-18 20:48:58,242  INFO      === Phase 2: Expanding citations (depth=1) ===
+2026-03-18 20:48:58,242  INFO      Expansion depth 1: frontier size = 7
+2026-03-18 20:49:03,352  INFO        + Added: Removal of deaminated cytosines and detection of in vivo methylation i
+2026-03-18 20:49:03,352  INFO        + Added: A high-coverage genome sequence from an archaic Denisovan individual.
+2026-03-18 20:49:03,353  INFO        + Added: Archaic human ancestry in East Asia.
+2026-03-18 20:49:03,353  INFO        + Added: Genetic history of an archaic hominin group from Denisova Cave in Sibe
+2026-03-18 20:49:03,353  INFO        + Added: Higher levels of neanderthal ancestry in East Asians than in Europeans
+2026-03-18 20:49:03,353  INFO        + Added: A draft sequence of the Neandertal genome.
+2026-03-18 20:49:03,353  INFO        + Added: Revising the human mutation rate: implications for understanding human
+2026-03-18 20:49:03,353  INFO        + Added: Out of Africa: modern human origins special feature: the origin of Nea
+2026-03-18 20:49:03,353  INFO        + Added: The shaping of modern human immune systems by multiregional admixture 
+2026-03-18 20:49:03,354  INFO        + Added: DNA sequences from multiple amplifications reveal artifacts induced by
+2026-03-18 20:49:03,354  INFO        + Added: The date of interbreeding between Neandertals and modern humans.
+2026-03-18 20:49:03,354  INFO        + Added: Ancient structure in Africa unlikely to explain Neanderthal and non-Af
+2026-03-18 20:49:03,354  INFO        + Added: A complete Neandertal mitochondrial genome sequence determined by high
+2026-03-18 20:49:03,354  INFO        + Added: Generation times in wild chimpanzees and gorillas suggest earlier dive
+2026-03-18 20:49:03,354  INFO        + Added: Remains of Homo erectus from Bouri, Middle Awash, Ethiopia.
+2026-03-18 20:49:03,354  INFO        + Added: DNA analysis of an early modern human from Tianyuan Cave, China.
+2026-03-18 20:49:03,354  INFO        + Added: The complete mitochondrial DNA genome of an unknown hominin from south
+2026-03-18 20:49:03,354  INFO        + Added: Genomic runs of homozygosity record population history and consanguini
+2026-03-18 20:49:03,354  INFO        + Added: Great ape genetic diversity and population history.
+2026-03-18 20:49:03,354  INFO        + Added: Targeted retrieval and analysis of five Neandertal mtDNA genomes.
+2026-03-18 20:49:03,354  INFO        + Added: Denisova admixture and the first modern human dispersals into Southeas
+2026-03-18 20:49:03,355  INFO        + Added: Patterns of damage in genomic DNA sequences from a Neandertal.
+2026-03-18 20:49:03,355  INFO        + Added: Inference of human population history from individual whole-genome seq
+2026-03-18 20:49:03,355  INFO        + Added: Effect of ancient population structure on the degree of polymorphism s
+2026-03-18 20:49:03,355  INFO        + Added: Analysis of high-throughput ancient DNA sequencing data.
+2026-03-18 20:49:03,355  INFO        + Added: Human-specific lncRNAs contributed critically to human evolution by di
+2026-03-18 20:49:03,355  INFO        + Added: Assessing the Potential of Ancient Protein Sequences in the Study of H
+2026-03-18 20:49:03,355  INFO        + Added: Palaeoanthropological evidence from China is changing the picture of h
+2026-03-18 20:49:03,355  INFO        + Added: The dentognathic material of the Neanderthals from Chagyrskaya (Altai,
+2026-03-18 20:49:03,355  INFO        + Added: Introgressed mitochondrial fragments from archaic hominins alter nucle
+2026-03-18 20:49:03,355  INFO        + Added: Recent advances in methods to characterize archaic introgression in mo
+2026-03-18 20:49:03,355  INFO        + Added: sedimix: a workflow for the analysis of hominin nuclear DNA sequences 
+2026-03-18 20:49:03,355  INFO        + Added: Hybrid Legacies: Evolutionary Consequences of Neandertal Introgression
+2026-03-18 20:49:03,355  INFO        + Added: enhancer3D: 3D chromatin structures and enhancer-promoter distance pro
+2026-03-18 20:49:03,355  INFO        + Added: Pathways at the Iberian crossroads: Dynamic modeling of the middle-upp
+2026-03-18 20:49:03,355  INFO        + Added: Ancient genomes illuminate the origins and dynamic history of East Asi
+2026-03-18 20:49:03,356  INFO        + Added: Ancient genomes give insight into 160,000 years of East Asian populati
+2026-03-18 20:49:03,356  INFO        + Added: Adaptive introgression in modern human circadian rhythm genes.
+2026-03-18 20:49:03,356  INFO        + Added: Human Evolution in Backwaters, Satellites, and Republics: How Politica
+2026-03-18 20:49:03,356  INFO        + Added: Neanderthal-derived variants increase SOX9 enhancer activity in cranio
+2026-03-18 20:49:03,356  INFO        + Added: A new late Neanderthal from Crimea reveals long-distance connections a
+2026-03-18 20:49:03,356  INFO        + Added: Genomic insights into population structure, adaptation, and archaic in
+2026-03-18 20:49:03,356  INFO        + Added: A maternal-fetal PIEZO1 incompatibility as a barrier to Neanderthal-mo
+2026-03-18 20:49:03,358  INFO      Corpus saved: 50 papers → data/metadata/corpus.json
+2026-03-18 20:49:03,358  INFO      === Phase 3: Generating metadata CSVs ===
+2026-03-18 20:49:03,360  INFO      Wrote    50 rows → data/metadata/papers_metadata.csv
+2026-03-18 20:49:03,360  INFO      Wrote     0 rows → data/metadata/all_references.csv
+2026-03-18 20:49:03,360  INFO      === Collection complete: 50 papers in corpus ===
+2026-03-18 20:49:03,711  INFO      
+PDF status: 1 good / 4 broken / 45 no PDF
+2026-03-18 20:49:03,712  INFO      Fixing: Homo naledi, a new species of the genus Homo from the Dinale
+2026-03-18 20:49:05,150  INFO        Downloading: https://europepmc.org/articles/pmc4559886/pdf/pmc4559886.pdf
+2026-03-18 20:49:11,194  WARNING     Could not fix (tried: 1 sources)
+2026-03-18 20:49:11,195  INFO      Fixing: Fossil hominin shoulders support an African ape-like last co
+2026-03-18 20:49:12,855  INFO        Downloading: https://europepmc.org/articles/pmc4586873/pdf/pmc4586873.pdf
+2026-03-18 20:49:15,586  WARNING     Could not fix (tried: 1 sources)
+2026-03-18 20:49:15,587  INFO      Fixing: The genomic landscape of Neanderthal ancestry in present-day
+2026-03-18 20:49:16,930  INFO        Downloading: https://europepmc.org/articles/pmc4072735/pdf/pmc4072735.pdf
+2026-03-18 20:49:20,483  WARNING     Could not fix (tried: 1 sources)
+2026-03-18 20:49:20,484  INFO      Fixing: A draft sequence of the Neandertal genome.
+2026-03-18 20:49:21,731  INFO        Downloading: https://europepmc.org/articles/pmc5100745/pdf/pmc5100745.pdf
+2026-03-18 20:49:24,552  WARNING     Could not fix (tried: 1 sources)
+2026-03-18 20:49:24,555  INFO      
+Fixed 0/4 broken PDFs
+2026-03-18 20:49:24,555  INFO      Now run: python extract_references.py --force
+2026-03-18 20:49:24,804  INFO      Loaded 50 papers
+2026-03-18 20:49:24,805  INFO      Fetching: Morphological affinities of the earliest modern humans
+2026-03-18 20:49:26,245  INFO        24 refs via epmc
+2026-03-18 20:49:26,255  INFO      Fetching: The complete genome sequence of a Neanderthal from the Altai Moun
+2026-03-18 20:49:27,796  INFO        42 refs via epmc
+2026-03-18 20:49:27,803  INFO      Fetching: MetaGLIMPSE: Meta Imputation of Low Coverage Sequencing Data for 
+2026-03-18 20:49:29,147  INFO        EPMC empty → Semantic Scholar
+2026-03-18 20:49:32,428  INFO        55 refs via s2
+2026-03-18 20:49:32,443  INFO      Fetching: Homo naledi, a new species of the genus Homo from the Dinaledi Ch
+2026-03-18 20:49:33,894  INFO        EPMC empty → Semantic Scholar
+2026-03-18 20:49:36,465  INFO        78 refs via s2
+2026-03-18 20:49:36,491  INFO      Fetching: Fossil hominin shoulders support an African ape-like last common 
+2026-03-18 20:49:37,915  INFO        EPMC empty → Semantic Scholar
+2026-03-18 20:49:40,016  INFO        63 refs via s2
+2026-03-18 20:49:40,038  INFO      Fetching: The genomic landscape of Neanderthal ancestry in present-day huma
+2026-03-18 20:49:41,571  INFO        EPMC empty → Semantic Scholar
+2026-03-18 20:49:44,504  INFO        42 refs via s2
+2026-03-18 20:49:44,520  INFO      Fetching: A draft sequence of the Neandertal genome.
+2026-03-18 20:49:46,065  INFO        EPMC empty → Semantic Scholar
+2026-03-18 20:49:48,469  WARNING     No references found
+2026-03-18 20:49:48,469  INFO      Fetching: Removal of deaminated cytosines and detection of in vivo methylat
+2026-03-18 20:49:50,007  INFO        40 refs via epmc
+2026-03-18 20:49:50,019  INFO      Fetching: A high-coverage genome sequence from an archaic Denisovan individ
+2026-03-18 20:49:52,260  INFO        196 refs via epmc
+2026-03-18 20:49:52,308  INFO      Fetching: Archaic human ancestry in East Asia.
+2026-03-18 20:49:54,233  INFO        61 refs via epmc
+2026-03-18 20:49:54,253  INFO      Fetching: Genetic history of an archaic hominin group from Denisova Cave in
+2026-03-18 20:49:55,786  INFO        32 refs via epmc
+2026-03-18 20:49:55,795  INFO      Fetching: Higher levels of neanderthal ancestry in East Asians than in Euro
+2026-03-18 20:49:57,347  INFO        38 refs via epmc
+2026-03-18 20:49:57,358  INFO      Fetching: A draft sequence of the Neandertal genome.
+2026-03-18 20:49:59,197  INFO        81 refs via epmc
+2026-03-18 20:49:59,220  INFO      Fetching: Revising the human mutation rate: implications for understanding 
+2026-03-18 20:50:00,999  INFO        62 refs via epmc
+2026-03-18 20:50:01,019  INFO      Fetching: Out of Africa: modern human origins special feature: the origin o
+2026-03-18 20:50:02,711  INFO        32 refs via epmc
+2026-03-18 20:50:02,723  INFO      Fetching: The shaping of modern human immune systems by multiregional admix
+2026-03-18 20:50:04,259  INFO        31 refs via epmc
+2026-03-18 20:50:04,271  INFO      Fetching: DNA sequences from multiple amplifications reveal artifacts induc
+2026-03-18 20:50:06,013  INFO        26 refs via epmc
+2026-03-18 20:50:06,023  INFO      Fetching: The date of interbreeding between Neandertals and modern humans.
+2026-03-18 20:50:07,484  INFO        43 refs via epmc
+2026-03-18 20:50:07,497  INFO      Fetching: Ancient structure in Africa unlikely to explain Neanderthal and n
+2026-03-18 20:50:08,991  INFO        26 refs via epmc
+2026-03-18 20:50:08,998  INFO      Fetching: A complete Neandertal mitochondrial genome sequence determined by
+2026-03-18 20:50:10,712  INFO        64 refs via epmc
+2026-03-18 20:50:10,737  INFO      Fetching: Generation times in wild chimpanzees and gorillas suggest earlier
+2026-03-18 20:50:12,779  INFO        48 refs via epmc
+2026-03-18 20:50:12,795  INFO      Fetching: Remains of Homo erectus from Bouri, Middle Awash, Ethiopia.
+2026-03-18 20:50:14,158  INFO        30 refs via epmc
+2026-03-18 20:50:14,163  INFO      Fetching: DNA analysis of an early modern human from Tianyuan Cave, China.
+2026-03-18 20:50:15,618  INFO        38 refs via epmc
+2026-03-18 20:50:15,629  INFO      Fetching: The complete mitochondrial DNA genome of an unknown hominin from 
+2026-03-18 20:50:17,005  INFO        30 refs via epmc
+2026-03-18 20:50:17,013  INFO      Fetching: Genomic runs of homozygosity record population history and consan
+2026-03-18 20:50:18,539  INFO        26 refs via epmc
+2026-03-18 20:50:18,550  INFO      Fetching: Great ape genetic diversity and population history.
+2026-03-18 20:50:20,320  INFO        28 refs via epmc
+2026-03-18 20:50:20,331  INFO      Fetching: Targeted retrieval and analysis of five Neandertal mtDNA genomes.
+2026-03-18 20:50:22,070  INFO        30 refs via epmc
+2026-03-18 20:50:22,080  INFO      Fetching: Denisova admixture and the first modern human dispersals into Sou
+2026-03-18 20:50:23,555  INFO        30 refs via epmc
+2026-03-18 20:50:23,567  INFO      Fetching: Patterns of damage in genomic DNA sequences from a Neandertal.
+2026-03-18 20:50:24,957  INFO        31 refs via epmc
+2026-03-18 20:50:24,968  INFO      Fetching: Inference of human population history from individual whole-genom
+2026-03-18 20:50:25,373  INFO        EPMC empty → Semantic Scholar
+2026-03-18 20:50:27,600  WARNING     No references found
+2026-03-18 20:50:27,601  INFO      Fetching: Effect of ancient population structure on the degree of polymorph
+2026-03-18 20:50:29,063  INFO        43 refs via epmc
+2026-03-18 20:50:29,077  INFO      Fetching: Analysis of high-throughput ancient DNA sequencing data.
+2026-03-18 20:50:31,100  INFO        78 refs via epmc
+2026-03-18 20:50:31,121  INFO      Fetching: Human-specific lncRNAs contributed critically to human evolution 
+2026-03-18 20:50:36,304  INFO        103 refs via epmc
+2026-03-18 20:50:36,333  INFO      Fetching: Assessing the Potential of Ancient Protein Sequences in the Study
+2026-03-18 20:50:38,335  INFO        136 refs via epmc
+2026-03-18 20:50:38,372  INFO      Fetching: Palaeoanthropological evidence from China is changing the picture
+2026-03-18 20:50:39,942  INFO        39 refs via epmc
+2026-03-18 20:50:39,962  INFO      Fetching: The dentognathic material of the Neanderthals from Chagyrskaya (A
+2026-03-18 20:50:41,923  INFO        169 refs via epmc
+2026-03-18 20:50:41,966  INFO      Fetching: Introgressed mitochondrial fragments from archaic hominins alter 
+2026-03-18 20:50:43,854  INFO        79 refs via epmc
+2026-03-18 20:50:43,879  INFO      Fetching: Recent advances in methods to characterize archaic introgression 
+2026-03-18 20:50:46,072  INFO        196 refs via epmc
+2026-03-18 20:50:46,120  INFO      Fetching: sedimix: a workflow for the analysis of hominin nuclear DNA seque
+2026-03-18 20:50:47,600  INFO        24 refs via epmc
+2026-03-18 20:50:47,610  INFO      Fetching: Hybrid Legacies: Evolutionary Consequences of Neandertal Introgre
+2026-03-18 20:50:49,436  INFO        118 refs via epmc
+2026-03-18 20:50:49,460  INFO      Fetching: enhancer3D: 3D chromatin structures and enhancer-promoter distanc
+2026-03-18 20:50:51,302  INFO        40 refs via epmc
+2026-03-18 20:50:51,318  INFO      Fetching: Pathways at the Iberian crossroads: Dynamic modeling of the middl
+2026-03-18 20:50:52,943  INFO        42 refs via epmc
+2026-03-18 20:50:52,958  INFO      Fetching: Ancient genomes illuminate the origins and dynamic history of Eas
+2026-03-18 20:50:54,697  INFO        63 refs via epmc
+2026-03-18 20:50:54,714  INFO      Fetching: Ancient genomes give insight into 160,000 years of East Asian pop
+2026-03-18 20:50:56,884  INFO        129 refs via epmc
+2026-03-18 20:50:56,919  INFO      Fetching: Adaptive introgression in modern human circadian rhythm genes.
+2026-03-18 20:50:59,150  INFO        129 refs via epmc
+2026-03-18 20:50:59,185  INFO      Fetching: Human Evolution in Backwaters, Satellites, and Republics: How Pol
+2026-03-18 20:51:00,753  INFO        18 refs via epmc
+2026-03-18 20:51:00,758  INFO      Fetching: Neanderthal-derived variants increase SOX9 enhancer activity in c
+2026-03-18 20:51:02,664  INFO        107 refs via epmc
+2026-03-18 20:51:02,696  INFO      Fetching: A new late Neanderthal from Crimea reveals long-distance connecti
+2026-03-18 20:51:04,803  INFO        50 refs via epmc
+2026-03-18 20:51:04,821  INFO      Fetching: Genomic insights into population structure, adaptation, and archa
+2026-03-18 20:51:06,763  INFO        93 refs via epmc
+2026-03-18 20:51:06,790  INFO      Fetching: A maternal-fetal PIEZO1 incompatibility as a barrier to Neanderth
+2026-03-18 20:51:08,103  INFO        EPMC empty → Semantic Scholar
+2026-03-18 20:51:10,679  WARNING     No references found
+2026-03-18 20:51:10,718  INFO      Wrote 2983 rows → data/metadata/all_references.csv
+2026-03-18 20:51:10,755  INFO      corpus.json updated
+2026-03-18 21:33:35,650  INFO      === Phase 1: Collecting papers via 10 queries ===
+2026-03-18 21:33:35,650  INFO      Reached max_papers=50, stopping query collection.
+2026-03-18 21:33:35,687  INFO      Corpus saved: 50 papers → data/metadata/corpus.json
+2026-03-18 21:33:35,687  INFO      === Phase 2: Expanding citations (depth=1) ===
+2026-03-18 21:33:35,687  INFO      Reached max_papers=50 at depth 0
+2026-03-18 21:33:35,726  INFO      Corpus saved: 50 papers → data/metadata/corpus.json
+2026-03-18 21:33:35,726  INFO      === Phase 3: Generating metadata CSVs ===
+2026-03-18 21:33:35,728  INFO      Wrote    50 rows → data/metadata/papers_metadata.csv
+2026-03-18 21:33:36,240  INFO      Wrote  2983 rows → data/metadata/all_references.csv
+2026-03-18 21:33:36,241  INFO      === Done: 50 papers in corpus ===
+2026-03-18 21:33:45,331  INFO      
+PDF status: 1 good / 4 broken / 45 no PDF
+2026-03-18 21:33:45,331  INFO      Fixing: Homo naledi, a new species of the genus Homo from the Dinale
+2026-03-18 21:33:46,761  INFO        Downloading: https://europepmc.org/articles/pmc4559886/pdf/pmc4559886.pdf
+2026-03-18 21:33:53,711  WARNING     Could not fix (tried: 1 sources)
+2026-03-18 21:33:53,712  INFO      Fixing: Fossil hominin shoulders support an African ape-like last co
+2026-03-18 21:33:55,109  INFO        Downloading: https://europepmc.org/articles/pmc4586873/pdf/pmc4586873.pdf
+2026-03-18 21:33:58,201  WARNING     Could not fix (tried: 1 sources)
+2026-03-18 21:33:58,202  INFO      Fixing: The genomic landscape of Neanderthal ancestry in present-day
+2026-03-18 21:33:59,438  INFO        Downloading: https://europepmc.org/articles/pmc4072735/pdf/pmc4072735.pdf
+2026-03-18 21:34:02,225  WARNING     Could not fix (tried: 1 sources)
+2026-03-18 21:34:02,226  INFO      Fixing: A draft sequence of the Neandertal genome.
+2026-03-18 21:34:03,664  INFO        Downloading: https://europepmc.org/articles/pmc5100745/pdf/pmc5100745.pdf
+2026-03-18 21:34:06,675  WARNING     Could not fix (tried: 1 sources)
+2026-03-18 21:34:06,723  INFO      
+Fixed 0/4 broken PDFs
+2026-03-18 21:34:06,723  INFO      Now run: python extract_references.py --force
+2026-03-18 21:34:37,416  INFO      Loaded 50 papers
+2026-03-18 21:34:37,416  INFO      Fetching: Morphological affinities of the earliest modern humans
+2026-03-18 21:34:39,026  INFO        24 refs via epmc
+2026-03-18 21:34:39,035  INFO      Fetching: The complete genome sequence of a Neanderthal from the Altai Moun
+2026-03-18 21:34:40,737  INFO        42 refs via epmc
+2026-03-18 21:34:40,744  INFO      Fetching: MetaGLIMPSE: Meta Imputation of Low Coverage Sequencing Data for 
+2026-03-18 21:34:42,108  INFO        EPMC empty → Semantic Scholar
+2026-03-18 21:34:45,511  INFO        55 refs via s2
+2026-03-18 21:34:45,528  INFO      Fetching: Homo naledi, a new species of the genus Homo from the Dinaledi Ch
+2026-03-18 21:34:46,952  INFO        EPMC empty → Semantic Scholar
+2026-03-18 21:34:49,942  INFO        78 refs via s2
+2026-03-18 21:34:49,969  INFO      Fetching: Fossil hominin shoulders support an African ape-like last common 
+2026-03-18 21:34:51,384  INFO        EPMC empty → Semantic Scholar
+2026-03-18 21:34:54,064  INFO        63 refs via s2
+2026-03-18 21:34:54,085  INFO      Fetching: The genomic landscape of Neanderthal ancestry in present-day huma
+2026-03-18 21:34:55,713  INFO        EPMC empty → Semantic Scholar
+2026-03-18 21:34:58,807  INFO        42 refs via s2
+2026-03-18 21:34:58,819  INFO      Fetching: A draft sequence of the Neandertal genome.
+2026-03-18 21:35:00,351  INFO        EPMC empty → Semantic Scholar
+2026-03-18 21:35:02,721  WARNING     No references found
+2026-03-18 21:35:02,722  INFO      Fetching: Removal of deaminated cytosines and detection of in vivo methylat
+2026-03-18 21:35:04,253  INFO        40 refs via epmc
+2026-03-18 21:35:04,264  INFO      Fetching: A high-coverage genome sequence from an archaic Denisovan individ
+2026-03-18 21:35:06,743  INFO        196 refs via epmc
+2026-03-18 21:35:06,791  INFO      Fetching: Archaic human ancestry in East Asia.
+2026-03-18 21:35:08,490  INFO        61 refs via epmc
+2026-03-18 21:35:08,508  INFO      Fetching: Genetic history of an archaic hominin group from Denisova Cave in
+2026-03-18 21:35:10,051  INFO        32 refs via epmc
+2026-03-18 21:35:10,059  INFO      Fetching: Higher levels of neanderthal ancestry in East Asians than in Euro
+2026-03-18 21:35:11,612  INFO        38 refs via epmc
+2026-03-18 21:35:11,625  INFO      Fetching: A draft sequence of the Neandertal genome.
+2026-03-18 21:35:13,259  INFO        81 refs via epmc
+2026-03-18 21:35:13,282  INFO      Fetching: Revising the human mutation rate: implications for understanding 
+2026-03-18 21:35:14,883  INFO        62 refs via epmc
+2026-03-18 21:35:14,901  INFO      Fetching: Out of Africa: modern human origins special feature: the origin o
+2026-03-18 21:35:16,547  INFO        32 refs via epmc
+2026-03-18 21:35:16,558  INFO      Fetching: The shaping of modern human immune systems by multiregional admix
+2026-03-18 21:35:18,205  INFO        31 refs via epmc
+2026-03-18 21:35:18,216  INFO      Fetching: DNA sequences from multiple amplifications reveal artifacts induc
+2026-03-18 21:35:19,838  INFO        26 refs via epmc
+2026-03-18 21:35:19,848  INFO      Fetching: The date of interbreeding between Neandertals and modern humans.
+2026-03-18 21:35:21,395  INFO        43 refs via epmc
+2026-03-18 21:35:21,408  INFO      Fetching: Ancient structure in Africa unlikely to explain Neanderthal and n
+2026-03-18 21:35:22,880  INFO        26 refs via epmc
+2026-03-18 21:35:22,889  INFO      Fetching: A complete Neandertal mitochondrial genome sequence determined by
+2026-03-18 21:35:24,980  INFO        64 refs via epmc
+2026-03-18 21:35:25,000  INFO      Fetching: Generation times in wild chimpanzees and gorillas suggest earlier
+2026-03-18 21:35:26,736  INFO        48 refs via epmc
+2026-03-18 21:35:26,753  INFO      Fetching: Remains of Homo erectus from Bouri, Middle Awash, Ethiopia.
+2026-03-18 21:35:28,195  INFO        30 refs via epmc
+2026-03-18 21:35:28,200  INFO      Fetching: DNA analysis of an early modern human from Tianyuan Cave, China.
+2026-03-18 21:35:29,752  INFO        38 refs via epmc
+2026-03-18 21:35:29,762  INFO      Fetching: The complete mitochondrial DNA genome of an unknown hominin from 
+2026-03-18 21:35:31,484  INFO        30 refs via epmc
+2026-03-18 21:35:31,491  INFO      Fetching: Genomic runs of homozygosity record population history and consan
+2026-03-18 21:35:32,878  INFO        26 refs via epmc
+2026-03-18 21:35:32,889  INFO      Fetching: Great ape genetic diversity and population history.
+2026-03-18 21:35:34,451  INFO        28 refs via epmc
+2026-03-18 21:35:34,460  INFO      Fetching: Targeted retrieval and analysis of five Neandertal mtDNA genomes.
+2026-03-18 21:35:36,108  INFO        30 refs via epmc
+2026-03-18 21:35:36,118  INFO      Fetching: Denisova admixture and the first modern human dispersals into Sou
+2026-03-18 21:35:37,562  INFO        30 refs via epmc
+2026-03-18 21:35:37,572  INFO      Fetching: Patterns of damage in genomic DNA sequences from a Neandertal.
+2026-03-18 21:35:39,111  INFO        31 refs via epmc
+2026-03-18 21:35:39,122  INFO      Fetching: Inference of human population history from individual whole-genom
+2026-03-18 21:35:40,654  INFO        30 refs via epmc
+2026-03-18 21:35:40,665  INFO      Fetching: Effect of ancient population structure on the degree of polymorph
+2026-03-18 21:35:42,243  INFO        43 refs via epmc
+2026-03-18 21:35:42,257  INFO      Fetching: Analysis of high-throughput ancient DNA sequencing data.
+2026-03-18 21:35:43,943  INFO        78 refs via epmc
+2026-03-18 21:35:43,963  INFO      Fetching: Human-specific lncRNAs contributed critically to human evolution 
+2026-03-18 21:35:46,011  INFO        103 refs via epmc
+2026-03-18 21:35:46,039  INFO      Fetching: Assessing the Potential of Ancient Protein Sequences in the Study
+2026-03-18 21:35:48,259  INFO        136 refs via epmc
+2026-03-18 21:35:48,292  INFO      Fetching: Palaeoanthropological evidence from China is changing the picture
+2026-03-18 21:35:49,919  INFO        39 refs via epmc
+2026-03-18 21:35:49,933  INFO      Fetching: The dentognathic material of the Neanderthals from Chagyrskaya (A
+2026-03-18 21:35:52,094  INFO        169 refs via epmc
+2026-03-18 21:35:52,134  INFO      Fetching: Introgressed mitochondrial fragments from archaic hominins alter 
+2026-03-18 21:35:53,968  INFO        79 refs via epmc
+2026-03-18 21:35:53,991  INFO      Fetching: Recent advances in methods to characterize archaic introgression 
+2026-03-18 21:35:56,319  INFO        196 refs via epmc
+2026-03-18 21:35:56,366  INFO      Fetching: sedimix: a workflow for the analysis of hominin nuclear DNA seque
+2026-03-18 21:35:57,858  INFO        24 refs via epmc
+2026-03-18 21:35:57,866  INFO      Fetching: Hybrid Legacies: Evolutionary Consequences of Neandertal Introgre
+2026-03-18 21:35:59,671  INFO        118 refs via epmc
+2026-03-18 21:35:59,694  INFO      Fetching: enhancer3D: 3D chromatin structures and enhancer-promoter distanc
+2026-03-18 21:36:01,361  INFO        40 refs via epmc
+2026-03-18 21:36:01,376  INFO      Fetching: Pathways at the Iberian crossroads: Dynamic modeling of the middl
+2026-03-18 21:36:03,098  INFO        42 refs via epmc
+2026-03-18 21:36:03,113  INFO      Fetching: Ancient genomes illuminate the origins and dynamic history of Eas
+2026-03-18 21:36:04,666  INFO        63 refs via epmc
+2026-03-18 21:36:04,682  INFO      Fetching: Ancient genomes give insight into 160,000 years of East Asian pop
+2026-03-18 21:36:06,820  INFO        129 refs via epmc
+2026-03-18 21:36:06,854  INFO      Fetching: Adaptive introgression in modern human circadian rhythm genes.
+2026-03-18 21:36:08,996  INFO        129 refs via epmc
+2026-03-18 21:36:09,030  INFO      Fetching: Human Evolution in Backwaters, Satellites, and Republics: How Pol
+2026-03-18 21:36:40,813  INFO        EPMC empty → Semantic Scholar
+2026-03-18 21:36:42,701  INFO        74 refs via s2
+2026-03-18 21:36:42,724  INFO      Fetching: Neanderthal-derived variants increase SOX9 enhancer activity in c
+2026-03-18 21:36:44,857  INFO        107 refs via epmc
+2026-03-18 21:36:44,890  INFO      Fetching: A new late Neanderthal from Crimea reveals long-distance connecti
+2026-03-18 21:36:46,616  INFO        50 refs via epmc
+2026-03-18 21:36:46,635  INFO      Fetching: Genomic insights into population structure, adaptation, and archa
+2026-03-18 21:36:48,582  INFO        93 refs via epmc
+2026-03-18 21:36:48,610  INFO      Fetching: A maternal-fetal PIEZO1 incompatibility as a barrier to Neanderth
+2026-03-18 21:36:50,119  INFO        EPMC empty → Semantic Scholar
+2026-03-18 21:36:52,387  WARNING     No references found
+2026-03-18 21:36:52,426  INFO      Wrote 3069 rows → data/metadata/all_references.csv
+2026-03-18 21:36:52,465  INFO      corpus.json updated

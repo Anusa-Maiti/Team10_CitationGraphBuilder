@@ -1,0 +1,36 @@
+# requirements.txt
+# Citation Graph Builder – Human Evolution
+# Install with: pip install -r requirements.txt
+
+# HTTP requests
+requests>=2.31.0
+
+# XML / HTML parsing (used for PMC full-text XML)
+lxml>=4.9.0
+
+# PDF text extraction (used in later pipeline stages)
+pdfminer.six>=20221105
+pymupdf>=1.23.0          # aka fitz – faster, also extracts images
+
+# GROBID client (for reference extraction in processed/ stage)
+grobid-client-python>=0.1.4
+
+# Graph construction and analysis
+networkx>=3.2.0
+
+# Data manipulation
+pandas>=2.1.0
+
+# Fuzzy string matching (for reference disambiguation)
+rapidfuzz>=3.5.0
+thefuzz[speedup]>=0.22.0
+
+# DOI resolution
+habanero>=1.2.3           # Crossref API wrapper
+
+# Progress bars
+tqdm>=4.66.0
+
+# Optional: visualisation
+matplotlib>=3.8.0
+pyvis>=0.3.2              # interactive graph HTML export
