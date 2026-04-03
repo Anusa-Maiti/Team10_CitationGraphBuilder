@@ -14,17 +14,21 @@ This project builds a directed citation graph from research papers in human evol
 | **Europe PMC** | REST API | PDFs, metadata, reference lists | None documented |
 | **arXiv (q-bio)** | API | Preprint PDFs | 1 request/3 seconds |
 | **BioRxiv** | API | Preprint PDFs | 2 requests/second |
-| **Semantic Scholar** | Graph API | Reference lists, metadata | ~1 request/second |
 
 ### Query Terms
 Papers are collected by running search queries against the APIs. Default queries are defined in `collect_data.py` and cover the main subfields of human evolution:
 
 ```
-"human evolution fossil hominin"         "neanderthal genome ancient dna"
-"homo naledi new species"                "australopithecus paleoanthropology"
-"archaic human introgression admixture"  "modern human origins out of africa"
-"denisovan hominin phylogeny"            "stone tool acheulean oldowan"
-"homo erectus migration dispersal"       "early homo sapiens morphology"
+    "human evolution fossil hominin",
+    "neanderthal genome ancient dna",
+    "homo naledi new species",
+    "australopithecus paleoanthropology",
+    "archaic human introgression admixture",
+    "modern human origins out of africa",
+    "denisovan hominin phylogeny",
+    "stone tool acheulean oldowan",
+    "homo erectus migration dispersal",
+    "early homo sapiens morphology",
 ```
 
 Custom queries can be passed at runtime:
@@ -32,7 +36,7 @@ Custom queries can be passed at runtime:
 python collect_data.py --queries "your query" "another query"
 ```
 
-Only papers published **1990 or later** with at least one structured identifier (DOI / PMID / PMCID) are collected — pre-1990 papers are excluded because EPMC and Semantic Scholar do not carry structured reference lists for them and cannot contribute edges to the citation graph.
+Only papers published **1990 or later** with at least one structured identifier (DOI / PMID / PMCID) are collected — pre-1990 papers are excluded because EPMC  do not carry structured reference lists for them and cannot contribute edges to the citation graph.
 
 ### Adding Papers Manually (Dashboard Workflow)
 A specific paper can be added to the corpus at any time by DOI or PMID, without re-running the full collection. This powers the dashboard's "add paper" feature:
@@ -89,7 +93,7 @@ data/
 Reference lists are fetched directly from APIs — no PDF parsing required.
 
 - **Primary:** Europe PMC `/references` endpoint. Uses PMID or PMCID directly; if only a DOI is available it resolves it to a PMID via EPMC search first.
-- **Fallback:** Semantic Scholar `/references` endpoint. Uses DOI or PMID if available; if neither exists, performs a title search to get a Semantic Scholar paper ID first.
+- **Fallback:** Uses DOI or PMID if available; if neither exists, performs a title search to get a Semantic Scholar paper ID first.
 
 Each reference is then resolved to a corpus paper via the cascade in Phase 3. Papers with no structured identifier or published before 1990 are skipped — these are not indexed in either API.
 
@@ -149,14 +153,14 @@ Team10_CitationGraphBuilder/
 │   ├── nodes_list.csv                   # Graph nodes
 │   └── sqlite_storage.py                # SQLite storage backend
 │
-├── final_run_dashboard/                 # ✅ Entry point — run the dashboard from here
+├── final_run_dashboard/                 # Entry point — run the dashboard from here
 │   ├── data/                            # Dashboard data directory
 │   ├── fetchers/                        # Fetcher modules (mirrored for standalone use)
 │   ├── lib/                             # Shared library modules
 │   ├── citation_expander.py
 │   ├── collect_data.py
 │   ├── collect_data_seeded.py
-│   ├── dashboard.py                     # 🚀 Main dashboard entry point
+│   ├── dashboard.py                     #  Main dashboard entry point
 │   ├── debug_pdf.py
 │   ├── extract_references.py
 │   ├── redownload_pdfs.py
@@ -189,6 +193,7 @@ Team10_CitationGraphBuilder/
 The dashboard is the primary interface for exploring the citation graph. Run it from the `final_run_dashboard/` directory:
 
 ```bash
+(create and activate venv)
 cd final_run_dashboard/
 
 # Install dependencies
@@ -198,7 +203,7 @@ pip install -r requirements.txt
 export NCBI_API_KEY=your_key_here
 
 # Launch the dashboard
-python dashboard.py
+python -m streamlit run dashboard.py
 ```
 
 ## Full Pipeline (from scratch)
@@ -216,7 +221,7 @@ python extract_references.py
 python storedata.py --validate
 
 # 4. Launch dashboard
-python dashboard.py
+python -m streamlit run dashboard.py
 ```
 
 ## Add a Single Paper
@@ -297,36 +302,9 @@ query:
     max_neighbors: 50
     layout: "spring_layout"
 ```
-
-#  Testing and Debugging
-## Unit Tests
-### Matcher() for testing exact and fuzzy matches
-Test pipeline on 3 known papers:
-1. Download 3 test PDFs (if not exists)
-2. Extract metadata
-3. Build graph
-4. Verify known citation relationships
-
-Example: Green 2010 should cite Green 2006
-```python
-assert graph.has_edge('green_2010', 'green_2006')
-```
-
 ## Debugging Strategy
 ```
-debug/
-├── unmatched_references.csv    # References that failed matching
-│                               # (rows in all_references.csv where cited_paper_id is blank)
-├── parsing_errors.csv          # PDFs that failed extraction
-├── sample_references/          # Random sample for manual inspection
-│   ├── paper_123_refs.txt
-│   └── ...
-└── matching_decisions.log      # resolution_method column in all_references.csv
-                                # records why each match was made/rejected
-```
-
-### PDF Diagnostics
-```bash
+bash
 # Check which PDFs downloaded correctly (broken ones contain "Preparing to download")
 python redownload_pdfs.py --check
 
@@ -345,7 +323,7 @@ python debug_pdf.py --pdf data/raw/specific_paper.pdf
 4. All papers in corpus are post-1990 with at least one identifier
 
 # Expected Outputs
-After running the pipeline, you should have:
+After running the pipeline, we should have:
 
 **Citation Graph Data**
 - `data/metadata/papers_metadata.csv` — all papers with 16 metadata columns
