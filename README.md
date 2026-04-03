@@ -1,4 +1,4 @@
-#  Citation Graph Builder 
+#  Citation Graph Builder
 
 To find relationship patterns between major scientific papers in Human Evolution to highlight how research within a domain builds on and influences subsequent works.
 
@@ -67,9 +67,10 @@ data/
 │   ├── papers_metadata.csv
 │   └── all_references.csv
 └── graph/                  # Final graph data
-    ├── nodes.csv
-    ├── edges.csv
-    └── graph.gexf          # For visualization
+    ├── nodes_list.csv
+    ├── edges_list.csv
+    ├── network_map.gexf    # For Gephi visualization
+    └── citation_graph.db   # SQLite graph storage
 ```
 
 ##  Preprocessing Plans
@@ -116,50 +117,185 @@ The `resolution_method` column in `all_references.csv` records how each edge was
 
 #  Code Structure
 ```
-citation-graph-builder/
+Team10_CitationGraphBuilder/
 │
 ├── README.md
-├── requirements.txt
 │
-├── collect_data.py          # Phase 1: seed collection + citation expansion
-├── extract_references.py    # Phase 2: reference list extraction via EPMC / S2
-├── storedata.py             # Generates papers_metadata.csv + all_references.csv
-├── citation_expander.py     # BFS expansion with relevance + eligibility filters
-├── redownload_pdfs.py       # Detects and repairs broken PDF downloads
-├── debug_pdf.py             # Inspects PDF text content for diagnostics
+├── data_collection/                     # Main data pipeline scripts
+│   ├── data/                            # Collected data outputs
+│   ├── fetchers/                        # Source-specific API clients
+│   │   ├── __init__.py
+│   │   ├── base_fetcher.py              # Shared rate limiting, HTTP helpers, PDF download
+│   │   ├── pmc_fetcher.py               # PubMed Central (uses OA service for real PDF URLs)
+│   │   ├── europepmc_fetcher.py         # Europe PMC REST API
+│   │   ├── arxiv_fetcher.py             # arXiv q-bio categories
+│   │   └── biorxiv_fetcher.py           # bioRxiv evolutionary biology category
+│   │
+│   ├── citation_expander.py             # BFS expansion with relevance + eligibility filters
+│   ├── collect_data.py                  # Phase 1: seed collection + citation expansion
+│   ├── collect_data_seeded.py           # Phase 1 (seeded variant): fixed seed paper list
+│   ├── debug_pdf.py                     # Inspects PDF text content for diagnostics
+│   ├── extract_references.py            # Phase 2: reference list extraction via EPMC / S2
+│   ├── improved_GC_dashboard.py         # Gestalt-principles dashboard (alternate UI)
+│   ├── redownload_pdfs.py               # Detects and repairs broken PDF downloads
+│   ├── requirements.txt                 # Python dependencies
+│   └── storedata.py                     # Generates papers_metadata.csv + all_references.csv
 │
-├── fetchers/                # Source-specific API clients
-│   ├── __init__.py
-│   ├── base_fetcher.py      # Shared rate limiting, HTTP helpers, PDF download
-│   ├── pmc_fetcher.py       # PubMed Central (uses OA service for real PDF URLs)
-│   ├── europepmc_fetcher.py # Europe PMC REST API
-│   ├── arxiv_fetcher.py     # arXiv q-bio categories
-│   └── biorxiv_fetcher.py   # bioRxiv evolutionary biology category
+├── graph/                               # Graph construction and storage
+│   ├── citation_graph.db                # SQLite graph database
+│   ├── edges_list.csv                   # Citation edges
+│   ├── network_map.gexf                 # Gephi-compatible graph export
+│   ├── networkx_analysis.py             # NetworkX graph analysis utilities
+│   ├── nodes_list.csv                   # Graph nodes
+│   └── sqlite_storage.py                # SQLite storage backend
 │
-├── resolution/              # Entity resolution and matching         [planned]
+├── final_run_dashboard/                 # ✅ Entry point — run the dashboard from here
+│   ├── data/                            # Dashboard data directory
+│   ├── fetchers/                        # Fetcher modules (mirrored for standalone use)
+│   ├── lib/                             # Shared library modules
+│   ├── citation_expander.py
+│   ├── collect_data.py
+│   ├── collect_data_seeded.py
+│   ├── dashboard.py                     # 🚀 Main dashboard entry point
+│   ├── debug_pdf.py
+│   ├── extract_references.py
+│   ├── redownload_pdfs.py
+│   ├── requirements.txt
+│   └── storedata.py
+│
+├── resolution/                          # Entity resolution and matching  [planned]
 │   ├── __init__.py
 │   ├── matcher.py
 │   ├── fuzzy_matcher.py
 │   ├── doi_matcher.py
 │   └── placeholder.py
 │
-├── graph/                   # Graph construction and storage         [planned]
-│   ├── __init__.py
-│   ├── builder.py
-│   ├── networkx_storage.py
-│   ├── neo4j_storage.py
-│   └── sqlite_storage.py
-│
-├── query/                   # Query and visualization interface      [planned]
+├── query/                               # Query and visualization interface  [planned]
 │   ├── __init__.py
 │   ├── cli.py
 │   ├── queries.py
 │   └── visualization.py
 │
-└── analysis/                # Graph analysis utilities               [planned]
+└── analysis/                            # Graph analysis utilities
     ├── __init__.py
-    ├── statistics.py
-    └── compare_storage.py
+    ├── statistics.py                    # Degree distributions, components, centrality
+    └── compare_storage.py               # Performance benchmarks across storage backends
+```
+
+#  Running the Dashboard
+
+## Quick Start (Recommended)
+
+The dashboard is the primary interface for exploring the citation graph. Run it from the `final_run_dashboard/` directory:
+
+```bash
+cd final_run_dashboard/
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Optional: set NCBI API key to raise PMC rate limit to 10 req/s
+export NCBI_API_KEY=your_key_here
+
+# Launch the dashboard
+python dashboard.py
+```
+
+## Full Pipeline (from scratch)
+
+```bash
+cd final_run_dashboard/
+
+# 1. Collect papers (metadata only, no PDFs)
+python collect_data.py --max-papers 200 --skip-pdf --expand-depth 1
+
+# 2. Extract reference lists via EPMC + Semantic Scholar APIs
+python extract_references.py
+
+# 3. Generate CSVs
+python storedata.py --validate
+
+# 4. Launch dashboard
+python dashboard.py
+```
+
+## Add a Single Paper
+
+```bash
+cd final_run_dashboard/
+
+python collect_data.py --add-doi 10.1038/nature12886
+python collect_data.py --add-pmid 24352235
+
+# Then update the graph edges
+python extract_references.py
+```
+
+## Full Reset
+
+```bash
+cd final_run_dashboard/
+rm -rf data/
+python collect_data.py --max-papers 200 --skip-pdf --expand-depth 1
+python extract_references.py
+python storedata.py --validate
+python dashboard.py
+```
+
+### expand-depth guide
+| Value | Scope | Recommended |
+|-------|-------|-------------|
+| `0` | Seed papers only (~7 papers) | Testing |
+| `1` | Seeds + direct citation neighbours | Normal use |
+| `2` | Two hops out — grows very fast | Use with low --max-papers |
+
+## Graph Analysis
+
+After the pipeline has run, compute graph statistics and compare storage backends:
+
+```bash
+# From the project root
+python analysis/statistics.py --input graph/citation_graph.db --output reports/
+
+# Compare NetworkX vs SQLite vs Neo4j performance
+python analysis/compare_storage.py --output reports/storage_comparison.json
+```
+
+### Configuration (config.yaml) [planned]
+```yaml
+project:
+  name: "human_evolution_citation_graph"
+  data_dir: "./data"
+
+acquisition:
+  min_year: 1990
+  require_identifier: true   # must have DOI, PMID, or PMCID
+  sources:
+    pmc:
+      enabled: true
+      rate_limit: 3
+    arxiv:
+      enabled: true
+      categories: ["q-bio.PE"]
+
+extraction:
+  method: "api"          # Europe PMC + Semantic Scholar (no PDF parsing required)
+
+matching:
+  thresholds:
+    doi: 1.0
+    fuzzy_title: 0.55
+  create_placeholders: true
+
+graph:
+  storage:
+    primary: "sqlite"
+    compare_with: ["networkx", "neo4j"]
+
+query:
+  visualization:
+    max_neighbors: 50
+    layout: "spring_layout"
 ```
 
 #  Testing and Debugging
@@ -208,97 +344,23 @@ python debug_pdf.py --pdf data/raw/specific_paper.pdf
 3. Reasonable statistics — check `resolution_method` distribution in `all_references.csv`
 4. All papers in corpus are post-1990 with at least one identifier
 
-#  Running the Pipeline
-## Quick Start
-```bash
-# 1. Install
-pip install -r requirements.txt
-export NCBI_API_KEY=your_key_here   # optional — raises PMC rate limit to 10 req/s
-
-# 2. Collect papers (metadata only, no PDFs)
-python collect_data.py --max-papers 200 --skip-pdf --expand-depth 1
-
-# 3. Extract reference lists via EPMC + Semantic Scholar APIs
-python extract_references.py
-
-# 4. Generate CSVs
-python storedata.py --validate
-
-# 5. Build graph  [planned]
-python scripts/build_graph.py --storage sqlite
-
-# 6. Explore  [planned]
-python scripts/query_cli.py --interactive
-```
-
-### Full reset
-```bash
-rm -rf data/
-python collect_data.py --max-papers 200 --skip-pdf --expand-depth 1
-python extract_references.py
-python storedata.py --validate
-```
-
-### expand-depth guide
-| Value | Scope | Recommended |
-|-------|-------|-------------|
-| `0` | Seed papers only (7 papers) | Testing |
-| `1` | Seeds + direct citation neighbours | Normal use |
-| `2` | Two hops out — grows very fast | Use with low --max-papers |
-
-### Configuration (config.yaml) [planned]
-```yaml
-project:
-  name: "human_evolution_citation_graph"
-  data_dir: "./data"
-
-acquisition:
-  min_year: 1990
-  require_identifier: true   # must have DOI, PMID, or PMCID
-  sources:
-    pmc:
-      enabled: true
-      rate_limit: 3
-    arxiv:
-      enabled: true
-      categories: ["q-bio.PE"]
-
-extraction:
-  method: "api"          # Europe PMC + Semantic Scholar (no PDF parsing required)
-
-matching:
-  thresholds:
-    doi: 1.0
-    fuzzy_title: 0.55
-  create_placeholders: true
-
-graph:
-  storage:
-    primary: "sqlite"
-    compare_with: ["networkx", "neo4j"]
-
-query:
-  visualization:
-    max_neighbors: 50
-    layout: "spring_layout"
-```
-
 # Expected Outputs
 After running the pipeline, you should have:
 
 **Citation Graph Data**
 - `data/metadata/papers_metadata.csv` — all papers with 16 metadata columns
 - `data/metadata/all_references.csv` — all citation edges with resolution method
-- `data/graph/nodes.csv` — graph nodes
-- `data/graph/edges.csv` — graph edges
-- `data/graph/graph.gexf` — for Gephi visualization
+- `graph/nodes_list.csv` — graph nodes
+- `graph/edges_list.csv` — graph edges
+- `graph/network_map.gexf` — for Gephi visualization
+- `graph/citation_graph.db` — SQLite graph database
 
 **Statistics**
-- `reports/statistics.json` — degree distributions, components
+- `reports/statistics.json` — degree distributions, components, centrality
 - `reports/storage_comparison.json` — performance benchmarks
 
 **Query Interface**
-- Command-line tool for exploring the graph
+- Dashboard launched via `python final_run_dashboard/dashboard.py`
 - Sample visualizations in notebooks/
 
 #  Common Issues and Solutions
@@ -309,10 +371,11 @@ After running the pipeline, you should have:
 | **0 rows in all_references.csv** | CSV written before extraction | Run `extract_references.py` before `storedata.py` |
 | **No references found** | Pre-1990 or unindexed paper | Expected — pre-1990 papers are skipped; check `data/collection.log` |
 | **Off-topic papers** | Immunology/oncology in corpus | Edit `INCLUDE_TERMS`/`EXCLUDE_TERMS` in `citation_expander.py` |
-| **No module named fetchers** | Wrong working directory | Run all scripts from the project root |
+| **No module named fetchers** | Wrong working directory | Run all scripts from `final_run_dashboard/` |
 | **Rate limiting** | Downloads fail with 429 | Set `NCBI_API_KEY`; fetchers enforce limits automatically |
 | **Poor matching** | Many unresolved references | Lower fuzzy threshold (0.55 → 0.45) in `extract_references.py` |
 | **Memory error** | Graph building crashes | Switch from NetworkX to SQLite or Neo4j storage |
 | **Duplicate nodes** | Same paper appears twice | Primary dedup key is DOI; check `make_paper_id()` in `storedata.py` |
 | **Encoding issues** | Special chars (Pääbo) garbled | UTF-8 encoding enforced in all CSV writers |
 | **API quota exceeded** | 403/429 from Semantic Scholar | Add delay; S2 enforces 1 req/s — reduce `--max-papers` |
+| **Dashboard won't start** | ModuleNotFoundError | Run from `final_run_dashboard/` directory, not project root |
