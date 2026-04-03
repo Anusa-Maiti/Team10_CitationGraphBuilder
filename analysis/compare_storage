@@ -1,0 +1,452 @@
+"""
+analysis/compare_storage.py
+============================
+Benchmark the three graph storage backends — NetworkX (in-memory),
+SQLite, and Neo4j — for read/write/query performance and report results
+to reports/storage_comparison.json.
+
+Measures
+--------
+  - Load time (seconds to ingest all nodes + edges)
+  - Query time for: single-paper lookup, 1-hop neighbours, full in-degree sort
+  - Memory footprint (NetworkX only — estimated via tracemalloc)
+  - Disk footprint (SQLite only)
+
+Usage
+-----
+    # Default: loads from graph/citation_graph.db, writes reports/storage_comparison.json
+    python analysis/compare_storage.py
+
+    # Custom paths
+    python analysis/compare_storage.py --input graph/citation_graph.db --output reports/
+
+    # Use CSV files as source instead of SQLite
+    python analysis/compare_storage.py --nodes graph/nodes_list.csv --edges graph/edges_list.csv
+
+    # Skip Neo4j (requires a running instance)
+    python analysis/compare_storage.py --skip-neo4j
+
+    # Neo4j connection (if available)
+    python analysis/compare_storage.py --neo4j-uri bolt://localhost:7687 \\
+        --neo4j-user neo4j --neo4j-password yourpassword
+
+Notes
+-----
+    Neo4j benchmarks are skipped automatically if `neo4j` is not installed
+    or if the server is unreachable. All other benchmarks run independently.
+"""
+
+import argparse
+import csv
+import json
+import os
+import sqlite3
+import sys
+import tempfile
+import time
+import tracemalloc
+from pathlib import Path
+
+try:
+    import networkx as nx
+except ImportError:
+    sys.exit("networkx is required: pip install networkx")
+
+
+# ---------------------------------------------------------------------------
+# Loaders (shared with statistics.py)
+# ---------------------------------------------------------------------------
+
+def load_from_sqlite(db_path: str):
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    nodes = {row["paper_id"]: dict(row) for row in conn.execute("SELECT * FROM papers")}
+    edges = [(r["citing_paper_id"], r["cited_paper_id"]) for r in conn.execute("SELECT * FROM citations")]
+    conn.close()
+    return nodes, edges
+
+
+def load_from_csv(nodes_csv: str, edges_csv: str):
+    nodes = {}
+    with open(nodes_csv, encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            pid = row.get("paper_id") or row.get("id") or row.get("node_id")
+            if pid:
+                nodes[pid] = row
+    edges = []
+    with open(edges_csv, encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            src = row.get("citing_paper_id") or row.get("source") or row.get("from")
+            dst = row.get("cited_paper_id") or row.get("target") or row.get("to")
+            if src and dst:
+                edges.append((src, dst))
+    return nodes, edges
+
+
+# ---------------------------------------------------------------------------
+# Timing helpers
+# ---------------------------------------------------------------------------
+
+def timed(fn, *args, **kwargs):
+    """Run fn(*args, **kwargs) and return (result, elapsed_seconds)."""
+    t0 = time.perf_counter()
+    result = fn(*args, **kwargs)
+    return result, round(time.perf_counter() - t0, 6)
+
+
+# ---------------------------------------------------------------------------
+# NetworkX backend
+# ---------------------------------------------------------------------------
+
+def bench_networkx(nodes: dict, edges: list, sample_pid: str | None) -> dict:
+    results: dict = {"backend": "networkx"}
+
+    # Load
+    tracemalloc.start()
+    _, load_time = timed(_nx_load, nodes, edges)
+    G = _nx_load(nodes, edges)
+    _, mem_peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+
+    results["load_seconds"] = load_time
+    results["memory_peak_mb"] = round(mem_peak / 1024 / 1024, 3)
+    results["nodes"] = G.number_of_nodes()
+    results["edges"] = G.number_of_edges()
+
+    # Queries
+    if sample_pid and sample_pid in G:
+        _, t = timed(lambda: G.nodes[sample_pid])
+        results["query_single_node_seconds"] = t
+
+        _, t = timed(lambda: list(G.predecessors(sample_pid)) + list(G.successors(sample_pid)))
+        results["query_1hop_neighbours_seconds"] = t
+
+    _, t = timed(lambda: sorted(G.in_degree(), key=lambda x: x[1], reverse=True)[:20])
+    results["query_top20_indegree_seconds"] = t
+
+    _, t = timed(lambda: nx.pagerank(G, alpha=0.85, max_iter=100))
+    results["query_pagerank_seconds"] = t
+
+    return results
+
+
+def _nx_load(nodes, edges):
+    G = nx.DiGraph()
+    for pid, attrs in nodes.items():
+        G.add_node(pid, **{k: v for k, v in attrs.items() if v is not None})
+    for src, dst in edges:
+        if src in G and dst in G:
+            G.add_edge(src, dst)
+    return G
+
+
+# ---------------------------------------------------------------------------
+# SQLite backend
+# ---------------------------------------------------------------------------
+
+def bench_sqlite(nodes: dict, edges: list, sample_pid: str | None) -> dict:
+    results: dict = {"backend": "sqlite"}
+
+    with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as tf:
+        db_path = tf.name
+
+    try:
+        # Load
+        _, load_time = timed(_sqlite_load, db_path, nodes, edges)
+        results["load_seconds"] = load_time
+        results["nodes"] = len(nodes)
+        results["edges"] = len(edges)
+        results["disk_size_mb"] = round(os.path.getsize(db_path) / 1024 / 1024, 3)
+
+        conn = sqlite3.connect(db_path)
+
+        # Queries
+        if sample_pid:
+            _, t = timed(
+                lambda: conn.execute("SELECT * FROM papers WHERE paper_id = ?", (sample_pid,)).fetchone()
+            )
+            results["query_single_node_seconds"] = t
+
+            _, t = timed(lambda: (
+                conn.execute("SELECT cited_paper_id FROM citations WHERE citing_paper_id = ?", (sample_pid,)).fetchall() +
+                conn.execute("SELECT citing_paper_id FROM citations WHERE cited_paper_id = ?", (sample_pid,)).fetchall()
+            ))
+            results["query_1hop_neighbours_seconds"] = t
+
+        _, t = timed(
+            lambda: conn.execute(
+                "SELECT cited_paper_id, COUNT(*) as cnt FROM citations GROUP BY cited_paper_id ORDER BY cnt DESC LIMIT 20"
+            ).fetchall()
+        )
+        results["query_top20_indegree_seconds"] = t
+
+        conn.close()
+    finally:
+        os.unlink(db_path)
+
+    return results
+
+
+def _sqlite_load(db_path, nodes, edges):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA synchronous=OFF")
+
+    # Create tables (minimal schema matching sqlite_storage.py conventions)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS papers (
+            paper_id TEXT PRIMARY KEY,
+            title TEXT, authors TEXT, year INTEGER,
+            doi TEXT, pmid TEXT, pmcid TEXT,
+            venue TEXT, abstract TEXT,
+            citation_count INTEGER, is_placeholder INTEGER DEFAULT 0
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS citations (
+            citing_paper_id TEXT,
+            cited_paper_id TEXT,
+            resolution_method TEXT,
+            PRIMARY KEY (citing_paper_id, cited_paper_id)
+        )
+    """)
+
+    # Insert nodes
+    for pid, attrs in nodes.items():
+        conn.execute("""
+            INSERT OR IGNORE INTO papers
+            (paper_id, title, authors, year, doi, pmid, pmcid, venue, abstract, citation_count, is_placeholder)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        """, (
+            pid,
+            attrs.get("title"), attrs.get("authors"), attrs.get("year"),
+            attrs.get("doi"), attrs.get("pmid"), attrs.get("pmcid"),
+            attrs.get("venue"), attrs.get("abstract"),
+            attrs.get("citation_count"), int(bool(attrs.get("is_placeholder"))),
+        ))
+
+    # Insert edges
+    conn.executemany(
+        "INSERT OR IGNORE INTO citations (citing_paper_id, cited_paper_id) VALUES (?,?)",
+        edges,
+    )
+
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_citing ON citations(citing_paper_id)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_cited  ON citations(cited_paper_id)")
+    conn.commit()
+    conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Neo4j backend
+# ---------------------------------------------------------------------------
+
+def bench_neo4j(
+    nodes: dict, edges: list, sample_pid: str | None,
+    uri: str, user: str, password: str,
+) -> dict:
+    results: dict = {"backend": "neo4j"}
+
+    try:
+        from neo4j import GraphDatabase
+    except ImportError:
+        results["skipped"] = True
+        results["reason"] = "neo4j Python driver not installed (pip install neo4j)"
+        return results
+
+    try:
+        driver = GraphDatabase.driver(uri, auth=(user, password))
+        driver.verify_connectivity()
+    except Exception as e:
+        results["skipped"] = True
+        results["reason"] = f"Could not connect to Neo4j at {uri}: {e}"
+        return results
+
+    with driver.session() as session:
+        # Clear test data
+        session.run("MATCH (n:BenchPaper) DETACH DELETE n")
+
+        # Load
+        def _load():
+            for pid, attrs in nodes.items():
+                session.run(
+                    "MERGE (p:BenchPaper {paper_id: $pid}) SET p.title = $title, p.year = $year",
+                    pid=pid, title=attrs.get("title", ""), year=attrs.get("year"),
+                )
+            for src, dst in edges:
+                session.run(
+                    "MATCH (a:BenchPaper {paper_id:$src}), (b:BenchPaper {paper_id:$dst}) "
+                    "MERGE (a)-[:CITES]->(b)",
+                    src=src, dst=dst,
+                )
+
+        _, load_time = timed(_load)
+        results["load_seconds"] = load_time
+        results["nodes"] = len(nodes)
+        results["edges"] = len(edges)
+
+        # Queries
+        if sample_pid:
+            _, t = timed(
+                lambda: session.run("MATCH (p:BenchPaper {paper_id:$pid}) RETURN p", pid=sample_pid).single()
+            )
+            results["query_single_node_seconds"] = t
+
+            _, t = timed(
+                lambda: session.run(
+                    "MATCH (p:BenchPaper {paper_id:$pid})-[:CITES|<-[:CITES]]-(n) RETURN n.paper_id",
+                    pid=sample_pid
+                ).data()
+            )
+            results["query_1hop_neighbours_seconds"] = t
+
+        _, t = timed(
+            lambda: session.run(
+                "MATCH (p:BenchPaper)<-[:CITES]-(q) RETURN p.paper_id, count(q) AS cnt "
+                "ORDER BY cnt DESC LIMIT 20"
+            ).data()
+        )
+        results["query_top20_indegree_seconds"] = t
+
+        # Cleanup
+        session.run("MATCH (n:BenchPaper) DETACH DELETE n")
+
+    driver.close()
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Comparison summary
+# ---------------------------------------------------------------------------
+
+def summarise(results: list[dict]) -> dict:
+    """Pick a recommended backend based on benchmark results."""
+    active = [r for r in results if not r.get("skipped")]
+    if not active:
+        return {"recommendation": "no backends available to compare"}
+
+    # Sort by load time
+    by_load = sorted(active, key=lambda r: r.get("load_seconds", float("inf")))
+    by_query = sorted(active, key=lambda r: r.get("query_top20_indegree_seconds", float("inf")))
+
+    summary = {
+        "fastest_load": by_load[0]["backend"],
+        "fastest_top20_query": by_query[0]["backend"],
+    }
+
+    # Simple heuristic recommendation
+    nx_result = next((r for r in active if r["backend"] == "networkx"), None)
+    sq_result = next((r for r in active if r["backend"] == "sqlite"), None)
+
+    if nx_result and nx_result.get("memory_peak_mb", 0) > 1000:
+        summary["recommendation"] = "sqlite (NetworkX exceeds 1 GB RAM)"
+    elif nx_result and nx_result.get("nodes", 0) < 50_000:
+        summary["recommendation"] = "networkx (small graph — best for analysis & visualization)"
+    elif sq_result:
+        summary["recommendation"] = "sqlite (medium graph — good balance of speed and persistence)"
+    else:
+        summary["recommendation"] = by_load[0]["backend"]
+
+    return summary
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Benchmark graph storage backends and write reports/storage_comparison.json"
+    )
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--input", default="graph/citation_graph.db",
+                        help="SQLite DB to load data from (default: graph/citation_graph.db)")
+    parser.add_argument("--nodes", help="nodes_list.csv (use instead of --input)")
+    parser.add_argument("--edges", help="edges_list.csv (use instead of --input)")
+    parser.add_argument("--output", default="reports/",
+                        help="Output directory (default: reports/)")
+    parser.add_argument("--skip-neo4j", action="store_true",
+                        help="Skip Neo4j benchmark entirely")
+    parser.add_argument("--neo4j-uri", default="bolt://localhost:7687")
+    parser.add_argument("--neo4j-user", default="neo4j")
+    parser.add_argument("--neo4j-password", default="password")
+    args = parser.parse_args()
+
+    # Load data
+    if args.nodes and args.edges:
+        print(f"Loading from CSV: {args.nodes}, {args.edges}")
+        nodes, edges = load_from_csv(args.nodes, args.edges)
+    elif os.path.exists(args.input):
+        print(f"Loading from SQLite: {args.input}")
+        nodes, edges = load_from_sqlite(args.input)
+    else:
+        sys.exit(
+            f"Could not find data source.\n"
+            f"  Tried SQLite: {args.input}\n"
+            f"  Pass --nodes / --edges to use CSV files instead."
+        )
+
+    if not nodes:
+        sys.exit("No nodes found — run the data pipeline first.")
+
+    # Pick a representative sample node
+    sample_pid = next(iter(nodes)) if nodes else None
+
+    all_results = []
+
+    print(f"\n[1/3] Benchmarking NetworkX ({len(nodes)} nodes, {len(edges)} edges)...")
+    all_results.append(bench_networkx(nodes, edges, sample_pid))
+
+    print("[2/3] Benchmarking SQLite...")
+    all_results.append(bench_sqlite(nodes, edges, sample_pid))
+
+    if args.skip_neo4j:
+        print("[3/3] Neo4j: skipped (--skip-neo4j)")
+        all_results.append({"backend": "neo4j", "skipped": True, "reason": "--skip-neo4j flag set"})
+    else:
+        print("[3/3] Benchmarking Neo4j...")
+        all_results.append(bench_neo4j(
+            nodes, edges, sample_pid,
+            uri=args.neo4j_uri,
+            user=args.neo4j_user,
+            password=args.neo4j_password,
+        ))
+
+    summary = summarise(all_results)
+
+    report = {
+        "summary": summary,
+        "backends": all_results,
+        "_meta": {
+            "node_count": len(nodes),
+            "edge_count": len(edges),
+            "sample_paper_id": sample_pid,
+        },
+    }
+
+    out_dir = Path(args.output)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / "storage_comparison.json"
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2, ensure_ascii=False)
+
+    print(f"\nDone. Results written to: {out_path}")
+    print(f"\n{'Backend':<12} {'Load (s)':<12} {'Top-20 query (s)':<20} {'Notes'}")
+    print("-" * 65)
+    for r in all_results:
+        if r.get("skipped"):
+            print(f"  {r['backend']:<10} {'SKIPPED':<12} {'':<20} {r.get('reason','')}")
+        else:
+            load = r.get("load_seconds", "-")
+            q    = r.get("query_top20_indegree_seconds", "-")
+            note = (
+                f"{r.get('memory_peak_mb','?')} MB RAM" if r["backend"] == "networkx"
+                else f"{r.get('disk_size_mb','?')} MB disk" if r["backend"] == "sqlite"
+                else ""
+            )
+            print(f"  {r['backend']:<10} {str(load):<12} {str(q):<20} {note}")
+    print(f"\nRecommendation: {summary.get('recommendation')}")
+
+
+if __name__ == "__main__":
+    main()
