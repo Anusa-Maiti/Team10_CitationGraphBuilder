@@ -12,9 +12,6 @@ lxml>=4.9.0
 pdfminer.six>=20221105
 pymupdf>=1.23.0          # aka fitz – faster, also extracts images
 
-# GROBID client (for reference extraction in processed/ stage)
-grobid-client-python>=0.1.4
-
 # Graph construction and analysis
 networkx>=3.2.0
 
