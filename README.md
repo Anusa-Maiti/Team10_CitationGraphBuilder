@@ -70,12 +70,6 @@ data/
 │   ├── corpus.json
 │   ├── papers_metadata.csv
 │   └── all_references.csv
-└── graph/                  # Final graph data
-    ├── nodes_list.csv
-    ├── edges_list.csv
-    ├── network_map.gexf    # For Gephi visualization
-    └── citation_graph.db   # SQLite graph storage
-```
 
 ##  Preprocessing Plans
 ### Phase 1: Data Collection
@@ -166,19 +160,6 @@ Team10_CitationGraphBuilder/
 │   ├── redownload_pdfs.py
 │   ├── requirements.txt
 │   └── storedata.py
-│
-├── resolution/                          # Entity resolution and matching  [planned]
-│   ├── __init__.py
-│   ├── matcher.py
-│   ├── fuzzy_matcher.py
-│   ├── doi_matcher.py
-│   └── placeholder.py
-│
-├── query/                               # Query and visualization interface  [planned]
-│   ├── __init__.py
-│   ├── cli.py
-│   ├── queries.py
-│   └── visualization.py
 │
 └── analysis/                            # Graph analysis utilities
     ├── __init__.py
@@ -339,7 +320,7 @@ After running the pipeline, we should have:
 
 **Query Interface**
 - Dashboard launched via `python final_run_dashboard/dashboard.py`
-- Sample visualizations in notebooks/
+- Sample visualizations
 
 #  Common Issues and Solutions
 
