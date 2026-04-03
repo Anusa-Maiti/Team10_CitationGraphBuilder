@@ -61,7 +61,7 @@ Both lists are editable at the top of `citation_expander.py`.
 
 ### Data Storage Plan
 ```
-data/
+data_collection/data/
 ├── raw/                    # Original PDFs
 │   ├── homo_naledi_...pdf
 │   └── ...
