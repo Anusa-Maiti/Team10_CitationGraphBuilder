@@ -31,7 +31,7 @@ networkx>=3.2.0
 # For YAML configuration 
 pyyaml>=6.0# 
 
- Core dashboard 
+# Core dashboard 
 streamlit>=1.32.0
 
 #  Data & numerics 
