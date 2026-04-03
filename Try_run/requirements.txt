@@ -2,21 +2,52 @@
 # Citation Graph Builder – Human Evolution
 # Install with: pip install -r requirements.txt
 
-# HTTP requests
-requests>=2.31.0
-
-# XML / HTML parsing (used for PMC full-text XML)
+# Core dependencies
+requests>=2.28.0
+xmltodict>=0.13.0
 lxml>=4.9.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# For fuzzy matching (if needed later)
+thefuzz>=0.19.0
+python-Levenshtein>=0.21.0
+
+# For rate limiting
+ratelimit>=2.2.1
+
+# For command line interface
+argparse>=1.4.0
+
+# For logging
+colorlog>=6.7.0
+
+# For potential future visualizations
+matplotlib>=3.7.0
+networkx>=3.2.0
+
+# For YAML configuration 
+pyyaml>=6.0# 
+
+ Core dashboard 
+streamlit>=1.32.0
+
+#  Data & numerics 
+pandas>=2.0
+numpy>=1.26
+
+#  Visualisation 
+plotly>=5.18
+matplotlib>=3.8
+pyvis>=0.3.2
+
 
 # PDF text extraction (used in later pipeline stages)
 pdfminer.six>=20221105
+PyPDF2>=3.0.0
 pymupdf>=1.23.0          # aka fitz – faster, also extracts images
-
-# Graph construction and analysis
-networkx>=3.2.0
-
-# Data manipulation
-pandas>=2.1.0
 
 # Fuzzy string matching (for reference disambiguation)
 rapidfuzz>=3.5.0
@@ -27,7 +58,3 @@ habanero>=1.2.3           # Crossref API wrapper
 
 # Progress bars
 tqdm>=4.66.0
-
-# Optional: visualisation
-matplotlib>=3.8.0
-pyvis>=0.3.2              # interactive graph HTML export
