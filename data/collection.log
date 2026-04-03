@@ -1,0 +1,30 @@
+2026-04-01 21:47:34,054  INFO      === Phase 1: Collecting papers via 10 queries ===
+2026-04-01 21:47:34,055  INFO      Query: 'human evolution fossil hominin'
+2026-04-01 21:47:34,776  INFO        EuropePMCFetcher: 0 candidates
+2026-04-01 21:47:35,565  INFO        PMCFetcher: 0 candidates
+2026-04-01 21:47:36,006  INFO        ArXivFetcher: 0 candidates
+2026-04-01 21:48:00,627  INFO        BioRxivFetcher: 0 candidates
+2026-04-01 21:48:00,627  INFO      Query: 'neanderthal genome ancient dna'
+2026-04-01 21:48:01,340  INFO        EuropePMCFetcher: 0 candidates
+2026-04-01 21:48:03,211  INFO        PMCFetcher: 0 candidates
+2026-04-01 21:48:03,783  INFO        ArXivFetcher: 0 candidates
+2026-04-01 21:48:31,634  INFO        BioRxivFetcher: 0 candidates
+2026-04-01 21:48:31,635  INFO      Query: 'homo naledi new species'
+2026-04-01 21:48:33,372  INFO        EuropePMCFetcher: 0 candidates
+2026-04-01 21:48:34,096  INFO        PMCFetcher: 0 candidates
+2026-04-01 21:48:34,565  INFO        ArXivFetcher: 0 candidates
+2026-04-01 21:48:53,069  INFO        BioRxivFetcher: 0 candidates
+2026-04-01 21:48:53,071  INFO      Query: 'australopithecus paleoanthropology'
+2026-04-01 21:48:53,754  INFO        EuropePMCFetcher: 0 candidates
+2026-04-01 21:48:54,543  INFO        PMCFetcher: 0 candidates
+2026-04-01 21:48:55,013  INFO        ArXivFetcher: 0 candidates
+2026-04-01 21:49:20,403  INFO        BioRxivFetcher: 0 candidates
+2026-04-01 21:49:20,405  INFO      Query: 'archaic human introgression admixture'
+2026-04-01 21:49:21,225  INFO        EuropePMCFetcher: 0 candidates
+2026-04-01 21:49:22,010  INFO        PMCFetcher: 0 candidates
+2026-04-01 21:49:23,546  INFO        ArXivFetcher: 0 candidates
+2026-04-01 21:49:36,244  INFO        BioRxivFetcher: 0 candidates
+2026-04-01 21:49:36,245  INFO      Query: 'modern human origins out of africa'
+2026-04-01 21:49:38,269  INFO        EuropePMCFetcher: 0 candidates
+2026-04-01 21:49:39,003  INFO        PMCFetcher: 0 candidates
+2026-04-01 21:49:39,477  INFO        ArXivFetcher: 0 candidates

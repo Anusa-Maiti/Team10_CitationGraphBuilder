@@ -1,0 +1,337 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2026-04-01">
+    <creator>NetworkX 3.3</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="">
+    <attributes mode="static" class="node">
+      <attribute id="0" title="title" type="string" />
+      <attribute id="1" title="year" type="long" />
+      <attribute id="2" title="citations_count" type="long" />
+      <attribute id="3" title="cites_count" type="long" />
+    </attributes>
+    <nodes>
+      <node id="d21577a55c83" label="d21577a55c83">
+        <attvalues>
+          <attvalue for="0" value="Evolving a Field: Can Evolutionary Theory Provide What the Study of Human Evolution Requires?" />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="2" />
+        </attvalues>
+      </node>
+      <node id="4cb4ef29ef40" label="4cb4ef29ef40">
+        <attvalues>
+          <attvalue for="0" value="Dark skin and cancer suppression in humans—an evolutionary spandrel?" />
+          <attvalue for="1" value="2026" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="2" />
+        </attvalues>
+      </node>
+      <node id="064321d3e06b" label="064321d3e06b">
+        <attvalues>
+          <attvalue for="0" value="Genome wide signals of pervasive positive selection in human evolution" />
+          <attvalue for="1" value="2013" />
+          <attvalue for="2" value="4" />
+          <attvalue for="3" value="2" />
+        </attvalues>
+      </node>
+      <node id="5812e3485fcb" label="5812e3485fcb">
+        <attvalues>
+          <attvalue for="0" value="Selection for smaller brains in Holocene human evolution" />
+          <attvalue for="1" value="2011" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="2" />
+        </attvalues>
+      </node>
+      <node id="f05d1c4eec97" label="f05d1c4eec97">
+        <attvalues>
+          <attvalue for="0" value="On the importance of being structured: instantaneous coalescence rates and a re-evaluation of human evolution" />
+          <attvalue for="1" value="2015" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="3" />
+        </attvalues>
+      </node>
+      <node id="3331fff645f8" label="3331fff645f8">
+        <attvalues>
+          <attvalue for="0" value="Environmental Disorder Regulation of Invasion and Genetic Loss" />
+          <attvalue for="1" value="2019" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="1" />
+        </attvalues>
+      </node>
+      <node id="04944e661d76" label="04944e661d76">
+        <attvalues>
+          <attvalue for="0" value="Functional morphology, stable isotopes, and human evolution: a model of consilience" />
+          <attvalue for="1" value="2012" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="2" />
+        </attvalues>
+      </node>
+      <node id="acd7393121a3" label="acd7393121a3">
+        <attvalues>
+          <attvalue for="0" value="The Neolithic Transition in Europe at 50 Years" />
+          <attvalue for="1" value="2020" />
+          <attvalue for="2" value="3" />
+          <attvalue for="3" value="1" />
+        </attvalues>
+      </node>
+      <node id="6255795217ba" label="6255795217ba">
+        <attvalues>
+          <attvalue for="0" value="Sustainability, behavior patterns and crises" />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="3" />
+        </attvalues>
+      </node>
+      <node id="63d0294642c4" label="63d0294642c4">
+        <attvalues>
+          <attvalue for="0" value="Paul Alsberg (1883-1965) et le transfert adaptatif du biologique au technique : un précurseur de la &quot;cultural niche construction&quot; ?" />
+          <attvalue for="1" value="2008" />
+          <attvalue for="2" value="3" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="b11e62220db6" label="b11e62220db6">
+        <attvalues>
+          <attvalue for="0" value="Distilling the Essence of an Evolutionary Process and Implications for a Formal Description of Culture" />
+          <attvalue for="1" value="2013" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="3" />
+        </attvalues>
+      </node>
+      <node id="11e9455c454e" label="11e9455c454e">
+        <attvalues>
+          <attvalue for="0" value="Meaning-making behavior in a small-brained hominin, &amp;lt;i&amp;gt;Homo naledi&amp;lt;/i&amp;gt;, from the late Pleistocene: contexts and evolutionary implications." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="3" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="274cff404a4f" label="274cff404a4f">
+        <attvalues>
+          <attvalue for="0" value="An initial report of circa 241,000- to 335,000-year-old rock engravings and their relation to &amp;lt;i&amp;gt;Homo naledi&amp;lt;/i&amp;gt; in the Rising Star cave system, South Africa." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="1" />
+        </attvalues>
+      </node>
+      <node id="165d5ac6509e" label="165d5ac6509e">
+        <attvalues>
+          <attvalue for="0" value="Evidence for deliberate burial of the dead by &amp;lt;i&amp;gt;Homo naledi&amp;lt;/i&amp;gt;." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="baa27779bde9" label="baa27779bde9">
+        <attvalues>
+          <attvalue for="0" value="Phalangeal cortical bone distribution reveals different dexterous and climbing behaviors in &amp;lt;i&amp;gt;Australopithecus sediba&amp;lt;/i&amp;gt; and &amp;lt;i&amp;gt;Homo naledi&amp;lt;/i&amp;gt;." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="5" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="8b17d361c137" label="8b17d361c137">
+        <attvalues>
+          <attvalue for="0" value="Stiffness of the human foot and evolution of the transverse arch" />
+          <attvalue for="1" value="2017" />
+          <attvalue for="2" value="5" />
+          <attvalue for="3" value="3" />
+        </attvalues>
+      </node>
+      <node id="216e9a2b1cbf" label="216e9a2b1cbf">
+        <attvalues>
+          <attvalue for="0" value="SAI: A Python Package for Statistics for Adaptive Introgression." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="0" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="00fc2c1b36f5" label="00fc2c1b36f5">
+        <attvalues>
+          <attvalue for="0" value="Recurrent gene flow between Neanderthals and modern humans over the past 200,000 years." />
+          <attvalue for="1" value="2024" />
+          <attvalue for="2" value="3" />
+          <attvalue for="3" value="1" />
+        </attvalues>
+      </node>
+      <node id="e2e1dbf23a1f" label="e2e1dbf23a1f">
+        <attvalues>
+          <attvalue for="0" value="Association of Chromosome 3p21.32 Haplotype Blocks Introgressed from Neanderthals with Critical COVID-19 in a Spanish Cohort." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="e79957e22fc8" label="e79957e22fc8">
+        <attvalues>
+          <attvalue for="0" value="Human dispersal into East Eurasia: ancient genome insights and the need for research on physiological adaptations." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="4" />
+          <attvalue for="3" value="3" />
+        </attvalues>
+      </node>
+      <node id="70ed9c8f137c" label="70ed9c8f137c">
+        <attvalues>
+          <attvalue for="0" value="Recent advances in methods to characterize archaic introgression in modern humans." />
+          <attvalue for="1" value="2026" />
+          <attvalue for="2" value="1" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="5ff55e0ab306" label="5ff55e0ab306">
+        <attvalues>
+          <attvalue for="0" value="Introgressed mitochondrial fragments from archaic hominins alter nuclear genome function in modern humans." />
+          <attvalue for="1" value="2026" />
+          <attvalue for="2" value="3" />
+          <attvalue for="3" value="2" />
+        </attvalues>
+      </node>
+      <node id="dd2dc8ca7043" label="dd2dc8ca7043">
+        <attvalues>
+          <attvalue for="0" value="Inferences about fossil hominin locomotion through 3D morphometric analysis of wrist ligament insertion sites." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="4" />
+          <attvalue for="3" value="1" />
+        </attvalues>
+      </node>
+      <node id="f520790667ac" label="f520790667ac">
+        <attvalues>
+          <attvalue for="0" value="An identity for the inscrutable Homo habilis." />
+          <attvalue for="1" value="2026" />
+          <attvalue for="2" value="0" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="c164e6523589" label="c164e6523589">
+        <attvalues>
+          <attvalue for="0" value="The StW 573 Little Foot Fossil Should Not Be Attributed to Australopithecus prometheus." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="4" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+      <node id="201213675655" label="201213675655">
+        <attvalues>
+          <attvalue for="0" value="New discoveries of Australopithecus and Homo from Ledi-Geraru, Ethiopia." />
+          <attvalue for="1" value="2026" />
+          <attvalue for="2" value="4" />
+          <attvalue for="3" value="2" />
+        </attvalues>
+      </node>
+      <node id="6485143b99a3" label="6485143b99a3">
+        <attvalues>
+          <attvalue for="0" value="Testing the taxonomy of Dmanisi hominin fossils through dental crown area." />
+          <attvalue for="1" value="2025" />
+          <attvalue for="2" value="5" />
+          <attvalue for="3" value="1" />
+        </attvalues>
+      </node>
+      <node id="c8538f032471" label="c8538f032471">
+        <attvalues>
+          <attvalue for="0" value="Earliest evidence of hominin bipedalism in &amp;lt;i&amp;gt;Sahelanthropus tchadensis&amp;lt;/i&amp;gt;." />
+          <attvalue for="1" value="2026" />
+          <attvalue for="2" value="3" />
+          <attvalue for="3" value="1" />
+        </attvalues>
+      </node>
+      <node id="884ede58a460" label="884ede58a460">
+        <attvalues>
+          <attvalue for="0" value="The speciation of Australopithecus and Paranthropus was caused by introgression from the Gorilla lineage" />
+          <attvalue for="1" value="2018" />
+          <attvalue for="2" value="1" />
+          <attvalue for="3" value="3" />
+        </attvalues>
+      </node>
+      <node id="6f88a2ae7849" label="6f88a2ae7849">
+        <attvalues>
+          <attvalue for="0" value="Hominin evolution was caused by introgression from Gorilla" />
+          <attvalue for="1" value="2018" />
+          <attvalue for="2" value="2" />
+          <attvalue for="3" value="4" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge source="d21577a55c83" target="5ff55e0ab306" id="0" />
+      <edge source="d21577a55c83" target="4cb4ef29ef40" id="1" />
+      <edge source="4cb4ef29ef40" target="201213675655" id="2" />
+      <edge source="4cb4ef29ef40" target="11e9455c454e" id="3" />
+      <edge source="064321d3e06b" target="b11e62220db6" id="4" />
+      <edge source="064321d3e06b" target="e79957e22fc8" id="5" />
+      <edge source="5812e3485fcb" target="e2e1dbf23a1f" id="6" />
+      <edge source="5812e3485fcb" target="6485143b99a3" id="7" />
+      <edge source="f05d1c4eec97" target="d21577a55c83" id="8" />
+      <edge source="f05d1c4eec97" target="baa27779bde9" id="9" />
+      <edge source="f05d1c4eec97" target="e79957e22fc8" id="10" />
+      <edge source="3331fff645f8" target="dd2dc8ca7043" id="11" />
+      <edge source="04944e661d76" target="baa27779bde9" id="12" />
+      <edge source="04944e661d76" target="dd2dc8ca7043" id="13" />
+      <edge source="acd7393121a3" target="11e9455c454e" id="14" />
+      <edge source="6255795217ba" target="70ed9c8f137c" id="15" />
+      <edge source="6255795217ba" target="884ede58a460" id="16" />
+      <edge source="6255795217ba" target="6485143b99a3" id="17" />
+      <edge source="63d0294642c4" target="274cff404a4f" id="18" />
+      <edge source="63d0294642c4" target="00fc2c1b36f5" id="19" />
+      <edge source="63d0294642c4" target="acd7393121a3" id="20" />
+      <edge source="63d0294642c4" target="5ff55e0ab306" id="21" />
+      <edge source="b11e62220db6" target="8b17d361c137" id="22" />
+      <edge source="b11e62220db6" target="165d5ac6509e" id="23" />
+      <edge source="b11e62220db6" target="e79957e22fc8" id="24" />
+      <edge source="11e9455c454e" target="6485143b99a3" id="25" />
+      <edge source="11e9455c454e" target="8b17d361c137" id="26" />
+      <edge source="11e9455c454e" target="63d0294642c4" id="27" />
+      <edge source="11e9455c454e" target="c164e6523589" id="28" />
+      <edge source="274cff404a4f" target="6485143b99a3" id="29" />
+      <edge source="165d5ac6509e" target="201213675655" id="30" />
+      <edge source="165d5ac6509e" target="064321d3e06b" id="31" />
+      <edge source="165d5ac6509e" target="6f88a2ae7849" id="32" />
+      <edge source="165d5ac6509e" target="f05d1c4eec97" id="33" />
+      <edge source="baa27779bde9" target="11e9455c454e" id="34" />
+      <edge source="baa27779bde9" target="3331fff645f8" id="35" />
+      <edge source="baa27779bde9" target="acd7393121a3" id="36" />
+      <edge source="baa27779bde9" target="064321d3e06b" id="37" />
+      <edge source="8b17d361c137" target="064321d3e06b" id="38" />
+      <edge source="8b17d361c137" target="e79957e22fc8" id="39" />
+      <edge source="8b17d361c137" target="c8538f032471" id="40" />
+      <edge source="216e9a2b1cbf" target="e2e1dbf23a1f" id="41" />
+      <edge source="216e9a2b1cbf" target="c8538f032471" id="42" />
+      <edge source="216e9a2b1cbf" target="165d5ac6509e" id="43" />
+      <edge source="216e9a2b1cbf" target="00fc2c1b36f5" id="44" />
+      <edge source="00fc2c1b36f5" target="c164e6523589" id="45" />
+      <edge source="e2e1dbf23a1f" target="6255795217ba" id="46" />
+      <edge source="e2e1dbf23a1f" target="5812e3485fcb" id="47" />
+      <edge source="e2e1dbf23a1f" target="8b17d361c137" id="48" />
+      <edge source="e2e1dbf23a1f" target="c164e6523589" id="49" />
+      <edge source="e79957e22fc8" target="6f88a2ae7849" id="50" />
+      <edge source="e79957e22fc8" target="201213675655" id="51" />
+      <edge source="e79957e22fc8" target="baa27779bde9" id="52" />
+      <edge source="70ed9c8f137c" target="6485143b99a3" id="53" />
+      <edge source="70ed9c8f137c" target="f05d1c4eec97" id="54" />
+      <edge source="70ed9c8f137c" target="dd2dc8ca7043" id="55" />
+      <edge source="70ed9c8f137c" target="c8538f032471" id="56" />
+      <edge source="5ff55e0ab306" target="8b17d361c137" id="57" />
+      <edge source="5ff55e0ab306" target="63d0294642c4" id="58" />
+      <edge source="dd2dc8ca7043" target="3331fff645f8" id="59" />
+      <edge source="f520790667ac" target="00fc2c1b36f5" id="60" />
+      <edge source="f520790667ac" target="c164e6523589" id="61" />
+      <edge source="f520790667ac" target="5ff55e0ab306" id="62" />
+      <edge source="f520790667ac" target="4cb4ef29ef40" id="63" />
+      <edge source="c164e6523589" target="d21577a55c83" id="64" />
+      <edge source="c164e6523589" target="acd7393121a3" id="65" />
+      <edge source="c164e6523589" target="04944e661d76" id="66" />
+      <edge source="c164e6523589" target="b11e62220db6" id="67" />
+      <edge source="201213675655" target="274cff404a4f" id="68" />
+      <edge source="201213675655" target="8b17d361c137" id="69" />
+      <edge source="6485143b99a3" target="6255795217ba" id="70" />
+      <edge source="c8538f032471" target="201213675655" id="71" />
+      <edge source="884ede58a460" target="63d0294642c4" id="72" />
+      <edge source="884ede58a460" target="5812e3485fcb" id="73" />
+      <edge source="884ede58a460" target="baa27779bde9" id="74" />
+      <edge source="6f88a2ae7849" target="baa27779bde9" id="75" />
+      <edge source="6f88a2ae7849" target="04944e661d76" id="76" />
+      <edge source="6f88a2ae7849" target="064321d3e06b" id="77" />
+      <edge source="6f88a2ae7849" target="dd2dc8ca7043" id="78" />
+    </edges>
+  </graph>
+</gexf>
