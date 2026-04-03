@@ -70,10 +70,10 @@ data/
 │   ├── corpus.json
 │   ├── papers_metadata.csv
 │   └── all_references.csv
-
+```
 ##  Preprocessing Plans
 ### Phase 1: Data Collection
-```
+
 1. Run each query string against all four source APIs (EPMC, PMC, arXiv, bioRxiv)
 2. Filter results: published 1990+, must have DOI/PMID/PMCID
 3. Apply relevance filter (INCLUDE_TERMS / EXCLUDE_TERMS in citation_expander.py)
@@ -81,7 +81,7 @@ data/
 5. Optionally download PDFs via PMC OA service (--skip-pdf to collect metadata only)
 6. Log all results with source, DOI, timestamp in data/collection.log
 7. Optionally expand citations (--expand-depth 1) to pull in related papers
-```
+
 
 ### Phase 2: Reference Extraction
 Reference lists are fetched directly from APIs — no PDF parsing required.
