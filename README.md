@@ -162,7 +162,6 @@ Team10_CitationGraphBuilder/
 │   └── storedata.py
 │
 └── analysis/                            # Graph analysis utilities
-    ├── __init__.py
     ├── statistics.py                    # Degree distributions, components, centrality
     └── compare_storage.py               # Performance benchmarks across storage backends
 ```
